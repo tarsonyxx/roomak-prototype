@@ -1,0 +1,7 @@
+[x] make github init commit, public repo
+
+[x] prep base files
+
+[ ] make login page
+
+[ ] continue this todo-list
