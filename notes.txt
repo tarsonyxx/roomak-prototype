@@ -1,0 +1,45 @@
+
+
+Day 1
+    Set up the project and design the screens
+Create the project folder, layout, navigation, sidebar, dashboard and room-card styling. Use hardcoded sample rooms initially.
+
+Day 2
+    Build the room finder
+Render rooms from JavaScript data. Add building and floor filters, status indicators, and a room-details panel.
+
+Day 3
+    Build scheduling and reservations
+Display sample class assignments, implement reservation forms, validate dates and times, and prevent conflicting bookings.
+
+Day 4
+    Build approvals and room reporting
+Add pending requests, approve/reject controls and a report submission form with a report list.
+
+Day 5
+    Connect the features and save data
+Add localStorage. Ensure new reservations appear in the lists, approved reservations affect availability, and reports remain visible after refreshing.
+
+Day 6
+    Test the complete workflow
+Test conflicts, invalid form submissions, unavailable rooms, rejected requests, empty lists and page refreshes. Fix bugs before adding anything new.
+
+Day 7
+    Polish and prepare the demonstration
+Refine spacing, colors, responsive layout and sample data. Prepare one complete demo scenario that exercises all four features.
+
+
+expected layout:
+
+roomak/
+├── index.html
+├── css/
+│   └── style.css
+├── js/
+│   ├── app.js
+│   ├── data.js
+│   ├── rooms.js
+│   ├── reservations.js
+│   └── reports.js
+└── assets/
+    └── images/
