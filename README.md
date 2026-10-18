@@ -2,17 +2,19 @@
 
 A proposed web-based room scheduling and information system for the University of Makati (UMak).
 
-# Screenshots
 
-![roomak initial image prototype](/assets/image.png)
-
-very very very early images btw. nothing functional nor anything further than what you see here. it is a BASE.
 
 ## About
 
 RooMak aims to make room-related information and processes easier to access in one place. The prototype is being developed to demonstrate how users could find rooms, view room details, check schedules, submit reservation requests, and report room-related concerns.
 
-This is an early prototype built within a one-week development period. It is intended to demonstrate the main interface and workflows, not to serve as a production system for UMak.
+This is an early prototype that is expected to be built atleast within a two-week development period. It is intended to demonstrate the main interface and workflows for the sake of research, not to serve as a production system for UMak.
+
+# Screenshots
+
+![roomak initial image prototype](/assets/image.png)
+
+very very very early images btw. nothing functional nor anything further than what you see here. it is a BASE.
 
 ## Planned Features
 
@@ -35,27 +37,50 @@ The initial prototype is planned to use:
 
 The initial version does not provide shared, multi-user data storage or real-time room occupancy information. Any sample room details and schedules are for demonstration unless verified separately.
 
-## Run Locally
+## How to Run Locally
 
 1. Clone or download this repository.
 2. Open `index.html` in a web browser.
 3. No internet connection is required for the basic prototype, provided its files and assets are stored locally.
 
-## Initial Project Structure
+## Expected Project Structure
 
 ```text
 RooMak/
 ├── index.html
-├── style.css
-├── app.js
-└── README.md
+├── README.md
+├── .gitignore
+│
+├── css/
+│   └── style.css
+│
+├── js/
+│   ├── app.js
+│   ├── auth.js
+│   ├── floorplan.js
+│   ├── schedule.js
+│   └── storage.js
+│
+├── data/
+│   ├── rooms.js
+│   └── schedules.js
+│
+└── assets/
+    ├── images/
+    └── floorplans/
+        ├── campus.svg
+        ├── b2-ground.svg
+        ├── b2-second.svg
+        ├── b2-third.svg
+        ├── b2-fourth.svg
+        └── ...
 ```
 
 Additional files and folders may be added as the prototype develops.
 
 ## Project Status
 
-**Status:** Initial setup / early prototype
+**Status:** Initial setup / very early prototype
 
 The interface and features are still under development. The current repository may not yet contain all planned functionality.
 
