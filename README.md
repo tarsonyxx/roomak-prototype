@@ -1,8 +1,8 @@
+![thumbnail](/screenshots/thumbnail.png)
+
 # RooMak
 
 A proposed web-based room scheduling and information system for the University of Makati (UMak).
-
-
 
 ## About
 
