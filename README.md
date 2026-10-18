@@ -11,8 +11,11 @@
 >
 >This is an early prototype that is expected to be built atleast within a two-week development period. It is intended to demonstrate the main interface and workflows for the sake of research, not to serve as a production system for UMak.
 >
->Made by the following student(s) from 12-01 ICT:
-> - Wilson B. Ube
+>Prototype built by the following student(s) from 12-01 ICT:
+> - Wilson B. Ube \- Main Developer
+>
+>Other Contributors:
+> - Work in Progress
 
 # Screenshots
 
