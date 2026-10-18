@@ -1,7 +1,7 @@
 
 ![thumbnail](/screenshots/thumbnail.png)
 
->![Important]
+>[!Important]
 >
 >This repository is for a student research project: A proposed web-based room scheduling and information system for the University of Makati (UMak).
 >
