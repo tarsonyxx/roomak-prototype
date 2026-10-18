@@ -1,0 +1,394 @@
+/* Page layout */
+
+.login-page {
+    background:
+        radial-gradient(
+            circle at 12% 12%,
+            rgba(37, 99, 235, 0.08),
+            transparent 30%
+        ),
+        var(--color-page);
+}
+
+.login-shell {
+    display: grid;
+    place-items: center;
+
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 32px;
+}
+
+.login-card {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+
+    width: min(1080px, 100%);
+    min-height: 620px;
+
+    overflow: hidden;
+    border: 1px solid rgba(223, 229, 238, 0.8);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+}
+
+/* Left side: login form */
+
+.login-form-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    padding: clamp(32px, 5vw, 64px);
+}
+
+/* Brand */
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 11px;
+
+    width: fit-content;
+    text-decoration: none;
+}
+
+.brand-mark {
+    position: relative;
+
+    display: grid;
+    place-items: center;
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 13px;
+    background: var(--color-primary);
+    color: #ffffff;
+
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.06em;
+}
+
+.brand-mark::after {
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+
+    width: 12px;
+    height: 12px;
+
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    background: var(--color-accent);
+
+    content: "";
+}
+
+.brand-name {
+    color: var(--color-ink);
+    font-size: 1.35rem;
+    font-weight: 750;
+    letter-spacing: -0.045em;
+}
+
+/* Introduction */
+
+.login-intro {
+    margin-top: auto;
+    margin-bottom: 28px;
+    padding-top: 48px;
+}
+
+.eyebrow {
+    margin: 0 0 12px;
+
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+}
+
+.login-intro h1 {
+    margin: 0;
+
+    font-size: clamp(2rem, 3.4vw, 2.65rem);
+    font-weight: 750;
+    letter-spacing: -0.055em;
+    line-height: 1.12;
+}
+
+.intro-description {
+    max-width: 340px;
+    margin: 14px 0 0;
+
+    color: var(--color-muted);
+    font-size: 0.96rem;
+    line-height: 1.7;
+}
+
+/* Login form */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-form .button {
+    margin-top: 3px;
+}
+
+.demo-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+
+    margin-top: 24px;
+    padding: 14px;
+
+    border: 1px solid rgba(255, 142, 60, 0.28);
+    border-radius: 13px;
+    background: rgba(255, 142, 60, 0.07);
+}
+
+.demo-indicator {
+    flex: 0 0 auto;
+
+    width: 9px;
+    height: 9px;
+    margin-top: 6px;
+
+    border-radius: 50%;
+    background: var(--color-accent);
+}
+
+.demo-title {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: 0.83rem;
+    font-weight: 700;
+}
+
+.demo-details {
+    margin: 3px 0 0;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.demo-details code {
+    padding: 2px 5px;
+    border-radius: 5px;
+    background: rgba(24, 34, 53, 0.06);
+    color: var(--color-ink);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.78rem;
+}
+
+.login-footer {
+    margin-top: auto;
+    padding-top: 32px;
+
+    color: var(--color-muted);
+    font-size: 0.75rem;
+}
+
+.login-footer span {
+    padding: 0 4px;
+    color: var(--color-accent);
+}
+
+/* Right side: image panel */
+
+.login-visual {
+    position: relative;
+    isolation: isolate;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-width: 0;
+    padding: 38px;
+
+    overflow: hidden;
+    color: #ffffff;
+
+    background-color: #17376e;
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(14, 31, 62, 0.12) 0%,
+            rgba(14, 31, 62, 0.28) 35%,
+            rgba(14, 31, 62, 0.91) 100%
+        ),
+        url("/assets/images/umak-sunset.jpg"),
+        linear-gradient(135deg, #3268c5, #142443);
+
+    background-position: center;
+    background-size: cover;
+}
+
+/* Subtle orange accent */
+
+.login-visual::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+
+    width: 140px;
+    height: 140px;
+
+    border-radius: 0 0 0 100%;
+    background: rgba(255, 142, 60, 0.14);
+
+    content: "";
+    pointer-events: none;
+}
+
+.visual-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.visual-label-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 12px rgba(255, 142, 60, 0.7);
+}
+
+.visual-copy {
+    max-width: 410px;
+    margin-top: 70px;
+    margin-bottom: 48px;
+}
+
+.visual-eyebrow {
+    margin: 0 0 16px;
+
+    color: #ffbd8d;
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.15em;
+}
+
+.visual-copy h2 {
+    margin: 0;
+
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 750;
+    letter-spacing: -0.055em;
+    line-height: 1.08;
+}
+
+.visual-copy > p:last-child {
+    max-width: 350px;
+    margin: 20px 0 0;
+
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.94rem;
+    line-height: 1.8;
+}
+
+.visual-bottom {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.visual-line {
+    flex: 0 0 auto;
+
+    width: 30px;
+    height: 3px;
+
+    border-radius: 3px;
+    background: var(--color-accent);
+}
+
+.visual-bottom p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+}
+
+/* Tablet and mobile */
+
+@media (max-width: 760px) {
+    .login-shell {
+        padding: 18px;
+    }
+
+    .login-card {
+        grid-template-columns: minmax(0, 1fr);
+
+        width: min(460px, 100%);
+        min-height: 0;
+    }
+
+    .login-form-panel {
+        min-height: min(760px, calc(100svh - 36px));
+        padding: clamp(26px, 7vw, 40px);
+    }
+
+    .login-intro {
+        margin-top: 50px;
+        padding-top: 0;
+    }
+
+    .login-visual {
+        display: none;
+    }
+
+    .login-footer {
+        padding-top: 28px;
+    }
+}
+
+@media (max-width: 380px) {
+    .login-shell {
+        padding: 10px;
+    }
+
+    .login-card {
+        border-radius: 18px;
+    }
+
+    .login-form-panel {
+        padding: 24px 20px;
+    }
+
+    .login-intro h1 {
+        font-size: 2rem;
+    }
+
+    .demo-note {
+        padding: 12px;
+    }
+}
+
+/* Reduce animation for users who request it */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

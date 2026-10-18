@@ -1,58 +1,31 @@
-"use strict";
+const loginForm = document.getElementById("loginForm");
+const loginMessage = document.getElementById("loginMessage");
 
-(() => {
-    const messageElement = document.getElementById("formMessage");
+if (loginForm && loginMessage) {
+    loginForm.addEventListener("submit", (event) => {
+        event.preventDefault();
 
-    // Expose shared UI helpers for other RooMak scripts.
-    window.RooMakApp = {
-        showMessage(message, type = "info") {
-            if (!messageElement) {
-                return;
-            }
+        const formData = new FormData(loginForm);
+        const username = String(formData.get("username") || "").trim();
+        const password = String(formData.get("password") || "");
 
-            messageElement.textContent = message;
-            messageElement.className = `form-message visible ${type}`;
-        },
+        // Demo-only credentials.
+        if (username === "demo" && password === "1234") {
+            loginMessage.textContent =
+                "Demo login accepted. Dashboard integration is the next step.";
 
-        clearMessage() {
-            if (!messageElement) {
-                return;
-            }
-
-            messageElement.textContent = "";
-            messageElement.className = "form-message";
-        }
-    };
-
-    // Keep the copyright year current.
-    const yearElement = document.getElementById("currentYear");
-
-    if (yearElement) {
-        yearElement.textContent = new Date().getFullYear();
-    }
-
-    // Temporary help and privacy placeholders.
-    const placeholderLinks = [
-        {
-            id: "helpLink",
-            message: "RooMak help documentation has not been configured yet."
-        },
-        {
-            id: "privacyLink",
-            message: "The RooMak privacy policy needs to be added before deployment."
-        }
-    ];
-
-    placeholderLinks.forEach(({ id, message }) => {
-        const link = document.getElementById(id);
-
-        if (!link) {
+            loginMessage.className = "status-message is-success";
             return;
         }
 
-        link.addEventListener("click", (event) => {
-            event.preventDefault();
-            window.RooMakApp.showMessage(message);
-        });
+        loginMessage.textContent =
+            "Incorrect account name or password. Check the demo credentials and try again.";
+
+        loginMessage.className = "status-message is-error";
     });
-})();
+
+    loginForm.addEventListener("input", () => {
+        loginMessage.textContent = "";
+        loginMessage.className = "status-message";
+    });
+}
