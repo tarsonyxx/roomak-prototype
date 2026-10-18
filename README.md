@@ -1,5 +1,5 @@
 
-![thumbnail](/screenshots/thumbnail.png)
+![thumbnail](/assets/screenshots/thumbnail.png)
 
 >[!Important]
 >
@@ -20,7 +20,7 @@
 
 # Screenshots
 
-![roomak initial image prototype](/screenshots/login-ss.png)
+![roomak initial image prototype](/assets/screenshots/login-ss.png)
 
 > very very very early images btw. nothing functional nor anything further than what you see here. it is a BASE. give me some time will ya
 > \-Wilson
