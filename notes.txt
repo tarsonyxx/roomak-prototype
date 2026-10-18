@@ -33,11 +33,19 @@ expected layout:
 
 RooMak/
 ├── index.html
-├── README.md
-├── .gitignore
+├── pages/
+│   ├── dashboard.html
+│   ├── floorplan.html
+│   └── schedule.html
 │
 ├── css/
-│   └── style.css
+│   ├── base.css
+│   ├── components.css
+│   └── pages/
+│       ├── login.css
+│       ├── dashboard.css
+│       ├── floorplan.css
+│       └── schedule.css
 │
 ├── js/
 │   ├── app.js
@@ -50,12 +58,9 @@ RooMak/
 │   ├── rooms.js
 │   └── schedules.js
 │
-└── assets/
-    ├── images/
-    └── floorplans/
-        ├── campus.svg
-        ├── b2-ground.svg
-        ├── b2-second.svg
-        ├── b2-third.svg
-        ├── b2-fourth.svg
-        └── ...
+├── assets/
+│   ├── screenshots/
+│   └── images/
+│
+├── README.md
+└── .gitignore
