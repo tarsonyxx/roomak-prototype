@@ -10,12 +10,16 @@
 >RooMak aims to make room-related information and processes easier to access in one place. The prototype is being developed to demonstrate how users could find rooms, view room details, check schedules, submit reservation requests, and report room-related concerns.
 >
 >This is an early prototype that is expected to be built atleast within a two-week development period. It is intended to demonstrate the main interface and workflows for the sake of research, not to serve as a production system for UMak.
+>
+>Made by the following student(s) from 12-01 ICT:
+> - Wilson B. Ube
 
 # Screenshots
 
 ![roomak initial image prototype](/assets/image.png)
 
-very very very early images btw. nothing functional nor anything further than what you see here. it is a BASE.
+> very very very early images btw. nothing functional nor anything further than what you see here. it is a BASE. give me some time will ya
+> \-Wilson
 
 ## Planned Features
 
