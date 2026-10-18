@@ -31,15 +31,31 @@ Refine spacing, colors, responsive layout and sample data. Prepare one complete 
 
 expected layout:
 
-roomak/
+RooMak/
 ├── index.html
+├── README.md
+├── .gitignore
+│
 ├── css/
 │   └── style.css
+│
 ├── js/
 │   ├── app.js
-│   ├── data.js
+│   ├── auth.js
+│   ├── floorplan.js
+│   ├── schedule.js
+│   └── storage.js
+│
+├── data/
 │   ├── rooms.js
-│   ├── reservations.js
-│   └── reports.js
+│   └── schedules.js
+│
 └── assets/
-    └── images/
+    ├── images/
+    └── floorplans/
+        ├── campus.svg
+        ├── b2-ground.svg
+        ├── b2-second.svg
+        ├── b2-third.svg
+        ├── b2-fourth.svg
+        └── ...
