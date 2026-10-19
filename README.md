@@ -93,3 +93,6 @@ Additional files and folders may be added as the prototype develops.
 
 The interface and features are still under development. The current repository may not yet contain all planned functionality.
 
+**Copyright © 2026 RooMak contributors. All rights reserved.**
+
+This project is proprietary. No permission is granted to copy, modify, redistribute, or use this project's source code without prior written permission from the respective copyright holder(s).
