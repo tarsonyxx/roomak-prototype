@@ -1,0 +1,37 @@
+[ ] Submit Scheduling Request
+[ ] Report an Issue
+
+[ ] Tutorial or Hints
+[ ] Flip Stairs Symbol on bottom row of rooms.
+
+
+[ ] Dashboard Title Bar
+    [ ] Manage Account
+    [ ] Settings (Opt)
+    [ ] Dark Mode (Opt)
+
+[ ] Register / Log in
+
+[ ] Logo & Banner
+    [ ] Adapt Color Palette
+
+[ ] Role Based View
+    [ ] Teacher (WIP)
+    [ ] Scheduler / Mods / Admin
+    [ ] Students
+
+[ ] Manage Backend, with data storage.
+
+[ ] Deploy Website via GitLab
+
+
+
+
+=====================================
+Other stuff:
+
+[ ] UMREC
+[ ] Project Rise (Call For Proposal)
+[ ] Survey Questionnaire
+[ ] GForms
+ 
