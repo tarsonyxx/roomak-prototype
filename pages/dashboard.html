@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>RooMak | Room Finder</title>
 
     <link rel="stylesheet" href="/css/base.css">
@@ -17,6 +17,7 @@
     </script>
 </head>
 <body class="dashboard-page">
+<div class="app">
     <header class="topbar">
         <a class="brand" href="/pages/dashboard.html" aria-label="RooMak home">
             <span class="brand-mark" aria-hidden="true">R</span>
@@ -25,149 +26,76 @@
         <button class="ghost-btn" id="logoutBtn" type="button">Log out</button>
     </header>
 
-    <main class="dash">
-        <aside class="panel">
-            <div>
-                <p class="eyebrow">ROOM FINDER</p>
-                <h1>Find a room</h1>
-                <p class="muted">Pick a day and time to see which rooms are free.</p>
-            </div>
-
-            <div class="field">
-                <span class="label floor-label">Floor</span>
-                <div class="segmented" id="floors" role="group" aria-label="Floor"></div>
-            </div>
-
-            <div class="field">
-                <label class="label" for="day">Day</label>
-                <select id="day" class="form-input">
-                    <option>Mon</option><option>Tue</option><option>Wed</option>
-                    <option>Thu</option><option>Fri</option><option>Sat</option>
-                </select>
-            </div>
-
-            <div class="field-row">
-                <div class="field">
-                    <label class="label" for="start">From</label>
-                    <input id="start" class="form-input" type="time" value="09:00">
-                </div>
-                <div class="field">
-                    <label class="label" for="end">To</label>
-                    <input id="end" class="form-input" type="time" value="10:00">
-                </div>
-            </div>
-            <p id="timeError" class="status-message is-error"></p>
-
-            <ul class="legend">
-                <li><i class="dot available"></i>Available <b id="n-available">0</b></li>
-                <li><i class="dot unavailable"></i>Unavailable <b id="n-unavailable">0</b></li>
-                <li><i class="dot occupied"></i>In use <b id="n-occupied">0</b></li>
-            </ul>
-        </aside>
-
+    <main class="stage">
+        <!-- ===== Map ===== -->
         <section class="map-card" aria-label="Floor plan">
             <div class="viewport" id="viewport">
                 <svg class="plan" id="plan" role="img" aria-label="Floor plan">
                     <g id="world"></g>
                 </svg>
             </div>
+
+            <!-- Floating dropdown buttons -->
+            <div class="controls">
+                <div class="dd">
+                    <button class="chip" id="floorBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                        <span id="floorLabel">2F</span><i class="caret"></i>
+                    </button>
+                    <div class="pop" id="floorPop" hidden></div>
+                </div>
+
+                <div class="dd">
+                    <button class="chip" id="dayBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                        <span id="dayLabel">Mon</span><i class="caret"></i>
+                    </button>
+                    <div class="pop" id="dayPop" hidden></div>
+                </div>
+
+                <div class="dd">
+                    <button class="chip" id="timeBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                        <span id="timeLabel">9:00–10:00 AM</span><i class="caret"></i>
+                    </button>
+                    <div class="pop pop-time right" id="timePop" hidden>
+                        <div class="field-row">
+                            <div class="field">
+                                <label class="label" for="start">From</label>
+                                <input id="start" class="form-input" type="time" value="09:00">
+                            </div>
+                            <div class="field">
+                                <label class="label" for="end">To</label>
+                                <input id="end" class="form-input" type="time" value="10:00">
+                            </div>
+                        </div>
+                        <p id="timeError" class="status-message is-error"></p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="hint" id="hint">Drag to move &middot; Pinch to zoom &middot; Tap a room</p>
+
+            <ul class="legend">
+                <li><i class="dot available"></i>Available <b id="n-available">0</b></li>
+                <li><i class="dot unavailable"></i>Unavailable <b id="n-unavailable">0</b></li>
+                <li><i class="dot occupied"></i>In use <b id="n-occupied">0</b></li>
+            </ul>
+
             <div class="zoom">
                 <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
                 <button type="button" id="zoomOut" aria-label="Zoom out">&minus;</button>
                 <button type="button" id="zoomFit" aria-label="Show whole floor">&#x26F6;</button>
             </div>
-            <p class="hint" id="hint">Drag to move &middot; Pinch to zoom &middot; Tap a room</p>
         </section>
 
-        <section class="details" id="details" aria-live="polite"></section>
+        <!-- ===== Room information drawer ===== -->
+        <aside class="drawer" id="drawer" aria-label="Room information" aria-hidden="true">
+            <div class="drawer-inner" id="drawerBody"></div>
+        </aside>
     </main>
+</div>
 
     <script src="/data/rooms.js"></script>
     <script src="/data/schedules.js"></script>
     <script src="/js/floorplan.js"></script>
-    <script>
-        const $ = (id) => document.getElementById(id);
-        const world = $("world");
-        let floor = Object.keys(FLOORS)[0];
-        let selectedRoom = null;
-
-        const panZoom = createPanZoom($("viewport"), world, (roomEl) => {
-            $("hint").classList.add("hidden");
-            showDetails(roomEl ? roomEl.dataset.room : null);
-        });
-
-        // ----- floor buttons (built from whatever floors exist in rooms.js) -----
-        Object.keys(FLOORS).forEach((n) => {
-            const b = document.createElement("button");
-            b.type = "button";
-            b.textContent = n + "F";
-            b.dataset.floor = n;
-            b.addEventListener("click", () => { floor = n; selectedRoom = null; showFloor(); });
-            $("floors").appendChild(b);
-        });
-
-        function showFloor() {
-            document.querySelectorAll("#floors button").forEach((b) =>
-                b.classList.toggle("active", b.dataset.floor === floor));
-            panZoom.setPlan(drawFloor(world, floor));
-            refreshStatus();
-            showDetails(null);
-        }
-
-        function refreshStatus() {
-            const ok = $("end").value > $("start").value;
-            $("timeError").textContent = ok ? "" : "End time must be after start time.";
-            if (!ok) return;
-            const counts = applyTimeRange(world, $("day").value, $("start").value, $("end").value);
-            for (const key in counts) $("n-" + key).textContent = counts[key];
-            if (selectedRoom) showDetails(selectedRoom);
-        }
-
-        // ----- details card (bottom sheet on phones) -----
-        function showDetails(roomId) {
-            const box = $("details");
-            selectedRoom = roomId;
-            markSelected(world, roomId);
-            if (!roomId) {
-                box.classList.remove("open");
-                box.innerHTML = '<p class="muted">Tap a room on the map to see its details.</p>';
-                return;
-            }
-            const info = ROOM_INFO[roomId] || {};
-            const roomEl = world.querySelector('[data-room="' + roomId + '"]');
-            const status = roomEl.dataset.status || "available";
-            const reason = roomEl.dataset.reason;
-            const day = $("day").value;
-            const bookings = SCHEDULES.filter((s) => s.roomId === roomId && s.day === day)
-                .sort((a, b) => toMin(a.start) - toMin(b.start));
-
-            const meta = [info.type, info.capacity ? info.capacity + " seats" : ""].filter(Boolean).join(" · ");
-            box.innerHTML =
-                '<button class="close" id="closeDetails" aria-label="Close">&times;</button>' +
-                '<p class="eyebrow">' + roomId.replace("-", " ") + '</p>' +
-                '<h2>' + (info.name || "Room " + roomId.replace("-", " ")) + '</h2>' +
-                (meta ? '<p class="muted">' + meta + '</p>' : '') +
-                '<span class="badge ' + status + '">' + STATUS_LABEL[status] +
-                (reason ? " · " + reason : "") + '</span>' +
-                '<h3>' + day + ' schedule</h3>' +
-                (bookings.length
-                    ? '<ul class="bookings">' + bookings.map((s) =>
-                        '<li><span>' + s.start + ' – ' + s.end + '</span>' + s.activity + '</li>').join("") + '</ul>'
-                    : '<p class="muted">No classes scheduled.</p>');
-            box.classList.add("open");
-            $("closeDetails").addEventListener("click", () => showDetails(null));
-        }
-
-        ["day", "start", "end"].forEach((id) => $(id).addEventListener("change", refreshStatus));
-        $("zoomIn").addEventListener("click", panZoom.zoomIn);
-        $("zoomOut").addEventListener("click", panZoom.zoomOut);
-        $("zoomFit").addEventListener("click", panZoom.fit);
-        $("logoutBtn").addEventListener("click", () => {
-            sessionStorage.removeItem("roomakLoggedIn");
-            window.location.href = "/pages/index.html";
-        });
-
-        showFloor();
-    </script>
+    <script src="/js/dashboard.js"></script>
 </body>
 </html>
