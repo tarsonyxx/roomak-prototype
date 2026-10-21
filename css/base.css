@@ -80,3 +80,59 @@ img {
     outline: 3px solid rgba(255, 142, 60, 0.65);
     outline-offset: 3px;
 }
+
+
+
+
+/* =====================================================================
+   RooMak COLOR PALETTE  -- change colors here and the whole app updates.
+   (Brand colors --color-primary / --color-accent etc. are defined at the top of this file.)
+   ===================================================================== */
+:root {
+    /* Interface extras */
+    --primary-soft: rgba(37, 99, 235, 0.08);    /* light tint of the primary color (selected / hover) */
+    --primary-ring: rgba(37, 99, 235, 0.12);    /* glow around an open dropdown */
+    --border-hover: #b7c3d4;                    /* border color when hovering */
+    --card-border: rgba(223, 229, 238, 0.8);    /* thin border around cards */
+    --glass: rgba(255, 255, 255, 0.94);         /* floating buttons and legend background */
+    --hint-bg: rgba(24, 34, 53, 0.78);          /* "Drag to move" pill */
+    --shadow-soft: rgba(24, 34, 53, 0.08);
+    --shadow-medium: rgba(24, 34, 53, 0.15);
+
+    /* Room status: green = available */
+    --available-bg: #e7f7ee;        /* room fill */
+    --available-border: #6cc596;    /* room outline */
+    --available-line: #bfe6cf;      /* outline of the info box */
+    --available-text: #17663f;      /* text */
+    --available-track: #cdeedb;     /* free time on the day timeline */
+
+    /* yellow = unavailable / maintenance */
+    --unavailable-bg: #fff4d6;
+    --unavailable-border: #eab93f;
+    --unavailable-line: #f3dc9a;
+    --unavailable-text: #8a6200;
+
+    /* red = in use */
+    --occupied-bg: #fde8e8;
+    --occupied-border: #ec8b8b;
+    --occupied-line: #f4c0c0;
+    --occupied-text: #a12a2a;
+
+    /* grey = special rooms (not reservable) */
+    --special-bg: #f6f7fb;
+    --special-border: #ccd3e0;
+
+    /* Floor plan canvas */
+    --plan-bg: #fbfcfe;                         /* map background */
+    --plan-dot: #dfe5ee;                        /* dots on the map background */
+    --plan-corridor: rgba(37, 99, 235, 0.04);   /* corridor strip */
+    --plan-fixed: #f1f4f9;                      /* stairs and restroom tiles */
+    --plan-icon: #5b6880;                       /* stairs / restroom symbols */
+    --plan-icon-soft: #c3ccdb;                  /* lighter lines inside the symbols */
+    --plan-bracket: #a9bdee;                    /* B2 | BW | B3 bracket lines */
+
+    /* Room photo placeholder */
+    --photo-bg: #e8eefc;
+    --photo-from: #e6eeff;
+    --photo-to: #fff1e4;
+}
