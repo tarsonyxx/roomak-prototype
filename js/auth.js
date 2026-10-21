@@ -11,16 +11,13 @@ if (loginForm && loginMessage) {
 
         // Demo-only credentials.
         if (username === "demo" && password === "1234") {
-            loginMessage.textContent =
-                "Demo login accepted. Dashboard integration is the next step.";
-
-            loginMessage.className = "status-message is-success";
+            sessionStorage.setItem("roomakLoggedIn", "yes");
+            window.location.href = "/pages/dashboard.html";
             return;
         }
 
         loginMessage.textContent =
             "Incorrect account name or password. Check the demo credentials and try again.";
-
         loginMessage.className = "status-message is-error";
     });
 
