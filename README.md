@@ -14,17 +14,28 @@
 >**Prototype built by the following student(s) from 12-01 ICT:**
 >
 >Developers:
-> - Wilson B. Ube
->Other Contributors:
-> - Work in Progress -->
+> - Wilson B. Ube (Lead Developer)
+>
+>Floor Plan Map:
+> - John Benedict A. Pongasi  (Mapping Leader)
+> - Jeremy A. Yanzon
+> - Carlos Albert O. San Pedro
+>
+>Logo & Banner Design:
+> - Angelique Marie D. Mejia
+> - Jimwell F. Solayao
+
+
+
+
 
 # Screenshots
 
-![roomak initial image prototype](/assets/screenshots/login-ss.png)
+![login page](/assets/screenshots/login-ss.png)
+![dashboard 1](/assets/screenshots/dashboard-ss.png)
+![dashboard 2](/assets/screenshots/dashboard2-ss.png)
 
-> very very very early images btw. nothing functional nor anything further than what you see here. it is a BASE. give me some time will ya
-> 
-> \-Wilson
+
 
 ## Planned Features
 
@@ -53,46 +64,15 @@ The initial version does not provide shared, multi-user data storage or real-tim
 2. Open `index.html` in a web browser.
 3. No internet connection is required for the basic prototype, provided its files and assets are stored locally.
 
-## Expected Project Structure
-
-```text
-RooMak/
-├── index.html
-├── README.md
-├── .gitignore
-│
-├── css/
-│   └── style.css
-│
-├── js/
-│   ├── app.js
-│   ├── auth.js
-│   ├── floorplan.js
-│   ├── schedule.js
-│   └── storage.js
-│
-├── data/
-│   ├── rooms.js
-│   └── schedules.js
-│
-└── assets/
-    ├── images/
-    └── floorplans/
-        ├── campus.svg
-        ├── b2-ground.svg
-        ├── b2-second.svg
-        ├── b2-third.svg
-        ├── b2-fourth.svg
-        └── ...
-```
-
-Additional files and folders may be added as the prototype develops.
-
 ## Project Status
 
 **Status:** Initial setup / very early prototype
 
 The interface and features are still under development. The current repository may not yet contain all planned functionality.
+
+
+
+
 
 **Copyright © 2026 RooMak contributors. All rights reserved.**
 
