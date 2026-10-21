@@ -243,3 +243,18 @@
     .back { display: block; }
     .brand-name { font-size: 1.2rem; }
 }
+
+
+/* ---------- Floor plan symbols, special rooms, time fields ---------- */
+.plan .tag { font: 600 11px var(--font-sans); fill: var(--color-ink); pointer-events: none; }
+.plan .icon { fill: none; stroke: #5b6880; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.plan .icon-soft { stroke: #c3ccdb; stroke-width: 1; }
+.plan .icon-bold { stroke-width: 1.7; }
+.plan .arrowhead { fill: #5b6880; stroke: none; pointer-events: none; }
+
+.room[data-status="special"] rect { fill: #f6f7fb; stroke: #ccd3e0; }
+.dot.special { background: #f6f7fb; border-color: #ccd3e0; }
+.avail.special { background: var(--color-page); }
+.avail.special .avail-label { color: var(--color-muted); }
+
+input[type="time"].form-input { cursor: pointer; }

@@ -8,4 +8,8 @@ const SCHEDULES = [
   { id: 6,  roomId: "B3-204", day: "Mon", start: "13:00", end: "15:00", activity: "MATH 1",   faculty: "Prof. Tan" },
   { id: 7,  roomId: "B3-204", day: "Mon", start: "07:30", end: "09:00", activity: "ENG 1",    faculty: "Prof. Diaz" },
   { id: 8,  roomId: "B3-212", day: "Tue", start: "08:00", end: "09:30", activity: "ENG 1",    faculty: "Prof. Diaz" },
+  { id: 9,  roomId: "B2-308", day: "Mon", start: "09:00", end: "10:30", activity: "PHYS 1",   faculty: "Prof. Go" },
+  { id: 10, roomId: "B3-310", day: "Mon", start: "08:30", end: "10:00", activity: "HIST 1",   faculty: "Prof. Ong" },
+  { id: 11, roomId: "B2-404", day: "Mon", start: "09:30", end: "11:00", activity: "CHEM 1",   faculty: "Prof. Sy" },
+  { id: 12, roomId: "B3-414", day: "Mon", start: "08:00", end: "09:30", activity: "PE 1",     faculty: "Prof. Lee" },
 ];

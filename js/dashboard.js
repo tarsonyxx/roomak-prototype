@@ -73,6 +73,10 @@ $("dayPop").addEventListener("click", (e) => {
     closePopovers();
     refresh();
 });
+// Click anywhere on the time field (not just the clock icon) to open the picker.
+["start", "end"].forEach((id) => $(id).addEventListener("click", () => {
+    try { $(id).showPicker(); } catch (err) { /* older browsers: typing still works */ }
+}));
 ["start", "end"].forEach((id) => $(id).addEventListener("change", () => {
     state[id] = $(id).value;
     state.viewDay = state.day;
@@ -148,10 +152,14 @@ function renderDrawer() {
     const id = state.room;
     const body = $("drawerBody");
     const scroll = body.scrollTop;
-    const info = { ...DEFAULT_INFO, ...(ROOM_INFO[id] || {}) };
+    const cell = ROOM_INDEX[id];
+    const special = Boolean(cell.special);
+    const info = special
+        ? { type: cell.type, name: cell.name, ...(ROOM_INFO[id] || {}) }
+        : { ...DEFAULT_INFO, ...(ROOM_INFO[id] || {}) };
     const code = id.replace("-", " ");
+    const showCode = !(cell.hide);
     const prefix = id.split("-")[0];
-    const floorNo = id.split("-")[1][0];
     const day = state.viewDay;
     const ok = timeValid();
     const selS = toMin(state.start), selE = toMin(state.end);
@@ -182,46 +190,55 @@ function renderDrawer() {
     }).join("");
 
     const photo = info.photo
-        ? `<img src="${esc(info.photo)}" alt="Photo of room ${esc(code)}" onerror="this.parentNode.classList.add('empty');this.remove()">`
+        ? `<img src="${esc(info.photo)}" alt="Photo of ${esc(info.name || code)}" onerror="this.parentNode.classList.add('empty');this.remove()">`
         : "";
+
+    const availBlock = special
+        ? `<div class="avail special"><span class="avail-label">Not reservable</span>
+             <span class="avail-sub">This room is not open for scheduling.</span></div>`
+        : `<div class="avail ${res ? res.status : ""}">
+             <span class="avail-label">${res ? STATUS_LABEL[res.status] : "Pick a valid time"}</span>
+             <span class="avail-sub">${day} · ${ok ? fmtRange(selS, selE) : "—"}${res && res.reason ? " · " + esc(res.reason) : ""}</span>
+           </div>`;
+
+    const specs = [
+        showCode ? `<div><dt>Room</dt><dd>${esc(code)}</dd></div>` : "",
+        info.capacity ? `<div><dt>Capacity</dt><dd>${esc(info.capacity)} seats</dd></div>` : "",
+        `<div><dt>Building</dt><dd>${BUILDINGS[prefix] || esc(prefix)}</dd></div>`,
+        `<div><dt>Floor</dt><dd>${esc(cell.floor)}F</dd></div>`,
+        info.type ? `<div class="wide"><dt>Type</dt><dd>${esc(info.type)}</dd></div>` : "",
+    ].join("");
+
+    const facilities = (info.facilities || []);
+    const facilitiesBlock = facilities.length
+        ? `<h3>Facilities</h3><div class="tags">${facilities.map((f) => `<span>${esc(f)}</span>`).join("")}</div>`
+        : "";
+
+    const scheduleBlock = special ? "" : `
+            <h3>Schedule</h3>
+            <div class="daytabs" role="tablist">
+                ${DAYS.map((d) => `<button type="button" class="${d === day ? "active" : ""}" data-day="${d}">${d}</button>`).join("")}
+            </div>
+            ${closedAllDay
+                ? `<p class="notice">Not available for booking: ${esc(UNAVAILABLE[id])}.</p>`
+                : `<div class="timeline">${blocks}${sel}</div><div class="ticks">${ticks}</div>`}
+            <ul class="slots">${list || '<li class="none">No classes scheduled.</li>'}</ul>`;
 
     body.innerHTML = `
         <div class="photo ${info.photo ? "" : "empty"}">
             ${photo}
-            <div class="ph"><b>${esc(code)}</b><span>No photo yet</span></div>
+            <div class="ph"><b>${esc(showCode ? code : (info.name || ""))}</b><span>No photo yet</span></div>
             <button class="back" type="button" data-close>&larr; Back to map</button>
             <button class="close" type="button" data-close aria-label="Close">&times;</button>
         </div>
 
         <div class="drawer-content">
-            <p class="eyebrow">${esc(code)}</p>
+            <p class="eyebrow">${esc(showCode ? code : (BUILDINGS[prefix] || prefix) + " · " + cell.floor + "F")}</p>
             <h2>${esc(info.name || "Room " + code)}</h2>
-
-            <div class="avail ${res ? res.status : ""}">
-                <span class="avail-label">${res ? STATUS_LABEL[res.status] : "Pick a valid time"}</span>
-                <span class="avail-sub">${day} · ${ok ? fmtRange(selS, selE) : "—"}${res && res.reason ? " · " + esc(res.reason) : ""}</span>
-            </div>
-
-            <dl class="specs">
-                <div><dt>Room</dt><dd>${esc(code)}</dd></div>
-                <div><dt>Capacity</dt><dd>${esc(info.capacity)} seats</dd></div>
-                <div><dt>Building</dt><dd>${BUILDINGS[prefix] || esc(prefix)}</dd></div>
-                <div><dt>Floor</dt><dd>${esc(floorNo)}F</dd></div>
-                <div class="wide"><dt>Type</dt><dd>${esc(info.type)}</dd></div>
-            </dl>
-
-            <h3>Facilities</h3>
-            <div class="tags">${(info.facilities || []).map((f) => `<span>${esc(f)}</span>`).join("") || '<span class="none">None listed</span>'}</div>
-
-            <h3>Schedule</h3>
-            <div class="daytabs" role="tablist">
-                ${DAYS.map((d) => `<button type="button" class="${d === day ? "active" : ""}" data-day="${d}">${d}</button>`).join("")}
-            </div>
-
-            ${closedAllDay
-                ? `<p class="notice">Not available for booking: ${esc(UNAVAILABLE[id])}.</p>`
-                : `<div class="timeline">${blocks}${sel}</div><div class="ticks">${ticks}</div>`}
-            <ul class="slots">${list || '<li class="none">No classes scheduled.</li>'}</ul>
+            ${availBlock}
+            <dl class="specs">${specs}</dl>
+            ${facilitiesBlock}
+            ${scheduleBlock}
         </div>`;
     body.scrollTop = scroll;
 }

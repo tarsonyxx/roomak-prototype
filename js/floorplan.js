@@ -1,11 +1,20 @@
-// js/floorplan.js  -- status logic, floor drawing, and drag / pinch / zoom.
+// js/floorplan.js  -- status logic, floor drawing (with icons), and drag / pinch / zoom.
 
 /* ---------- 1. Availability logic ---------- */
 const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
 const overlaps = (aS, aE, bS, bE) => aS < bE && bS < aE;
-const STATUS_LABEL = { available: "Available", unavailable: "Unavailable", occupied: "In use" };
+const STATUS_LABEL = {
+  available: "Available", unavailable: "Unavailable", occupied: "In use", special: "Not reservable",
+};
+
+// Look-up of every room by id (built from FLOORS in rooms.js).
+const ROOM_INDEX = {};
+Object.keys(FLOORS).forEach((f) => ["top", "bottom"].forEach((row) =>
+  FLOORS[f][row].forEach((c) => { if (c.id) ROOM_INDEX[c.id] = { ...c, floor: f }; })));
 
 function getStatus(roomId, day, start, end) {
+  const room = ROOM_INDEX[roomId];
+  if (room && room.special) return { status: "special", reason: room.name };
   if (UNAVAILABLE[roomId]) return { status: "unavailable", reason: UNAVAILABLE[roomId] };
   const clash = SCHEDULES.find((s) =>
     s.roomId === roomId && s.day === day &&
@@ -15,7 +24,8 @@ function getStatus(roomId, day, start, end) {
 
 /* ---------- 2. Drawing a floor ---------- */
 const NS = "http://www.w3.org/2000/svg";
-const ROW_H = 120, GAP = 56, UNIT = 96, INSET = 3;
+const UNIT = 99;       // width of a standard room (used for the starting zoom)
+const INSET = 1.5;     // tiny gap between tiles so they don't touch
 
 function el(name, attrs, parent) {
   const n = document.createElementNS(NS, name);
@@ -24,31 +34,64 @@ function el(name, attrs, parent) {
   return n;
 }
 
-const rowWidth = (items) => items.reduce((sum, it) => sum + (it.w || 1) * UNIT, 0);
+const rowWidth = (items) => items.reduce((sum, it) => sum + it.w, 0);
 
-function drawRow(parent, items, y) {
+// Stairs symbol: step lines + a U-shaped path with an arrow.
+function drawStairs(g, x, y, w, h, dir) {
+  const cx = x + w / 2, cy = y + h / 2;
+  for (let yy = y + 10; yy <= y + h - 8; yy += 8.5)
+    el("line", { class: "icon icon-soft", x1: x + 4, x2: x + w - 4, y1: yy, y2: yy }, g);
+  const x1 = x + w * 0.3, x2 = x + w * 0.68, top = y + h * 0.2, bot = y + h * 0.86, r = 5;
+  const wrap = el("g", dir === "up" ? { transform: `rotate(180 ${cx} ${cy})` } : {}, g);
+  el("path", { class: "icon icon-bold",
+    d: `M${x1} ${bot} V${top + r} Q${x1} ${top} ${x1 + r} ${top} H${x2 - r} Q${x2} ${top} ${x2} ${top + r} V${bot - 5}` }, wrap);
+  el("path", { class: "arrowhead", d: `M${x2 - 3.2} ${bot - 6} L${x2 + 3.2} ${bot - 6} L${x2} ${bot} Z` }, wrap);
+}
+
+// Restroom symbol: man | woman.
+function drawRestroom(g, cx, cy) {
+  el("line", { class: "icon icon-soft", x1: cx, x2: cx, y1: cy - 15, y2: cy + 15 }, g);
+  const man = cx - 10, woman = cx + 10;
+  el("circle", { class: "icon", cx: man, cy: cy - 11, r: 3 }, g);
+  el("path", { class: "icon", d: `M${man - 4} ${cy - 6} H${man + 4} V${cy + 3} H${man - 4} Z M${man - 1.8} ${cy + 3} V${cy + 12} M${man + 1.8} ${cy + 3} V${cy + 12}` }, g);
+  el("circle", { class: "icon", cx: woman, cy: cy - 11, r: 3 }, g);
+  el("path", { class: "icon", d: `M${woman} ${cy - 7} L${woman - 5} ${cy + 3} H${woman + 5} Z M${woman - 1.8} ${cy + 3} V${cy + 12} M${woman + 1.8} ${cy + 3} V${cy + 12}` }, g);
+}
+
+// Room text: number, then either the extra label (special rooms) or the status line.
+function drawLabel(g, it, cx, cy, w) {
+  const big = w < 45 ? 8.5 : w < 55 ? 9.5 : w < 80 ? 12 : 14.5;
+  const small = w < 55 ? 7 : w < 80 ? 9.5 : 11.5;
+  const lines = [];
+  if (it.special) {
+    if (!it.hide) lines.push({ t: it.id.replace("-", " "), s: big, c: "name" });
+    it.tag.split("\n").forEach((t) => lines.push({ t, s: it.hide ? big * 0.85 : (w >= 80 ? big * 0.9 : small), c: "tag" }));
+  } else {
+    lines.push({ t: it.id.replace("-", " "), s: big, c: "name" });
+    if (w >= 70) lines.push({ t: "", s: small, c: "sub" });
+  }
+  const total = lines.reduce((sum, l) => sum + l.s * 1.35, 0);
+  let yy = cy - total / 2;
+  for (const l of lines) {
+    const t = el("text", { class: l.c, x: cx, y: yy + (l.s * 1.35) / 2,
+                           "text-anchor": "middle", "dominant-baseline": "middle" }, g);
+    t.style.fontSize = l.s + "px";
+    t.textContent = l.t;
+    yy += l.s * 1.35;
+  }
+}
+
+function drawRow(parent, items, y, h) {
   let x = 0;
   for (const it of items) {
-    const w = (it.w || 1) * UNIT;
     const isRoom = Boolean(it.id);
-    const narrow = w < UNIT * 0.9;
     const g = el("g", { class: isRoom ? "room" : "fixed" }, parent);
     if (isRoom) g.dataset.room = it.id;
-
-    el("rect", { x: x + INSET, y: y + INSET, width: w - INSET * 2,
-                 height: ROW_H - INSET * 2, rx: 12 }, g);
-
-    const mid = { "text-anchor": "middle", "dominant-baseline": "middle" };
-    const cx = x + w / 2, cy = y + ROW_H / 2;
-    if (isRoom) {
-      const name = el("text", { class: "name", x: cx, y: narrow ? cy : cy - 9, ...mid }, g);
-      name.textContent = it.id.replace("-", " ");
-      if (!narrow) el("text", { class: "sub", x: cx, y: cy + 16, ...mid }, g);
-    } else {
-      const label = el("text", { class: "name", x: cx, y: cy, ...mid }, g);
-      label.textContent = it.label;
-    }
-    x += w;
+    el("rect", { x: x + INSET, y: y + INSET, width: it.w - INSET * 2, height: h - INSET * 2, rx: 6 }, g);
+    if (it.kind === "stairs") drawStairs(g, x, y, it.w, h, it.dir);
+    else if (it.kind === "cr") drawRestroom(g, x + it.w / 2, y + h / 2);
+    else drawLabel(g, it, x + it.w / 2, y + h / 2, it.w);
+    x += it.w;
   }
 }
 
@@ -57,13 +100,13 @@ function drawFloor(world, floor) {
   while (world.firstChild) world.removeChild(world.firstChild);
   const f = FLOORS[floor];
   const w = Math.max(rowWidth(f.top), rowWidth(f.bottom));
-  el("rect", { class: "corridor", x: 0, y: ROW_H + 10, width: w, height: GAP - 20, rx: 10 }, world);
-  drawRow(world, f.top, 0);
-  drawRow(world, f.bottom, ROW_H + GAP);
-  return { w, h: ROW_H * 2 + GAP };
+  el("rect", { class: "corridor", x: 0, y: f.rowH + 2, width: w, height: f.gap - 4, rx: 8 }, world);
+  drawRow(world, f.top, 0, f.rowH);
+  drawRow(world, f.bottom, f.rowH + f.gap, f.rowH);
+  return { w, h: f.rowH * 2 + f.gap };
 }
 
-// Colors every room for the chosen time. Returns counts for the legend.
+// Colors every room for the chosen time. Returns counts for the legend (reservable rooms only).
 function applyTimeRange(world, day, start, end) {
   const counts = { available: 0, unavailable: 0, occupied: 0 };
   world.querySelectorAll(".room").forEach((g) => {
@@ -72,7 +115,7 @@ function applyTimeRange(world, day, start, end) {
     g.dataset.reason = reason || "";
     const sub = g.querySelector(".sub");
     if (sub) sub.textContent = STATUS_LABEL[status];
-    counts[status]++;
+    if (status in counts) counts[status]++;
   });
   return counts;
 }
@@ -85,20 +128,20 @@ function markSelected(world, roomId) {
 /* ---------- 3. Drag, pinch and wheel zoom ---------- */
 function createPanZoom(viewport, world, onTap) {
   const pointers = new Map();
-  const PAD = 48, MAX_K = 2.5;
+  const PAD = 48, MAX_K = 4;
   let plan = { w: 1, h: 1 };
   let k = 1, x = 0, y = 0;
   let travelled = 0;
 
   const size = () => viewport.getBoundingClientRect();
-  const fitK = () => size().width / (plan.w + PAD);
+  const fitK = () => (size().width - 24) / plan.w;
   const limitK = (v) => Math.min(MAX_K, Math.max(fitK(), v));
 
   function apply() {
     const r = size(), pw = plan.w * k, ph = plan.h * k;
     // Keep the plan on screen: centered if small, otherwise stop at the edges.
-    x = pw + PAD * 2 <= r.width ? (r.width - pw) / 2 : Math.min(PAD, Math.max(r.width - pw - PAD, x));
-    y = ph + PAD * 2 <= r.height ? (r.height - ph) / 2 : Math.min(PAD, Math.max(r.height - ph - PAD, y));
+    x = pw + 24 <= r.width ? (r.width - pw) / 2 : Math.min(PAD, Math.max(r.width - pw - PAD, x));
+    y = ph + 24 <= r.height ? (r.height - ph) / 2 : Math.min(PAD, Math.max(r.height - ph - PAD, y));
     world.setAttribute("transform", `translate(${x} ${y}) scale(${k})`);
   }
 
