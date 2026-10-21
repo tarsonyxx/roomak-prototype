@@ -258,3 +258,20 @@
 .avail.special .avail-label { color: var(--color-muted); }
 
 input[type="time"].form-input { cursor: pointer; }
+
+/* ---------- Building brackets and legend symbols ---------- */
+.plan .region-line { fill: none; stroke: #a9bdee; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.plan .region-label { font: 750 12px var(--font-sans); letter-spacing: 0.08em; fill: var(--color-primary); pointer-events: none; }
+
+.legend { flex-wrap: wrap; max-width: calc(100% - 84px); }
+.lg-icon { width: 16px; height: 16px; flex: none; fill: none; stroke: #5b6880; color: #5b6880;
+           stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.lg-icon .soft { stroke: #c3ccdb; stroke-width: 1.2; }
+
+@media (max-width: 899px) {
+    .legend { display: grid; grid-template-columns: auto auto; gap: 6px 14px; }
+}
+
+@media (min-width: 900px) {
+    .hint { top: 22px; bottom: auto; }
+}

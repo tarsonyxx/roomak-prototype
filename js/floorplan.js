@@ -96,14 +96,40 @@ function drawRow(parent, items, y, h) {
 }
 
 // Draws one floor inside the <g> "world". Returns the plan's size.
+const TOP = 36;   // space above the rows for the building brackets
+
+// Brackets above the plan: Building 2 | Bridgeway | Building 3.
+function drawBrackets(world, items, total) {
+  const i = items.findIndex((c) => c.id && c.id.startsWith("BW-"));
+  if (i < 1) return;
+  const starts = [];
+  let x = 0;
+  items.forEach((c) => { starts.push(x); x += c.w; });
+  const bwEnd = starts[i + 1] + items[i + 1].w;     // stairs + BW room + stairs
+  const regions = [
+    { label: "BUILDING 2 (B2)", x1: 0, x2: starts[i - 1] },
+    { label: "BRIDGEWAY (BW)", x1: starts[i - 1], x2: bwEnd },
+    { label: "BUILDING 3 (B3)", x1: bwEnd, x2: total },
+  ];
+  regions.forEach((r) => {
+    const y = TOP - 10;
+    el("path", { class: "region-line", d: `M${r.x1 + 3} ${y + 6} V${y} H${r.x2 - 3} V${y + 6}` }, world);
+    const t = el("text", { class: "region-label", x: (r.x1 + r.x2) / 2, y: y - 10,
+                           "text-anchor": "middle", "dominant-baseline": "middle" }, world);
+    t.textContent = r.label;
+  });
+}
+
+// Draws one floor inside the <g> "world". Returns the plan's size.
 function drawFloor(world, floor) {
   while (world.firstChild) world.removeChild(world.firstChild);
   const f = FLOORS[floor];
   const w = Math.max(rowWidth(f.top), rowWidth(f.bottom));
-  el("rect", { class: "corridor", x: 0, y: f.rowH + 2, width: w, height: f.gap - 4, rx: 8 }, world);
-  drawRow(world, f.top, 0, f.rowH);
-  drawRow(world, f.bottom, f.rowH + f.gap, f.rowH);
-  return { w, h: f.rowH * 2 + f.gap };
+  drawBrackets(world, f.top, w);
+  el("rect", { class: "corridor", x: 0, y: TOP + f.rowH + 2, width: w, height: f.gap - 4, rx: 8 }, world);
+  drawRow(world, f.top, TOP, f.rowH);
+  drawRow(world, f.bottom, TOP + f.rowH + f.gap, f.rowH);
+  return { w, h: TOP + f.rowH * 2 + f.gap };
 }
 
 // Colors every room for the chosen time. Returns counts for the legend (reservable rooms only).
