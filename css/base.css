@@ -92,6 +92,7 @@ img {
     /* Interface extras */
     --primary-soft: rgba(37, 99, 235, 0.08);    /* light tint of the primary color (selected / hover) */
     --primary-ring: rgba(37, 99, 235, 0.12);    /* glow around an open dropdown */
+    --primary-glow: rgba(37, 99, 235, 0.45);    /* pulsing glow in the first-time tips */
     --border-hover: #b7c3d4;                    /* border color when hovering */
     --card-border: rgba(223, 229, 238, 0.8);    /* thin border around cards */
     --glass: rgba(255, 255, 255, 0.94);         /* floating buttons and legend background */
