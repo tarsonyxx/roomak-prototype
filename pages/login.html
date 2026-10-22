@@ -18,7 +18,7 @@
     <script>
         // Apply the saved color theme before the page draws (no light flash in dark mode).
         try {
-            var theme = localStorage.getItem("roomak.theme");
+            var theme = localStorage.getItem("roomak.theme") || "auto";
             if (theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches))
                 document.documentElement.setAttribute("data-theme", "dark");
         } catch (e) { /* ignore */ }

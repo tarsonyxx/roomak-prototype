@@ -12,12 +12,14 @@
     <link rel="stylesheet" href="../css/pages/hints.css">
     <link rel="stylesheet" href="../css/pages/settings.css">
     <link rel="stylesheet" href="../css/theme.css">
-    <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
+    <link rel="icon" href="../assets/images/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32.png">
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
 
     <script>
         // Apply the saved color theme before the page draws (no light flash in dark mode).
         try {
-            var theme = localStorage.getItem("roomak.theme");
+            var theme = localStorage.getItem("roomak.theme") || "auto";
             if (theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches))
                 document.documentElement.setAttribute("data-theme", "dark");
         } catch (e) { /* ignore */ }

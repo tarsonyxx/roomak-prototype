@@ -7,7 +7,7 @@
     const dark = window.matchMedia("(prefers-color-scheme: dark)");
 
     /* ---------- theme ---------- */
-    const getMode = () => { try { return localStorage.getItem(THEME_KEY) || "light"; } catch (e) { return "light"; } };
+    const getMode = () => { try { return localStorage.getItem(THEME_KEY) || "auto"; } catch (e) { return "auto"; } };
     function applyTheme() {
         const mode = getMode();
         const useDark = mode === "dark" || (mode === "auto" && dark.matches);

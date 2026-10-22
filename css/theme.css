@@ -72,7 +72,13 @@ body { background: var(--bg-ethereal); }
 .plan .region-label { fill: var(--color-navy); }
 :root[data-theme="dark"] .plan .region-label { fill: var(--color-gold-light); }
 .room.selected rect { stroke: var(--color-gold-text); }
-@media (hover: hover) { .room:hover rect { stroke: var(--color-accent); } }
+@media (hover: hover) {
+    .room:hover rect { stroke: var(--color-primary); }                         /* light mode: blue */
+    :root[data-theme="dark"] .room:hover rect { stroke: var(--color-accent); } /* dark mode: gold */
+}
+
+/* Day buttons in the room panel: no lift on hover (the scrolling row was cutting off their top edge) */
+.daytabs button:hover { transform: none !important; box-shadow: none !important; filter: none !important; }
 
 /* Thin gold edge along the top of the map and the room panel */
 .map-card, .drawer { border-top: 3px solid var(--color-accent); }
