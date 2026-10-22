@@ -1,0 +1,127 @@
+/* =====================================================================
+   RooMak LOOK -- logo, gradient buttons, gold highlights. Loaded LAST on every page.
+   The colors themselves live in the palette at the bottom of base.css.
+   ===================================================================== */
+
+/* Names used by the "Before you get started" page */
+:root {
+    --blue: var(--color-primary);
+    --blue-dark: var(--color-navy);
+    --orange: var(--color-accent);
+}
+
+/* ---------- Background: soft blue and gold glow ---------- */
+body { background: var(--bg-ethereal); }
+.dashboard-page { background: var(--bg-ethereal); }
+
+/* ---------- Logo image instead of the "R" ---------- */
+.brand .brand-mark {
+    padding: 0;
+    overflow: hidden;
+    background: var(--color-navy);
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.25);
+}
+.brand .brand-mark::after { display: none; }              /* the little orange dot */
+.brand-mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- Main buttons: gold, with navy text ---------- */
+.button-primary:not(:disabled),
+.room-action-request:not(:disabled),
+.action-button-primary:not(:disabled),
+.continue-button:not(:disabled),
+.tip-next {
+    background-image: var(--gradient-gold);
+    color: var(--on-gold);
+    border-color: rgba(var(--accent-rgb), 0.9);
+    box-shadow: 0 6px 16px rgba(var(--accent-rgb), 0.38);
+}
+.room-action-request:not(:disabled) .room-action-icon { background: rgba(11, 37, 89, 0.12); color: var(--on-gold); }
+.room-action-request:not(:disabled) .room-action-copy small { color: rgba(11, 37, 89, 0.78); }
+.room-action-request:not(:disabled) .room-action-chevron { color: var(--on-gold); }
+.avatar { background-image: var(--gradient-brand); }       /* the profile circle stays navy */
+@media (hover: hover) {
+    .button-primary:not(:disabled):hover,
+    .room-action-request:not(:disabled):hover,
+    .action-button-primary:not(:disabled):hover,
+    .continue-button:not(:disabled):hover,
+    .tip-next:hover {
+        background-image: var(--gradient-gold);
+        border-color: var(--color-accent);
+        filter: brightness(1.05);
+        box-shadow: 0 9px 24px rgba(var(--accent-rgb), 0.55);
+    }
+}
+
+/* ---------- Gold highlights: hover, selected, labels, focus ---------- */
+.eyebrow, .tip-count { color: var(--color-gold-text); }
+.chip[aria-expanded="true"], .daytabs button.active, .blk.sel, .weekday-option input:checked + span { border-color: var(--color-accent); }
+.slots li.hit { box-shadow: 0 0 0 2px var(--color-accent) inset; }
+@media (hover: hover) {
+    .chip:hover, .ghost-btn:hover, .icon-btn:hover, .zoom button:hover, #tipsBtn:hover,
+    .daytabs button:hover, .panel-btn:hover, .room-action-button:not(:disabled):hover { border-color: var(--color-accent); }
+}
+.form-input:focus { box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.22); }
+:where(button, input[type="button"], input[type="submit"], input[type="reset"], .btn, [role="button"], a.button, a.btn):focus-visible {
+    outline: 3px solid rgba(var(--accent-rgb), 0.85);
+}
+.action-field-grid .form-input:focus { outline-color: rgba(var(--accent-rgb), 0.28); }
+.weekday-option input:focus-visible + span { outline-color: rgba(var(--accent-rgb), 0.85); }
+.room-action-report .room-action-icon { color: var(--color-gold-text); background: rgba(var(--accent-rgb), 0.16); }
+
+/* Map: navy building labels, gold hover, deep-gold selected room */
+.plan .region-label { fill: var(--color-navy); }
+:root[data-theme="dark"] .plan .region-label { fill: var(--color-gold-light); }
+.room.selected rect { stroke: var(--color-gold-text); }
+@media (hover: hover) { .room:hover rect { stroke: var(--color-accent); } }
+
+/* Thin gold edge along the top of the map and the room panel */
+.map-card, .drawer { border-top: 3px solid var(--color-accent); }
+
+.tip-target { outline-color: var(--color-accent); }
+.tip-target::after { box-shadow: 0 0 0 9px rgba(var(--accent-rgb), 0.22), 0 0 26px 8px var(--primary-glow); }
+
+/* ---------- Login page ---------- */
+.login-page { background: var(--bg-ethereal); }
+.login-card { border-color: rgba(var(--accent-rgb), 0.35); box-shadow: 0 30px 80px rgba(8, 31, 77, 0.18), 0 0 0 1px rgba(var(--gold-rgb), 0.25); }
+.login-form-panel { position: relative; }
+.login-form-panel::before {                                /* gold strip across the top of the form */
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gradient-gold);
+}
+.login-form-panel .brand-mark {
+    width: 50px; height: 50px; flex-basis: 50px; border-radius: 16px;
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.5), 0 8px 20px rgba(var(--primary-rgb), 0.3);
+}
+.login-form-panel .brand-name { font-size: 1.5rem; }
+.login-intro h1::after {                                   /* short gold underline under the title */
+    content: ""; display: block; width: 64px; height: 4px; margin-top: 16px; border-radius: 4px; background: var(--gradient-gold);
+}
+.demo-note { border-color: rgba(var(--accent-rgb), 0.5); background: rgba(var(--gold-rgb), 0.16); }
+
+/* Right side: the flowing blue-and-gold artwork instead of the building photo */
+.login-visual { background: var(--color-navy); }
+.login-visual::before {
+    background-image: url("../assets/images/ethereal.jpg");
+    background-position: center;
+    filter: none;
+    transform: none;
+    inset: 0;
+}
+.login-visual::after {
+    background: linear-gradient(180deg, rgba(7, 21, 59, 0) 0%, rgba(7, 21, 59, 0.10) 28%, rgba(7, 21, 59, 0.66) 58%, rgba(7, 21, 59, 0.92) 100%);
+}
+.visual-label { color: var(--on-gold); }
+.visual-label-dot { background: var(--on-gold); box-shadow: none; }
+.visual-eyebrow { color: var(--color-gold-light); }
+.visual-line { background: var(--gradient-gold); }
+
+/* ---------- "Before you get started" page (index.html in the main folder) ---------- */
+.notice .accent { background-image: linear-gradient(90deg, #0c2f6e 0%, #1c4b9a 38%, var(--color-sky) 58%, var(--color-gold-light) 80%, var(--color-accent) 100%); }
+.notice .eyebrow { border-color: rgba(var(--accent-rgb), 0.55); background: rgba(var(--gold-rgb), 0.24); color: var(--color-gold-text); }
+.notice .brand .brand-mark { width: 38px; height: 38px; border-radius: 11px; }
+
+/* ---------- Dark mode: a few component colors that are not in variables ---------- */
+:root[data-theme="dark"] .issue-status.status-open { background: var(--unavailable-bg); color: var(--unavailable-text); }
+:root[data-theme="dark"] .room-action-report .room-action-icon { color: #f0c46a; }
+:root[data-theme="dark"] .form-input:hover { border-color: var(--border-hover); }
+:root[data-theme="dark"] .form-input::placeholder { color: #66748b; }
+:root[data-theme="dark"] .brand .brand-mark { box-shadow: 0 4px 14px rgba(var(--primary-rgb), 0.35); }
