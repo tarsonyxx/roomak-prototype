@@ -156,7 +156,7 @@ const SCHEDULES = [
     start: "15:00",
     end: "17:00",
     activity: "FIRST AID",
-    faculty: "Prof. Mendoza"
+    faculty: "Ms. Marvida"
   },
   {
     id: 15,
@@ -165,7 +165,7 @@ const SCHEDULES = [
     start: "09:30",
     end: "11:00",
     activity: "BFL",
-    faculty: "Ms. Garcia"
+    faculty: "Ms. Valenciano"
   },
 
   // TUESDAY
@@ -195,7 +195,7 @@ const SCHEDULES = [
     start: "13:00",
     end: "15:00",
     activity: "FIRST AID",
-    faculty: "Prof. Mendoza"
+    faculty: "Ms. Marvida"
   },
   {
     id: 19,
@@ -204,7 +204,7 @@ const SCHEDULES = [
     start: "15:00",
     end: "17:00",
     activity: "BFL",
-    faculty: "Ms. Garcia"
+    faculty: "Ms. Valenciano"
   },
   {
     id: 20,
@@ -252,7 +252,7 @@ const SCHEDULES = [
     start: "15:00",
     end: "17:00",
     activity: "FIRST AID",
-    faculty: "Prof. Mendoza"
+    faculty: "Ms. Marvida"
   },
   {
     id: 25,
@@ -261,7 +261,7 @@ const SCHEDULES = [
     start: "09:00",
     end: "11:00",
     activity: "BFL",
-    faculty: "Ms. Garcia"
+    faculty: "Ms. Valenciano"
   },
 
   // THURSDAY
@@ -300,7 +300,7 @@ const SCHEDULES = [
     start: "15:00",
     end: "17:00",
     activity: "FIRST AID",
-    faculty: "Prof. Mendoza"
+    faculty: "Ms. Marvida"
   },
   {
     id: 30,
@@ -309,7 +309,7 @@ const SCHEDULES = [
     start: "13:00",
     end: "15:00",
     activity: "BFL",
-    faculty: "Ms. Garcia"
+    faculty: "Ms. Valenciano"
   },
 
   // FRIDAY
@@ -348,7 +348,7 @@ const SCHEDULES = [
     start: "15:00",
     end: "16:30",
     activity: "FIRST AID",
-    faculty: "Prof. Mendoza"
+    faculty: "Ms. Marvida"
   },
   {
     id: 35,
@@ -357,7 +357,7 @@ const SCHEDULES = [
     start: "10:30",
     end: "12:00",
     activity: "BFL",
-    faculty: "Ms. Garcia"
+    faculty: "Ms. Valenciano"
   }
 ];
 
