@@ -10,7 +10,7 @@ const DAY_TO = 20 * 60;     // ...and ends at 8:00 PM
 const BUILDINGS = { B2: "Building 2", B3: "Building 3", BW: "Bridgeway" };
 
 const state = {
-    floor: Object.keys(FLOORS)[0],
+    floor: Object.keys(FLOORS)[1],
     day: "Mon", start: "09:00", end: "10:00",
     room: null,        // room currently open in the drawer
     viewDay: "Mon",    // day shown in the drawer's schedule
