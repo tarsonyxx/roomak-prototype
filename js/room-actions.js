@@ -68,29 +68,43 @@
         return `<div class="action-room-context"><span class="action-room-dot" aria-hidden="true"></span><span>${escapeHtml(roomContextLabel())}</span></div>`;
     }
 
-    function renderRoomActionButtons({ roomId, roomCode, roomName, special }) {
+    function renderRoomActionButtons({ roomId, roomCode, roomName, special, unavailable = false }) {
         const id = escapeHtml(roomId);
         const code = escapeHtml(roomCode);
         const name = escapeHtml(roomName);
+        if (special || unavailable) return "";
+
+  const requestDisabled = special || unavailable;
+  const requestDisabledTitle = special
+    ? "This space is not reservable"
+    : "This room is unavailable for booking";
+  const requestDisabledAttribute = requestDisabled
+    ? `disabled title="${requestDisabledTitle}"`
+    : "";
+  const actionNote = special
+    ? "This space is marked as non-reservable. Room issue reports are still available."
+    : unavailable
+      ? "This room is marked unavailable for booking. Room issue reports are still available."
+      : "";
         return `
             <section class="room-actions" aria-label="Room actions">
                 <p class="room-actions-heading">Room actions</p>
                 <div class="room-actions-list">
                     <button type="button" class="room-action-button room-action-request"
-                        data-room-action="request" data-room-id="${id}" data-room-code="${code}" data-room-name="${name}"
-                        ${special ? "disabled title=\"This space is not reservable\"" : ""}>
+                        data-room-action="request" data-room-id="${id}" data-room-code="${code}" data-room-name="${name}" data-room-unavailable="${unavailable ? "true" : "false"}"
+                        ${requestDisabledAttribute}>
                         <span class="room-action-icon" aria-hidden="true">＋</span>
                         <span class="room-action-copy"><strong>Submit a request</strong><small>Request a time or recurring room assignment</small></span>
                         <span class="room-action-chevron" aria-hidden="true">›</span>
                     </button>
                     <button type="button" class="room-action-button room-action-report"
-                        data-room-action="report" data-room-id="${id}" data-room-code="${code}" data-room-name="${name}">
+                        data-room-action="report" data-room-id="${id}" data-room-code="${code}" data-room-name="${name}" data-room-unavailable="${unavailable ? "true" : "false"}">
                         <span class="room-action-icon" aria-hidden="true">!</span>
                         <span class="room-action-copy"><strong>Report an issue</strong><small>View existing issues or report a new one</small></span>
                         <span class="room-action-chevron" aria-hidden="true">›</span>
                     </button>
                 </div>
-                ${special ? '<p class="room-action-note">This space is marked as non-reservable. Room issue reports are still available.</p>' : ""}
+                ${actionNote ? `<p class="room-action-note">${actionNote}</p>` : ""}
             </section>`;
     }
 
@@ -172,7 +186,7 @@
     }
 
     function openRequestDialog() {
-        if (!activeRoom || activeRoom.special) return;
+        if (!activeRoom || activeRoom.special || activeRoom.unavailable) return;
         showDialog(requestDialogMarkup(), "#requestPattern");
         const form = dialog.querySelector("#roomRequestForm");
         updateRequestFields(form);
@@ -390,6 +404,8 @@
             roomCode: button.dataset.roomCode,
             roomName: button.dataset.roomName,
             special: false,
+
+  unavailable: button.dataset.roomUnavailable === "true",
         };
         if (button.dataset.roomAction === "request") openRequestDialog();
         if (button.dataset.roomAction === "report") openReportsDialog();

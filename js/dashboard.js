@@ -266,7 +266,9 @@ function renderDrawer() {
         roomId: id,
         roomCode: code,
         roomName: info.name || "Room " + code,
-        special
+        special,
+
+              unavailable: closedAllDay
     })}
             ${availBlock}
             <dl class="specs">${specs}</dl>
