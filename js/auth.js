@@ -12,7 +12,7 @@ if (loginForm && loginMessage) {
         // Demo-only credentials.
         if (username === "demo" && password === "1234") {
             sessionStorage.setItem("roomakLoggedIn", "yes");
-            window.location.href = "/pages/dashboard.html";
+            window.location.href = "dashboard.html";
             return;
         }
 

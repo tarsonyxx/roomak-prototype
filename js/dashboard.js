@@ -286,7 +286,7 @@ $("drawerBody").addEventListener("click", (e) => {
 
 $("logoutBtn").addEventListener("click", () => {
     sessionStorage.removeItem("roomakLoggedIn");
-    window.location.href = "/pages/index.html";
+    window.location.href = "index.html";
 });
 
 showFloor();

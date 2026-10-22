@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>RooMak | Room Finder</title>
 
-    <link rel="stylesheet" href="/css/base.css">
-    <link rel="stylesheet" href="/css/components.css">
-    <link rel="stylesheet" href="/css/pages/dashboard.css">
-    <link rel="stylesheet" href="/css/pages/room-actions.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/pages/dashboard.css">
+    <link rel="stylesheet" href="../css/pages/room-actions.css">
 
     <script>
         // Send people back to the login page if they have not logged in.
         if (sessionStorage.getItem("roomakLoggedIn") !== "yes") {
-            window.location.href = "/pages/index.html";
+            window.location.href = "index.html";
         }
     </script>
 </head>
 <body class="dashboard-page">
 <div class="app">
     <header class="topbar">
-        <a class="brand" href="/pages/dashboard.html" aria-label="RooMak home">
+        <a class="brand" href="dashboard.html" aria-label="RooMak home">
             <span class="brand-mark" aria-hidden="true">R</span>
             <span class="brand-name">RooMak</span>
         </a>
@@ -114,10 +114,10 @@
         aria-label="Room requests and issue reports">
 </dialog>
 
-    <script src="/data/rooms.js"></script>
-    <script src="/data/schedules.js"></script>
-    <script src="/js/floorplan.js"></script>
-    <script src="/js/dashboard.js"></script>
-    <script src="/js/room-actions.js"></script>
+    <script src="../data/rooms.js"></script>
+    <script src="../data/schedules.js"></script>
+    <script src="../js/floorplan.js"></script>
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/room-actions.js"></script>
 </body>
 </html>
