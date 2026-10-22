@@ -1,6 +1,10 @@
 /* ---------- Page ---------- */
 .dashboard-page {
-    height: 100vh; height: 100dvh; overflow: hidden;
+    height: 100vh;  /* Fallback */
+    height: 100dvh; /* Follow the visible mobile viewport */
+    min-height: 0;  /* Override base.css's min-height: 100vh */
+    overflow: hidden;
+
     background:
         radial-gradient(circle at 12% 0%, var(--primary-soft), transparent 30%),
         var(--color-page);
@@ -36,10 +40,15 @@
 
 /* ---------- Stage: map + drawer ---------- */
 .stage {
-    position: relative; display: flex; flex: 1; min-height: 0;
-    width: 100%; max-width: 1600px; margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
     padding: 0 var(--gutter)
-    calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
+        calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
 }
 .map-card, .drawer {
     border: 1px solid var(--card-border); border-radius: 20px;
