@@ -226,7 +226,7 @@
             rgba(14, 31, 62, 0.28) 35%,
             rgba(14, 31, 62, 0.91) 100%
         ),
-        url("../assets/images/umak-sunset.jpg"),
+        url("../../assets/images/umak-sunset.jpg"),
         linear-gradient(135deg, #3268c5, #142443);
 
     background-position: center;
