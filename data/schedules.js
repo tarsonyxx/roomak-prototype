@@ -129,7 +129,7 @@ const SCHEDULES = [
     start: "08:00",
     end: "10:00",
     activity: "GENMATH",
-    faculty: "Prof. Santos"
+    faculty: "Ms. Columna"
   },
   {
     id: 12,
@@ -138,7 +138,7 @@ const SCHEDULES = [
     start: "10:00",
     end: "12:00",
     activity: "GENSCI",
-    faculty: "Ms. Villanueva"
+    faculty: "Ms. Aguillon"
   },
   {
     id: 13,
@@ -177,7 +177,7 @@ const SCHEDULES = [
     start: "07:30",
     end: "09:30",
     activity: "GENSCI",
-    faculty: "Ms. Villanueva"
+    faculty: "Ms. Aguillon"
   },
   {
     id: 17,
@@ -213,7 +213,7 @@ const SCHEDULES = [
     start: "09:30",
     end: "11:00",
     activity: "GENMATH",
-    faculty: "Prof. Santos"
+    faculty: "Ms. Columna"
   },
 
   // WEDNESDAY
@@ -225,7 +225,7 @@ const SCHEDULES = [
     start: "08:00",
     end: "10:00",
     activity: "GENMATH",
-    faculty: "Prof. Santos"
+    faculty: "Ms. Columna"
   },
   {
     id: 22,
@@ -234,7 +234,7 @@ const SCHEDULES = [
     start: "10:00",
     end: "12:00",
     activity: "GENSCI",
-    faculty: "Ms. Villanueva"
+    faculty: "Ms. Aguillon"
   },
   {
     id: 23,
@@ -273,7 +273,7 @@ const SCHEDULES = [
     start: "08:00",
     end: "10:00",
     activity: "GENMATH",
-    faculty: "Prof. Santos"
+    faculty: "Ms. Columna"
   },
   {
     id: 27,
@@ -282,7 +282,7 @@ const SCHEDULES = [
     start: "10:00",
     end: "12:00",
     activity: "GENSCI",
-    faculty: "Ms. Villanueva"
+    faculty: "Ms. Aguillon"
   },
   {
     id: 28,
@@ -321,7 +321,7 @@ const SCHEDULES = [
     start: "10:30",
     end: "12:00",
     activity: "GENMATH",
-    faculty: "Prof. Santos"
+    faculty: "Ms. Columna"
   },
   {
     id: 32,
@@ -330,7 +330,7 @@ const SCHEDULES = [
     start: "08:30",
     end: "10:30",
     activity: "GENSCI",
-    faculty: "Ms. Villanueva"
+    faculty: "Ms. Aguillon"
   },
   {
     id: 33,
