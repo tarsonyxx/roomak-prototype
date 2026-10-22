@@ -104,3 +104,130 @@
 .status-message.is-success {
     color: var(--color-success);
 }
+
+/* RooMak button interaction polish */
+:where(
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .btn,
+  [role="button"],
+  a.button,
+  a.btn
+) {
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 180ms ease,
+    transform 160ms ease;
+}
+
+/* Clear but restrained hover feedback for enabled controls. */
+:where(
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .btn,
+  [role="button"],
+  a.button,
+  a.btn
+):not(:disabled):not([aria-disabled="true"]):not([aria-pressed="true"]):hover {
+  filter: brightness(0.96);
+  box-shadow: 0 3px 10px rgb(20 45 85 / 12%);
+  transform: translateY(-1px);
+}
+
+/* Keep the pressed state tactile, without a jumpy animation. */
+:where(
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .btn,
+  [role="button"],
+  a.button,
+  a.btn
+):not(:disabled):not([aria-disabled="true"]):active {
+  filter: brightness(0.92);
+  box-shadow: 0 1px 3px rgb(20 45 85 / 12%);
+  transform: translateY(0);
+}
+
+/* Keyboard users get a distinct focus indicator. */
+:where(
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .btn,
+  [role="button"],
+  a.button,
+  a.btn
+):focus-visible {
+  outline: 3px solid rgb(59 130 246 / 45%);
+  outline-offset: 2px;
+}
+
+/* Disabled buttons should remain visually still. */
+:where(
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .btn,
+  [role="button"],
+  a.button,
+  a.btn
+):disabled,
+:where(
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .btn,
+  [role="button"],
+  a.button,
+  a.btn
+)[aria-disabled="true"] {
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  filter: none;
+}
+
+/* Avoid hover movement on touch devices and honor motion preferences. */
+@media (hover: none) {
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    .btn,
+    [role="button"],
+    a.button,
+    a.btn
+  ):not(:disabled):hover {
+    transform: none;
+    box-shadow: none;
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    .btn,
+    [role="button"],
+    a.button,
+    a.btn
+  ) {
+    transition: none;
+  }
+}

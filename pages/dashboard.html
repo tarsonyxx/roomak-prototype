@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/pages/dashboard.css">
+    <link rel="stylesheet" href="/css/pages/room-actions.css">
 
     <script>
         // Send people back to the login page if they have not logged in.
@@ -108,9 +109,15 @@
     </main>
 </div>
 
+<dialog id="roomActionDialog"
+        class="room-action-dialog"
+        aria-label="Room requests and issue reports">
+</dialog>
+
     <script src="/data/rooms.js"></script>
     <script src="/data/schedules.js"></script>
     <script src="/js/floorplan.js"></script>
     <script src="/js/dashboard.js"></script>
+    <script src="/js/room-actions.js"></script>
 </body>
 </html>

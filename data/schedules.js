@@ -13,3 +13,7 @@ const SCHEDULES = [
   { id: 11, roomId: "B2-404", day: "Mon", start: "09:30", end: "11:00", activity: "CHEM 1",   faculty: "Prof. Sy" },
   { id: 12, roomId: "B3-414", day: "Mon", start: "08:00", end: "09:30", activity: "PE 1",     faculty: "Prof. Lee" },
 ];
+
+
+
+// This needs a ui lol.

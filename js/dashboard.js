@@ -52,9 +52,11 @@ document.addEventListener("click", (e) => {
     if (!e.target.closest(".dd")) closePopovers();
 });
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { closePopovers(); closeDrawer(); }
+    if (e.key === "Escape") {
+        closePopovers();
+        if (!$("roomActionDialog").open) closeDrawer();
+    }
 });
-
 function renderOptions(popId, values, current, labelFn) {
     $(popId).innerHTML = values.map((v) =>
         `<button type="button" class="opt ${v === current ? "selected" : ""}" data-v="${v}">${labelFn(v)}</button>`
@@ -148,6 +150,31 @@ function daySegments(bookings) {
     return out;
 }
 
+function availabilitySubtitle(day, bookings, res, selS, selE, valid) {
+    if (!valid) return "Select a valid time range.";
+    if (!res) return "—";
+
+    if (res.status === "occupied") {
+        const conflicts = bookings.filter((booking) =>
+            toMin(booking.start) < selE && selS < toMin(booking.end));
+        const details = conflicts.map((booking) =>
+            `${fmtRange(toMin(booking.start), toMin(booking.end))} · ${esc(booking.activity)}`);
+        return `${day} · ${details.length ? details.join(" | ") : esc(res.reason || "In use")}`;
+    }
+
+    if (res.status === "available") {
+        const nextBooking = bookings.find((booking) => toMin(booking.start) >= selE);
+        const availableUntil = nextBooking ? toMin(nextBooking.start) : DAY_TO;
+        return `${day} · Available until ${fmtMin(availableUntil)}`;
+    }
+
+    if (res.status === "unavailable") {
+        return `${day} · ${esc(res.reason || "Unavailable for booking")}`;
+    }
+
+    return `${day}${res.reason ? " · " + esc(res.reason) : ""}`;
+}
+
 function renderDrawer() {
     const id = state.room;
     const body = $("drawerBody");
@@ -185,8 +212,8 @@ function renderDrawer() {
                 `<li class="free ${hit ? "hit" : ""}"><span class="when">${when}</span><strong>Free</strong></li>`;
         }
         return `<li class="busy ${hit ? "hit" : ""}"><span class="when">${when}</span>` +
-               `<strong>${esc(g.b.activity)}</strong>` +
-               (g.b.faculty ? `<em>${esc(g.b.faculty)}</em>` : "") + `</li>`;
+            `<strong>${esc(g.b.activity)}</strong>` +
+            (g.b.faculty ? `<em>${esc(g.b.faculty)}</em>` : "") + `</li>`;
     }).join("");
 
     const photo = info.photo
@@ -198,7 +225,7 @@ function renderDrawer() {
              <span class="avail-sub">This room is not open for scheduling.</span></div>`
         : `<div class="avail ${res ? res.status : ""}">
              <span class="avail-label">${res ? STATUS_LABEL[res.status] : "Pick a valid time"}</span>
-             <span class="avail-sub">${day} · ${ok ? fmtRange(selS, selE) : "—"}${res && res.reason ? " · " + esc(res.reason) : ""}</span>
+             <span class="avail-sub">${availabilitySubtitle(day, bookings, res, selS, selE, ok)}</span>
            </div>`;
 
     const specs = [
@@ -220,8 +247,8 @@ function renderDrawer() {
                 ${DAYS.map((d) => `<button type="button" class="${d === day ? "active" : ""}" data-day="${d}">${d}</button>`).join("")}
             </div>
             ${closedAllDay
-                ? `<p class="notice">Not available for booking: ${esc(UNAVAILABLE[id])}.</p>`
-                : `<div class="timeline">${blocks}${sel}</div><div class="ticks">${ticks}</div>`}
+            ? `<p class="notice">Not available for booking: ${esc(UNAVAILABLE[id])}.</p>`
+            : `<div class="timeline">${blocks}${sel}</div><div class="ticks">${ticks}</div>`}
             <ul class="slots">${list || '<li class="none">No classes scheduled.</li>'}</ul>`;
 
     body.innerHTML = `
@@ -235,6 +262,14 @@ function renderDrawer() {
         <div class="drawer-content">
             <p class="eyebrow">${esc(showCode ? code : (BUILDINGS[prefix] || prefix) + " · " + cell.floor + "F")}</p>
             <h2>${esc(info.name || "Room " + code)}</h2>
+            ${renderRoomActionButtons({
+        roomId: id,
+        roomCode: code,
+        roomName: info.name || "Room " + code,
+        special,
+
+              unavailable: closedAllDay
+    })}
             ${availBlock}
             <dl class="specs">${specs}</dl>
             ${facilitiesBlock}

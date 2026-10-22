@@ -290,3 +290,9 @@ input[type="time"].form-input { cursor: pointer; }
 }
 /* Press feedback (works on touch too) */
 .chip:active, .ghost-btn:active, .zoom button:active, .opt:active { transform: translateY(1px) scale(0.98); }
+
+/* Align the empty schedule state with the other schedule rows. */
+.slots li.none {
+  padding: 10px 14px;
+  border-left: 0;
+}
