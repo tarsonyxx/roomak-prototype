@@ -27,8 +27,6 @@
     padding-left: max(clamp(16px, 3vw, 40px), env(safe-area-inset-left, 0px));
 }
 
-/* The card grows with its contents. Its minimum height is only a visual
-   preference; no fixed height is used, so content can extend naturally. */
 .login-card {
     display: grid;
     grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
@@ -41,11 +39,11 @@
     overflow: hidden;
     border: 1px solid rgba(223, 229, 238, 0.84);
     border-radius: var(--radius-card, 24px);
-    background: #ffffff;
+    
+    /* CHANGE THIS LINE */
+    background: var(--color-surface); 
     box-shadow: 0 24px 70px rgba(7, 20, 42, 0.28);
 }
-
-/* ---------- Login form panel ---------- */
 
 .login-form-panel {
     display: flex;
@@ -54,7 +52,9 @@
 
     min-width: 0;
     padding: clamp(26px, 4vw, 54px);
-    background: #ffffff;
+    
+    /* CHANGE THIS LINE */
+    background: var(--color-surface);
 }
 
 /* Brand */
@@ -663,4 +663,26 @@
         animation-delay: 0ms !important;
         animation-iteration-count: 1 !important;
     }
+}
+
+
+
+
+/* ---------- Custom Text Fields ---------- */
+.login-form .form-input {
+    background: #f4f7fb; /* A different, slightly cooler shade of white */
+    color: #0d1f3f;      /* Ensure the typed text stays dark */
+    border-color: var(--color-border);
+}
+
+/* Blue highlights on focus */
+.login-form .form-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.22) !important; 
+}
+
+/* Keep them off-white even if Dark Mode is fully activated */
+:root[data-theme="dark"] .login-form .form-input {
+    background: #e6ebf4;
+    color: #0d1f3f;
 }
