@@ -349,3 +349,21 @@ input[type="time"].form-input { cursor: pointer; }
   padding: 10px 14px;
   border-left: 0;
 }
+
+
+
+
+
+
+/* Phones: the time dropdown is wider than the space right of its button, so it was cut off.
+   Anchor it to the whole button row instead, so it always fits on screen. */
+@media (max-width: 560px) {
+    .dd:last-child { position: static; }
+    .pop-time { left: 0; right: 0; width: auto; max-width: none; }
+}
+
+/* Very small phones (about 320px wide): make the three buttons a little tighter so they fit */
+@media (max-width: 359px) {
+    .controls { gap: 6px; }
+    .chip { padding: 0 9px; gap: 6px; font-size: 0.85rem; }
+}
