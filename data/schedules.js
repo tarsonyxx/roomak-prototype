@@ -147,7 +147,7 @@ const SCHEDULES = [
     start: "13:00",
     end: "15:00",
     activity: "PLKP",
-    faculty: "Ms. Bautista"
+    faculty: "Mr. Tabbu"
   },
   {
     id: 14,
@@ -186,7 +186,7 @@ const SCHEDULES = [
     start: "09:30",
     end: "11:30",
     activity: "PLKP",
-    faculty: "Ms. Bautista"
+    faculty: "Mr. Tabbu"
   },
   {
     id: 18,
@@ -243,7 +243,7 @@ const SCHEDULES = [
     start: "13:00",
     end: "15:00",
     activity: "PLKP",
-    faculty: "Ms. Bautista"
+    faculty: "Mr. Tabbu"
   },
   {
     id: 24,
@@ -291,7 +291,7 @@ const SCHEDULES = [
     start: "13:00",
     end: "15:00",
     activity: "PLKP",
-    faculty: "Ms. Bautista"
+    faculty: "Mr. Tabbu"
   },
   {
     id: 29,
@@ -339,7 +339,7 @@ const SCHEDULES = [
     start: "15:00",
     end: "17:00",
     activity: "PLKP",
-    faculty: "Ms. Bautista"
+    faculty: "Mr. Tabbu"
   },
   {
     id: 34,
