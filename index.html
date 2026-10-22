@@ -2,11 +2,401 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=pages/index.html">
-    <title>RooMak</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="RooMak prototype notice and access information.">
+    <title>Before You Enter | RooMak</title>
+
+    <style>
+        :root {
+            color-scheme: light;
+            --blue: #2459a9;
+            --blue-dark: #173b75;
+            --orange: #ff8e3c;
+            --text: #202938;
+            --muted: #667085;
+            --border: #e4e8ef;
+            --surface: #ffffff;
+            --background: #f5f7fb;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 24px 16px;
+            display: grid;
+            place-items: center;
+            background: var(--background);
+            color: var(--text);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif;
+            line-height: 1.6;
+        }
+
+        .notice {
+            width: 100%;
+            max-width: 560px;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 16px 48px rgba(24, 39, 75, 0.07);
+            animation: notice-enter 620ms cubic-bezier(.2, .75, .25, 1) both;
+            transform-origin: center;
+        }
+
+        .accent {
+            height: 5px;
+            background: linear-gradient(
+                90deg,
+                var(--blue) 0%,
+                var(--blue) 72%,
+                var(--orange) 72%,
+                var(--orange) 100%
+            );
+            background-size: 200% 100%;
+            animation: accent-reveal 900ms cubic-bezier(.22, 1, .36, 1) both;
+        }
+
+        .content { padding: clamp(24px, 6vw, 40px); }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 32px;
+            color: var(--blue-dark);
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+            animation: rise-in 520ms 100ms ease-out both;
+        }
+
+        .brand-mark {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            place-items: center;
+            border-radius: 11px;
+            background: var(--blue);
+            color: white;
+            font-size: 1.1rem;
+            letter-spacing: -1px;
+            box-shadow: 0 5px 12px rgba(36, 89, 169, 0.16);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 12px;
+            padding: 5px 10px;
+            border: 1px solid #f8d6bd;
+            border-radius: 999px;
+            background: #fff6ef;
+            color: #96501d;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            animation: rise-in 480ms 160ms ease-out both;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--orange);
+        }
+
+        h1 {
+            margin: 0 0 14px;
+            color: var(--blue-dark);
+            font-size: clamp(1.8rem, 6vw, 2.25rem);
+            line-height: 1.2;
+            letter-spacing: -1px;
+            animation: rise-in 520ms 200ms ease-out both;
+        }
+
+        .intro {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.98rem;
+            animation: rise-in 520ms 250ms ease-out both;
+        }
+
+        .details {
+            display: grid;
+            gap: 18px;
+            margin: 28px 0;
+        }
+
+        .detail {
+            display: grid;
+            grid-template-columns: 40px minmax(0, 1fr);
+            gap: 13px;
+            align-items: start;
+            animation: rise-in 480ms ease-out both;
+        }
+
+        .detail:nth-child(1) { animation-delay: 300ms; }
+        .detail:nth-child(2) { animation-delay: 360ms; }
+        .detail:nth-child(3) { animation-delay: 420ms; }
+        .detail:nth-child(4) { animation-delay: 480ms; }
+
+        .detail-icon {
+            display: grid;
+            width: 40px;
+            height: 40px;
+            place-items: center;
+            border-radius: 12px;
+            background: #edf3ff;
+            color: var(--blue);
+            font-size: 1.1rem;
+            transition: background 180ms ease, transform 180ms ease;
+        }
+
+        .detail:hover .detail-icon {
+            transform: translateY(-2px);
+            background: #e3edff;
+        }
+
+        .detail h2 {
+            margin: 0 0 4px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .detail p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .acknowledgement {
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+            margin-top: 24px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fafbfc;
+            cursor: pointer;
+            animation: rise-in 480ms 530ms ease-out both;
+            transition: border-color 180ms ease, background 180ms ease;
+        }
+
+        .acknowledgement:has(input:checked) {
+            border-color: rgba(36, 89, 169, 0.35);
+            background: #f5f8ff;
+        }
+
+        .acknowledgement input {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            margin: 3px 0 0;
+            accent-color: var(--blue);
+            cursor: pointer;
+        }
+
+        .acknowledgement span {
+            color: #465164;
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+
+        .continue-button {
+            display: flex;
+            width: 100%;
+            min-height: 50px;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+            padding: 13px 18px;
+            border: 0;
+            border-radius: 12px;
+            background: var(--blue);
+            color: white;
+            font: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            animation: rise-in 480ms 580ms ease-out both;
+            transition: background 160ms ease, transform 160ms ease,
+                box-shadow 160ms ease, opacity 160ms ease;
+        }
+
+        .continue-button:disabled {
+            background: #b9c6da;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .continue-button:not(:disabled):hover {
+            background: var(--blue-dark);
+            box-shadow: 0 5px 14px rgba(36, 89, 169, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .continue-button:not(:disabled):active { transform: translateY(0) scale(.99); }
+
+        .continue-button:focus-visible,
+        .acknowledgement input:focus-visible {
+            outline: 3px solid var(--orange);
+            outline-offset: 3px;
+        }
+
+        .continue-button span { transition: transform 160ms ease; }
+        .continue-button:not(:disabled):hover span { transform: translateX(3px); }
+
+        .footer {
+            margin: 22px 0 0;
+            color: #8892a3;
+            font-size: 0.76rem;
+            text-align: center;
+            animation: rise-in 480ms 630ms ease-out both;
+        }
+
+        @keyframes notice-enter {
+            from { opacity: 0; transform: translateY(18px) scale(.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes rise-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes accent-reveal {
+            from { background-position: 100% 0; }
+            to { background-position: 0 0; }
+        }
+
+        @media (max-width: 380px) {
+            body { padding: 12px; }
+            .content { padding: 22px 18px; }
+            .brand { margin-bottom: 24px; }
+            .details { gap: 16px; margin: 22px 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <p>Opening RooMak...</p>
-    <a href="pages/index.html">Continue to RooMak</a>
+    <main class="notice">
+        <div class="accent"></div>
+
+        <div class="content">
+            <div class="brand" aria-label="RooMak">
+                <span class="brand-mark" aria-hidden="true">R</span>
+                <span>RooMak</span>
+            </div>
+
+            <div class="eyebrow">Prototype Preview</div>
+
+            <h1>Before you get started</h1>
+
+            <p class="intro">
+                Welcome to RooMak, a prototype for exploring room
+                information and scheduling at the University of Makati.
+                Please take a moment to review the following before continuing.
+            </p>
+
+            <section class="details" aria-label="Important information">
+                <div class="detail">
+                    <div class="detail-icon" aria-hidden="true">ⓘ</div>
+                    <div>
+                        <h2>This is a prototype</h2>
+                        <p>
+                            Features and information are provided for demonstration
+                            and evaluation. Some functions may be incomplete,
+                            simulated, or subject to change.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="detail">
+                    <div class="detail-icon" aria-hidden="true">↻</div>
+                    <div>
+                        <h2>Your actions may not be saved</h2>
+                        <p>
+                            Room requests, issue reports, and other interactions
+                            may not be stored or forwarded to university staff.
+                            Do not rely on RooMak for actual room bookings or
+                            urgent reports.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="detail">
+                    <div class="detail-icon" aria-hidden="true">▣</div>
+                    <div>
+                        <h2>A laptop is recommended</h2>
+                        <p>
+                            RooMak can be opened on mobile devices, but a laptop
+                            or desktop is recommended for the best experience,
+                            particularly when exploring the interactive floor
+                            plan and its controls.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="detail">
+                    <div class="detail-icon" aria-hidden="true">◆</div>
+                    <div>
+                        <h2>Protect your information</h2>
+                        <p>
+                            Avoid entering real passwords, sensitive personal
+                            information, or confidential university data into
+                            this prototype.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <label class="acknowledgement">
+                <input type="checkbox" id="acknowledge">
+                <span>
+                    I understand that RooMak is a prototype and that its features
+                    and data may not represent a live university system.
+                </span>
+            </label>
+
+            <button class="continue-button" id="continueButton" type="button" disabled>
+                Continue to RooMak <span aria-hidden="true">→</span>
+            </button>
+
+            <p class="footer">RooMak · Prototype for evaluation purposes</p>
+        </div>
+    </main>
+
+    <script>
+        const acknowledgement = document.getElementById("acknowledge");
+        const continueButton = document.getElementById("continueButton");
+
+        acknowledgement.addEventListener("change", () => {
+            continueButton.disabled = !acknowledgement.checked;
+        });
+
+        continueButton.addEventListener("click", () => {
+            if (!acknowledgement.checked) return;
+            window.location.href = "pages/index.html";
+        });
+    </script>
 </body>
 </html>
