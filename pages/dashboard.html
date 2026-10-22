@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="../css/pages/dashboard.css">
     <link rel="stylesheet" href="../css/pages/room-actions.css">
     <link rel="stylesheet" href="../css/pages/hints.css">
+    <link rel="stylesheet" href="../css/pages/settings.css">
+
+    <script>
+        // Apply the saved color theme before the page draws (no light flash in dark mode).
+        try {
+            var theme = localStorage.getItem("roomak.theme");
+            if (theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches))
+                document.documentElement.setAttribute("data-theme", "dark");
+        } catch (e) { /* ignore */ }
+    </script>
 
     <script>
         // Send people back to the login page if they have not logged in.
@@ -121,5 +131,6 @@
     <script src="../js/dashboard.js"></script>
     <script src="../js/room-actions.js"></script>
     <script src="../js/hints.js"></script>
+    <script src="../js/settings.js"></script>
 </body>
 </html>

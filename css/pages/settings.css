@@ -1,0 +1,117 @@
+/* Account + Settings buttons, their pop-up, and DARK MODE.
+   Dark mode works by swapping the palette variables from base.css (see the block below). */
+
+/* ---------- top bar buttons ---------- */
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+    display: grid; place-items: center; width: 42px; height: 42px; padding: 0;
+    border: 1px solid var(--color-border); border-radius: var(--radius-control);
+    background: var(--color-surface); color: var(--color-ink);
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.icon-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn:active { transform: translateY(1px); }
+
+/* ---------- pop-up ---------- */
+.panel-dialog {
+    width: min(420px, calc(100% - 32px)); max-height: min(88dvh, 640px); margin: auto; padding: 0; overflow: auto;
+    border: 1px solid var(--color-border); border-radius: 20px;
+    background: var(--color-surface); color: var(--color-ink);
+    box-shadow: 0 12px 32px var(--shadow-medium);
+}
+.panel-dialog::backdrop { background: rgba(15, 23, 42, 0.48); }
+.panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 22px 22px 14px; }
+.panel-head h2 { margin: 0; font-size: 1.3rem; }
+.panel-x {
+    width: 36px; height: 36px; border: 0; border-radius: 50%;
+    background: var(--special-bg); color: var(--color-muted); font-size: 1.3rem; line-height: 1;
+}
+.panel-body { padding: 0 22px 22px; }
+.panel-body h3 { margin: 20px 0 10px; color: var(--color-muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.panel-note { margin: 8px 0 0; color: var(--color-muted); font-size: 0.85rem; line-height: 1.45; }
+.panel-done { min-height: 1.2em; margin: 10px 0 0; color: var(--color-success); font-size: 0.88rem; font-weight: 600; }
+
+.seg-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; background: var(--special-bg); border-radius: var(--radius-control); }
+.seg-row button { min-height: 42px; border: 0; border-radius: 10px; background: none; color: var(--color-muted); font-size: 0.9rem; font-weight: 650; }
+.seg-row button.active { background: var(--color-surface); color: var(--color-primary); box-shadow: 0 1px 4px var(--shadow-soft); }
+
+.panel-btn {
+    width: 100%; min-height: 46px; padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-control);
+    background: var(--color-surface); color: var(--color-ink); font-size: 0.92rem; font-weight: 650;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.panel-btn:active { transform: translateY(1px); }
+.panel-btn.danger { color: var(--occupied-text); }
+
+.profile { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.profile strong { display: block; font-size: 1.05rem; }
+.profile small { color: var(--color-muted); }
+.avatar { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+          background: var(--color-primary); color: #fff; font-size: 1.3rem; font-weight: 800; }
+.panel-list { margin: 0; display: grid; gap: 1px; border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; background: var(--color-border); }
+.panel-list div { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; background: var(--color-surface); font-size: 0.9rem; }
+.panel-list dt { color: var(--color-muted); }
+.panel-list dd { margin: 0; font-weight: 650; text-align: right; }
+.panel-dialog .panel-btn { margin-top: 14px; }
+.panel-dialog h3 + .panel-btn, .panel-dialog .seg-row + .panel-note + h3 + .panel-btn { margin-top: 0; }
+
+@media (hover: hover) {
+    .icon-btn:hover, .panel-btn:hover { background: var(--primary-soft); border-color: var(--color-primary); color: var(--color-primary); }
+    .panel-btn.danger:hover { background: var(--occupied-bg); border-color: var(--occupied-border); color: var(--occupied-text); }
+    .panel-x:hover { background: var(--primary-soft); color: var(--color-primary); }
+    .seg-row button:not(.active):hover { color: var(--color-primary); }
+}
+@media (max-width: 520px) {
+    .panel-dialog { width: 100%; max-width: none; margin: auto 0 0; border-radius: 20px 20px 0 0; border-bottom: 0; }
+    .topbar-actions { gap: 6px; }
+}
+
+/* =====================================================================
+   DARK MODE -- change any color here to restyle dark mode.
+   Same variable names as the palette in base.css.
+   ===================================================================== */
+:root[data-theme="dark"] {
+    color-scheme: dark;                         /* dark date pickers, scrollbars, etc. */
+
+    --color-primary: #3b7bf6;
+    --color-primary-hover: #5d92f8;
+    --color-ink: #e8edf5;
+    --color-muted: #9aa7bb;
+    --color-page: #0f141d;
+    --color-surface: #171e2b;
+    --color-border: #2a3446;
+    --color-error: #ef6b6b;
+    --color-success: #3dc488;
+    --shadow-card: 0 24px 70px rgba(0, 0, 0, 0.45);
+
+    --primary-soft: rgba(93, 146, 248, 0.14);
+    --primary-ring: rgba(93, 146, 248, 0.22);
+    --primary-glow: rgba(93, 146, 248, 0.55);
+    --border-hover: #43506a;
+    --card-border: rgba(42, 52, 70, 0.8);
+    --glass: rgba(23, 30, 43, 0.97);
+    --hint-bg: rgba(0, 0, 0, 0.7);
+    --shadow-soft: rgba(0, 0, 0, 0.3);
+    --shadow-medium: rgba(0, 0, 0, 0.5);
+
+    --available-bg: #123524;   --available-border: #2f9e68;  --available-line: #1f5a3d;
+    --available-text: #7ddba8; --available-track: #1b4a33;
+    --unavailable-bg: #3a2f10; --unavailable-border: #c99a2e; --unavailable-line: #5a4616;
+    --unavailable-text: #f0c964;
+    --occupied-bg: #3b1b1f;    --occupied-border: #c2565a;   --occupied-line: #5c2a2e;
+    --occupied-text: #f19a9d;
+    --special-bg: #1c2432;     --special-border: #364257;
+
+    --plan-bg: #121823;        --plan-dot: #232d3f;          --plan-corridor: rgba(93, 146, 248, 0.06);
+    --plan-fixed: #1c2432;     --plan-icon: #9fb0cc;         --plan-icon-soft: #44516b;
+    --plan-bracket: #4a65a8;
+
+    --photo-bg: #1c2740;       --photo-from: #1c2a4a;        --photo-to: #3a2a1c;
+}
+
+/* A few colors that are not in variables yet */
+:root[data-theme="dark"] .issue-status.status-open { background: var(--unavailable-bg); color: var(--unavailable-text); }
+:root[data-theme="dark"] .room-action-report .room-action-icon { color: #f0b27a; }
+:root[data-theme="dark"] .form-input:hover { border-color: var(--border-hover); }
+:root[data-theme="dark"] .form-input::placeholder { color: #66748b; }
+:root[data-theme="dark"] .brand-mark::after { border-color: var(--color-surface); }
