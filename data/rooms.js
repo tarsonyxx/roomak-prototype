@@ -84,19 +84,17 @@ const FLOORS = {
 const DEFAULT_INFO = {
   type: "Lecture Room",
   capacity: 40,
-  facilities: ["Air conditioning", "Whiteboard", "Wi-Fi"],
+  facilities: ["Air conditioning", "Whiteboard", "UMAK Wi-Fi"],
 };
 
 // Per-room details. Any field you leave out falls back to DEFAULT_INFO.
 // photo: path to an image file (if missing, a "No photo yet" placeholder shows).
 const ROOM_INFO = {
-  "B2-212": {
-    name: "Business Simulation Laboratory", type: "Laboratory", capacity: 40,
-    facilities: ["Air conditioning", "Computers", "Projector", "Wi-Fi"],
-    photo: "/assets/images/umak-sunset.jpg",   // stand-in photo - replace with a real one
-  },
-  "B3-208": { name: "Lecture Room 208", capacity: 45,
-              facilities: ["Air conditioning", "Projector", "Whiteboard", "Wi-Fi"] },
+  "B2-306": {
+    capacity: 40,
+    facilities: ["Whiteboard", "Weak UMAK Wi-Fi"],
+    photo: "/assets/images/classroom_base.jpg",   // stand-in photo - replace with a real one
+  }
 };
 
 // Out-of-service rooms -> yellow, regardless of schedule.
