@@ -147,11 +147,11 @@ img {
     /* ---- Floor plan canvas ---- */
     --plan-bg: #f8fbff;                         /* map background */
     --plan-dot: #dbe4f0;                        /* dots on the map background */
-    --plan-corridor: rgba(var(--gold-rgb), 0.10);      /* corridor strip */
+    --plan-corridor: rgba(var(--accent-rgb), 0.08);      /* corridor strip */
     --plan-fixed: #eef3fa;                      /* stairs and restroom tiles */
     --plan-icon: #4d6285;                       /* stairs / restroom symbols */
     --plan-icon-soft: #bfcce0;                  /* lighter lines inside the symbols */
-    --plan-bracket: #dcb352;                    /* B2 | BW | B3 bracket lines (gold) */
+    --plan-bracket: #a47f2e;;                    /* B2 | BW | B3 bracket lines (gold) */
 
     /* ---- Room photo placeholder ---- */
     --photo-bg: #e3ecfa;
