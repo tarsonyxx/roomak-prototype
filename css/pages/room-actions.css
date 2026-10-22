@@ -226,3 +226,13 @@
     .action-date-fields[data-request-fields="once"] { grid-template-columns: minmax(0, 1fr); }
     .action-dialog-footer-right { flex-direction: row; justify-content: flex-end; }
 }
+
+/* PERFORMANCE (for phones): no blur effects, lighter shadows */
+:root { --glass: rgba(255, 255, 255, 0.97); }
+.chip, .legend, .zoom button, .hint, .ghost-btn, .close, .back { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.room-action-dialog::backdrop { backdrop-filter: none; }
+.room-action-dialog { box-shadow: 0 12px 32px rgba(24, 34, 53, 0.22); }
+.drawer-inner { contain: layout paint; }
+@media (max-width: 899px) {
+    .drawer { will-change: transform; }
+}

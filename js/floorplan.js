@@ -163,12 +163,19 @@ function createPanZoom(viewport, world, onTap) {
   const fitK = () => (size().width - 24) / plan.w;
   const limitK = (v) => Math.min(MAX_K, Math.max(fitK(), v));
 
+  // Draw at most once per screen frame (phones send many touch events per frame).
+  let queued = false;
   function apply() {
-    const r = size(), pw = plan.w * k, ph = plan.h * k;
-    // Keep the plan on screen: centered if small, otherwise stop at the edges.
-    x = pw + 24 <= r.width ? (r.width - pw) / 2 : Math.min(PAD, Math.max(r.width - pw - PAD, x));
-    y = ph + 24 <= r.height ? (r.height - ph) / 2 : Math.min(PAD, Math.max(r.height - ph - PAD, y));
-    world.setAttribute("transform", `translate(${x} ${y}) scale(${k})`);
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      const r = size(), pw = plan.w * k, ph = plan.h * k;
+      // Keep the plan on screen: centered if small, otherwise stop at the edges.
+      x = pw + 24 <= r.width ? (r.width - pw) / 2 : Math.min(PAD, Math.max(r.width - pw - PAD, x));
+      y = ph + 24 <= r.height ? (r.height - ph) / 2 : Math.min(PAD, Math.max(r.height - ph - PAD, y));
+      world.setAttribute("transform", `translate(${x} ${y}) scale(${k})`);
+    });
   }
 
   function zoomAt(newK, cx, cy) {
