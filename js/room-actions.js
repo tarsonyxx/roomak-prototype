@@ -172,6 +172,192 @@
             </div>`;
     }
 
+    /* ---------- Availability checks for requests ---------- */
+    const OPEN_FROM = 7 * 60;    // same hours as the room timeline on the dashboard
+    const OPEN_TO = 20 * 60;
+    const DAY_INDEX = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const DAY_NAMES = { Sun: "Sunday", Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday" };
+    let requestDraft = null;     // lets "Edit request" bring the form back exactly as it was
+
+    const minutesOf = (time) => { const [h, m] = time.split(":").map(Number); return h * 60 + m; };
+    const timeText = (min) => {
+        const h = Math.floor(min / 60), m = min % 60;
+        return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${h >= 12 ? "PM" : "AM"}`;
+    };
+    const timeValue = (min) => `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
+    const rangeText = (s, e) => `${timeText(s)} – ${timeText(e)}`;
+
+    // The range the person picked on the dashboard (day tab in the drawer + start/end chips).
+    function viewedRange() {
+        try {
+            if (typeof state !== "undefined" && state.start && state.end) {
+                return { day: state.viewDay || state.day || "Mon", start: state.start, end: state.end };
+            }
+        } catch (error) { /* fall through to defaults */ }
+        return { day: "Mon", start: "09:00", end: "10:00" };
+    }
+
+    function nextDateForDay(day) {
+        const target = DAY_INDEX[day];
+        const date = new Date();
+        if (target === undefined) return localDateInputValue(date);
+        date.setDate(date.getDate() + ((target - date.getDay() + 7) % 7));
+        return localDateInputValue(date);
+    }
+
+    function weekdayOfDate(value) {
+        if (!value) return null;
+        return new Date(`${value}T12:00:00`).toLocaleDateString("en-US", { weekday: "short" });
+    }
+
+    // Returns a list of reasons the room cannot be used. An empty list means it is free.
+    function findConflicts(roomId, days, startTime, endTime) {
+        const problems = [];
+        if (!startTime || !endTime) return problems;
+        const s = minutesOf(startTime), e = minutesOf(endTime);
+        if (e <= s) {
+            problems.push({ kind: "range", text: "The end time must be later than the start time." });
+            return problems;
+        }
+        if (s < OPEN_FROM || e > OPEN_TO) {
+            problems.push({ kind: "hours", text: `Rooms can be requested between ${timeText(OPEN_FROM)} and ${timeText(OPEN_TO)}.` });
+            return problems;
+        }
+        days.forEach((day) => {
+            if (DAY_INDEX[day] === 0) {
+                problems.push({ kind: "day", day, text: "Rooms are scheduled Monday to Saturday only." });
+                return;
+            }
+            SCHEDULES.forEach((item) => {
+                if (item.roomId !== roomId || item.day !== day) return;
+                if (minutesOf(item.start) < e && s < minutesOf(item.end)) {
+                    problems.push({
+                        kind: "busy", day,
+                        text: `${DAY_NAMES[day]} ${rangeText(minutesOf(item.start), minutesOf(item.end))} · ${item.activity}`,
+                    });
+                }
+            });
+        });
+        return problems;
+    }
+
+    // Free windows of the same length on one day, so the person can pick one in a tap.
+    function freeWindows(roomId, day, startTime, endTime) {
+        const length = minutesOf(endTime) - minutesOf(startTime);
+        if (length <= 0 || length > OPEN_TO - OPEN_FROM) return [];
+        const busy = SCHEDULES
+            .filter((item) => item.roomId === roomId && item.day === day)
+            .map((item) => [minutesOf(item.start), minutesOf(item.end)])
+            .sort((a, b) => a[0] - b[0]);
+        const windows = [];
+        let cursor = OPEN_FROM;
+        const consider = (from, to) => {
+            if (to - from >= length && windows.length < 4) windows.push([from, from + length]);
+        };
+        busy.forEach(([s, e]) => { consider(cursor, s); cursor = Math.max(cursor, e); });
+        consider(cursor, OPEN_TO);
+        return windows;
+    }
+
+    function draftDays(form) {
+        const pattern = form.elements.requestPattern.value;
+        if (pattern === "once") {
+            const day = weekdayOfDate(form.elements.useDate.value);
+            return day ? [day] : [];
+        }
+        return [...form.querySelectorAll("[data-day-checkbox]:checked")].map((input) => input.value);
+    }
+
+    function collectDraft(form) {
+        const f = form.elements;
+        return {
+            pattern: f.requestPattern.value,
+            useDate: f.useDate.value,
+            recurringStart: f.recurringStart.value, recurringEnd: f.recurringEnd.value,
+            effectiveDate: f.effectiveDate.value, untilDate: f.untilDate.value,
+            days: [...form.querySelectorAll("[data-day-checkbox]:checked")].map((input) => input.value),
+            startTime: f.startTime.value, endTime: f.endTime.value,
+            message: f.message.value,
+        };
+    }
+
+    function defaultDraft(range) {
+        const date = nextDateForDay(range.day);
+        return {
+            pattern: "once", useDate: date, recurringStart: date, recurringEnd: "",
+            effectiveDate: date, untilDate: "", days: [range.day],
+            startTime: range.start, endTime: range.end, message: "",
+        };
+    }
+
+    function applyDraft(form, draft) {
+        const f = form.elements;
+        f.requestPattern.value = draft.pattern;
+        f.useDate.value = draft.useDate; f.recurringStart.value = draft.recurringStart;
+        f.recurringEnd.value = draft.recurringEnd; f.effectiveDate.value = draft.effectiveDate;
+        f.untilDate.value = draft.untilDate;
+        f.startTime.value = draft.startTime; f.endTime.value = draft.endTime;
+        f.message.value = draft.message;
+        form.querySelectorAll("[data-day-checkbox]").forEach((input) => { input.checked = draft.days.includes(input.value); });
+        updateRequestFields(form);
+        checkAvailability(form);
+    }
+
+    // Live warning while the form is being edited. Submitting is still blocked by handleRequestSubmit.
+    function checkAvailability(form) {
+        const problems = findConflicts(activeRoom.roomId, draftDays(form), form.elements.startTime.value, form.elements.endTime.value);
+        const target = form.querySelector("[data-form-feedback]");
+        if (problems.length === 0) {
+            if (target && target.dataset.live === "true") setFormFeedback(form, "");
+            return problems;
+        }
+        setFormFeedback(form, problems[0].kind === "busy"
+            ? "This room is not free at the selected time. Please choose another time."
+            : problems[0].text);
+        if (target) target.dataset.live = "true";
+        return problems;
+    }
+
+    function showUnavailable(problems, draft, source) {
+        const busy = problems.filter((item) => item.kind === "busy");
+        const days = [...new Set(busy.map((item) => item.day))];
+        const range = draft.startTime && draft.endTime && minutesOf(draft.endTime) > minutesOf(draft.startTime)
+            ? rangeText(minutesOf(draft.startTime), minutesOf(draft.endTime)) : "";
+        let title = "Room unavailable at this time";
+        let lead;
+        if (busy.length) {
+            lead = `${activeRoom.roomCode} is already in use during ${range || "the time you chose"}. Please choose a different time to continue.`;
+        } else {
+            title = "Please change the time";
+            lead = `${problems[0].text} Please choose a different time to continue.`;
+        }
+        const list = busy.length
+            ? `<ul class="conflict-list">${busy.map((item) => `<li>${escapeHtml(item.text)}</li>`).join("")}</ul>` : "";
+        const windows = days.length === 1
+            ? freeWindows(activeRoom.roomId, days[0], draft.startTime, draft.endTime) : [];
+        const suggestions = windows.length ? `
+            <p class="action-section-label conflict-suggest-label">Free on ${escapeHtml(DAY_NAMES[days[0]])}</p>
+            <div class="conflict-suggestions">${windows.map(([s, e]) => `
+                <button type="button" class="conflict-chip" data-dialog-action="use-slot" data-start="${timeValue(s)}" data-end="${timeValue(e)}">${escapeHtml(rangeText(s, e))}</button>`).join("")}
+            </div>` : "";
+        const primary = source === "form"
+            ? `<button type="button" class="action-button-primary" data-dialog-action="edit-request">Change the time</button>`
+            : `<button type="button" class="action-button-primary" data-dialog-action="change-range">Change time range</button>`;
+        requestDraft = draft;
+        showDialog(`
+            <div class="action-dialog-shell action-warning-shell">
+                ${dialogHeader(title, "Requests can only be submitted for times when the room is free.", "ROOM NOT AVAILABLE")}
+                <div class="action-dialog-body action-success-body">
+                    <span class="action-success-mark action-warning-mark" aria-hidden="true">!</span>
+                    <p>${escapeHtml(lead)}</p>
+                    ${list}${suggestions}
+                </div>
+                <footer class="action-dialog-footer action-dialog-footer-right">
+                    <div class="action-footer-buttons"><button type="button" class="action-button-secondary" data-dialog-close>Cancel</button>${primary}</div>
+                </footer>
+            </div>`, "[data-dialog-action]");
+    }
+
     function updateRequestFields(form) {
         const pattern = form.elements.requestPattern.value;
         form.querySelectorAll("[data-request-fields]").forEach((section) => {
@@ -185,11 +371,20 @@
         weekdays.hidden = pattern === "once";
     }
 
-    function openRequestDialog() {
+    function openRequestDialog(draft) {
         if (!activeRoom || activeRoom.special || activeRoom.unavailable) return;
         showDialog(requestDialogMarkup(), "#requestPattern");
         const form = dialog.querySelector("#roomRequestForm");
-        updateRequestFields(form);
+        applyDraft(form, draft || defaultDraft(viewedRange()));
+    }
+
+    // Pressing "Submit a request" on a room: check the time range chosen on the dashboard first.
+    function startRequest() {
+        const range = viewedRange();
+        const draft = defaultDraft(range);
+        const problems = findConflicts(activeRoom.roomId, [range.day], range.start, range.end);
+        if (problems.length) showUnavailable(problems, draft, "drawer");
+        else openRequestDialog(draft);
     }
 
     function demoReports() {
@@ -307,6 +502,7 @@
         const target = form.querySelector("[data-form-feedback]");
         if (!target) return;
         target.textContent = message;
+        target.dataset.live = "false";
         target.classList.toggle("is-error", isError);
         target.classList.toggle("is-success", !isError);
     }
@@ -342,6 +538,12 @@
             : [...form.querySelectorAll("[data-day-checkbox]:checked")].map((input) => input.value);
         if (pattern !== "once" && days.length === 0) {
             setFormFeedback(form, "Select at least one day for a recurring or ongoing request.");
+            return;
+        }
+
+        const problems = findConflicts(activeRoom.roomId, days, startTime, endTime);
+        if (problems.length) {
+            showUnavailable(problems, collectDraft(form), "form");
             return;
         }
 
@@ -407,7 +609,7 @@
 
   unavailable: button.dataset.roomUnavailable === "true",
         };
-        if (button.dataset.roomAction === "request") openRequestDialog();
+        if (button.dataset.roomAction === "request") startRequest();
         if (button.dataset.roomAction === "report") openReportsDialog();
     });
 
@@ -435,12 +637,28 @@
         if (action === "new-report") openNewReportDialog();
         else if (action === "back-to-reports" || action === "view-reports") openReportsDialog();
         else if (action === "close-dialog") dialog.close();
+        else if (action === "edit-request") openRequestDialog(requestDraft);
+        else if (action === "use-slot") {
+            const chip = event.target.closest("[data-dialog-action]");
+            openRequestDialog({ ...requestDraft, startTime: chip.dataset.start, endTime: chip.dataset.end });
+        } else if (action === "change-range") {
+            dialog.close();
+            // Open the dashboard's time picker so the range can be changed right away.
+            // (Delayed one tick so the dashboard's "click outside closes menus" handler does not close it again.)
+            setTimeout(() => {
+                const timeBtn = document.getElementById("timeBtn");
+                if (!timeBtn) return;
+                if (typeof closePopovers === "function") closePopovers();
+                timeBtn.click();
+            }, 0);
+        }
     });
 
     dialog.addEventListener("change", (event) => {
         if (event.target.id === "requestPattern") {
             updateRequestFields(event.target.form);
         }
+        if (event.target.form && event.target.form.id === "roomRequestForm") checkAvailability(event.target.form);
         const startEndPairs = [
             ["requestRecurringStart", "requestRecurringEnd"],
             ["requestEffectiveDate", "requestUntilDate"],
