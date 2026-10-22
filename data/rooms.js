@@ -98,4 +98,10 @@ const ROOM_INFO = {
 };
 
 // Out-of-service rooms -> yellow, regardless of schedule.
-const UNAVAILABLE = { "B2-205": "Under maintenance", "B3-206": "Aircon repair" };
+// Out-of-service rooms -> yellow, regardless of schedule.
+const UNAVAILABLE = {
+  "B2-310": "Under maintenance",
+  "B3-206": "Aircon repair",
+  "B2-204": "Electrical maintenance",
+  "B3-412": "Ceiling repairs",
+};
