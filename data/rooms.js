@@ -92,7 +92,7 @@ const DEFAULT_INFO = {
 const ROOM_INFO = {
   "B2-306": {
     capacity: 40,
-    facilities: ["Whiteboard", "Weak UMAK Wi-Fi"],
+    facilities: ["Whiteboard", "Wi-Fi"],
     photo: "/assets/images/classroom_base.jpg",   // stand-in photo - replace with a real one
   }
 };
