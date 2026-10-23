@@ -217,7 +217,7 @@ function renderDrawer() {
     }).join("");
 
     const photo = info.photo
-        ? `<img src="${esc(info.photo)}" alt="Photo of ${esc(info.name || code)}" onerror="this.parentNode.classList.add('empty');this.remove()">`
+        ? `<img src="${esc(info.photo)}" alt="Photo of ${esc(info.name || code)}" decoding="async" onerror="this.parentNode.classList.add('empty');this.remove()">`
         : "";
 
     const availBlock = special

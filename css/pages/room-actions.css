@@ -245,3 +245,8 @@
 .conflict-suggest-label { width: 100%; margin: 4px 0 0; }
 .conflict-suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
 .conflict-chip { min-height: 40px; padding: 8px 13px; border: 1px solid var(--available-border); border-radius: 999px; background: var(--available-bg); color: var(--available-text); font: inherit; font-size: 0.84rem; font-weight: 700; }
+
+/* Map performance: skip pointless work while the map is being dragged */
+.viewport { contain: layout paint; }
+.plan text { text-rendering: optimizeSpeed; }
+.viewport.grabbing .room rect { transition: none; }
