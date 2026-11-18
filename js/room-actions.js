@@ -352,13 +352,15 @@
         const windows = days.length === 1
             ? freeWindows(activeRoom.roomId, days[0], draft.startTime, draft.endTime) : [];
         const suggestions = windows.length ? `
-            <p class="action-section-label conflict-suggest-label">Free on ${escapeHtml(DAY_NAMES[days[0]])}</p>
+            <p class="action-section-label conflict-suggest-label">Free on ${escapeHtml(DAY_NAMES[days[0]])} · tap a time to request it</p>
             <div class="conflict-suggestions">${windows.map(([s, e]) => `
                 <button type="button" class="conflict-chip" data-dialog-action="use-slot" data-start="${timeValue(s)}" data-end="${timeValue(e)}">${escapeHtml(rangeText(s, e))}</button>`).join("")}
             </div>` : "";
         const primary = source === "form"
             ? `<button type="button" class="action-button-primary" data-dialog-action="edit-request">Change the time</button>`
             : `<button type="button" class="action-button-primary" data-dialog-action="change-range">Change time range</button>`;
+        const phoneNote = source === "form" ? "" : `
+            <p class="conflict-phone-note">Prefer a different time? <strong>Change time range</strong> closes the room details so you can pick a new time on the map.</p>`;
         requestDraft = draft;
         showDialog(`
             <div class="action-dialog-shell action-warning-shell">
@@ -366,7 +368,7 @@
                 <div class="action-dialog-body action-success-body">
                     <span class="action-success-mark action-warning-mark" aria-hidden="true">!</span>
                     <p>${escapeHtml(lead)}</p>
-                    ${list}${suggestions}
+                    ${list}${suggestions}${phoneNote}
                 </div>
                 <footer class="action-dialog-footer action-dialog-footer-right">
                     <div class="action-footer-buttons"><button type="button" class="action-button-secondary" data-dialog-close>Cancel</button>${primary}</div>
@@ -638,6 +640,29 @@
         }
     });
 
+    // Short instruction shown inside the time picker after "Change time range" on a phone.
+    // It goes away as soon as the person edits a time or taps anywhere outside the picker.
+    function showTimePrompt(roomCode) {
+        const pop = document.getElementById("timePop");
+        if (!pop) return;
+        let note = document.getElementById("timePrompt");
+        if (!note) {
+            note = document.createElement("p");
+            note.id = "timePrompt";
+            note.className = "time-prompt";
+            pop.appendChild(note);
+        }
+        note.textContent = `Pick a new time, then tap ${roomCode} on the map to request it.`;
+        const remove = (event) => {
+            if (event.type === "pointerdown" && pop.contains(event.target)) return;
+            note.remove();
+            document.removeEventListener("pointerdown", remove, true);
+            pop.removeEventListener("change", remove);
+        };
+        document.addEventListener("pointerdown", remove, true);
+        pop.addEventListener("change", remove);
+    }
+
     dialog.addEventListener("click", (event) => {
         if (event.target === dialog) {
             dialog.close();
@@ -657,12 +682,18 @@
             const chip = event.target.closest("[data-dialog-action]");
             openRequestDialog({ ...requestDraft, startTime: chip.dataset.start, endTime: chip.dataset.end });
         } else if (action === "change-range") {
+            const roomCode = activeRoom ? activeRoom.roomCode : "the room";
+            // On phones the room details cover the map and the time picker. Slide them away first,
+            // otherwise the picker opens out of sight and nothing seems to happen.
+            const onPhone = window.matchMedia("(max-width: 899px)").matches;
             dialog.close();
+            if (onPhone && typeof closeDrawer === "function") closeDrawer();
             setTimeout(() => {
                 const timeBtn = document.getElementById("timeBtn");
                 if (!timeBtn) return;
                 if (typeof closePopovers === "function") closePopovers();
                 timeBtn.click();
+                if (onPhone) showTimePrompt(roomCode);
             }, 0);
         }
     });

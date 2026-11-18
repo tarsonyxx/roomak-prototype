@@ -248,7 +248,15 @@
 .conflict-list li { padding: 9px 12px; border: 1px solid var(--occupied-line, var(--color-border)); border-radius: 10px; background: var(--occupied-bg); color: var(--occupied-text); font-size: 0.84rem; font-weight: 650; }
 .conflict-suggest-label { width: 100%; margin: 4px 0 0; }
 .conflict-suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
-.conflict-chip { min-height: 40px; padding: 8px 13px; border: 1px solid var(--available-border); border-radius: 999px; background: var(--available-bg); color: var(--available-text); font: inherit; font-size: 0.84rem; font-weight: 700; }
+.conflict-chip { touch-action: manipulation; cursor: pointer; min-height: 40px; padding: 8px 13px; border: 1px solid var(--available-border); border-radius: 999px; background: var(--available-bg); color: var(--available-text); font: inherit; font-size: 0.84rem; font-weight: 700; }
+.conflict-chip::after { content: "\2192"; margin-left: 7px; opacity: 0.85; }
+.conflict-phone-note { display: none; width: 100%; margin: 4px 0 0; color: var(--color-muted); font-size: 0.8rem; line-height: 1.45; }
+.conflict-phone-note strong { color: var(--color-ink); font-weight: 700; }
+@media (max-width: 899px) {
+    .conflict-phone-note { display: block; }
+}
+
+.time-prompt { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--color-border); color: var(--color-muted); font-size: 0.8rem; font-weight: 650; line-height: 1.4; }
 
 /* Map performance: skip pointless work while the map is being dragged */
 .viewport { contain: layout paint; }
