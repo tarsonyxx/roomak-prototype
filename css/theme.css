@@ -87,38 +87,8 @@ body { background: var(--bg-ethereal); }
 .tip-target::after { box-shadow: 0 0 0 9px rgba(var(--accent-rgb), 0.22), 0 0 26px 8px var(--primary-glow); }
 
 /* ---------- Login page ---------- */
-.login-page { background: var(--bg-ethereal); }
-.login-card { border-color: rgba(var(--accent-rgb), 0.35); box-shadow: 0 30px 80px rgba(8, 31, 77, 0.18), 0 0 0 1px rgba(var(--gold-rgb), 0.25); }
-.login-form-panel { position: relative; }
-.login-form-panel::before {                                /* gold strip across the top of the form */
-    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gradient-gold);
-}
-.login-form-panel .brand-mark {
-    width: 50px; height: 50px; flex-basis: 50px; border-radius: 16px;
-    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.5), 0 8px 20px rgba(var(--primary-rgb), 0.3);
-}
-.login-form-panel .brand-name { font-size: 1.5rem; }
-.login-intro h1::after {                                   /* short gold underline under the title */
-    content: ""; display: block; width: 64px; height: 4px; margin-top: 16px; border-radius: 4px; background: var(--gradient-gold);
-}
-.demo-note { border-color: rgba(var(--accent-rgb), 0.5); background: rgba(var(--gold-rgb), 0.16); }
-
-/* Right side: the flowing blue-and-gold artwork instead of the building photo */
-.login-visual { background: var(--color-navy); }
-.login-visual::before {
-    background-image: url("../assets/images/ethereal.jpg");
-    background-position: center;
-    filter: none;
-    transform: none;
-    inset: 0;
-}
-.login-visual::after {
-    background: linear-gradient(180deg, rgba(7, 21, 59, 0) 0%, rgba(7, 21, 59, 0.10) 28%, rgba(7, 21, 59, 0.66) 58%, rgba(7, 21, 59, 0.92) 100%);
-}
-.visual-label { color: var(--on-gold); }
-.visual-label-dot { background: var(--on-gold); box-shadow: none; }
-.visual-eyebrow { color: var(--color-gold-light); }
-.visual-line { background: var(--gradient-gold); }
+/* The login page's look now lives entirely in css/pages/login.css.
+   (Rules that used to be here would override it, because theme.css loads last.) */
 
 /* ---------- "Before you get started" page (index.html in the main folder) ---------- */
 .notice .accent { background-image: linear-gradient(90deg, #0c2f6e 0%, #1c4b9a 38%, var(--color-sky) 58%, var(--color-gold-light) 80%, var(--color-accent) 100%); }

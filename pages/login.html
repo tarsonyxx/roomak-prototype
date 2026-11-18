@@ -26,12 +26,30 @@
 
     <script src="../js/app.js" defer></script>
     <script src="../js/auth.js" defer></script>
+    <!-- Decorative motion only (pointer parallax, error shake). Does not touch sign-in logic. -->
+    <script src="../js/login-fx.js" defer></script>
 </head>
 
 <body class="login-page">
-    <main class="login-shell">
-        <section class="login-card" aria-label="RooMak sign in">
+    <main class="login-shell" id="loginShell">
 
+        <!-- Decorative artwork. No content here, hidden from assistive technology. -->
+        <div class="login-backdrop" aria-hidden="true">
+            <span class="bd-glow"></span>
+            <span class="bd-halftone"></span>
+            <span class="bd-slab bd-slab-blue"></span>
+            <span class="bd-slab bd-slab-gold"></span>
+            <span class="bd-slab bd-slab-white"></span>
+            <span class="bd-slab bd-slab-sky"></span>
+            <span class="bd-slab bd-slab-burst"></span>
+            <span class="bd-word">Roo<br>Mak</span>
+            <span class="bd-shape bd-shape-diamond"></span>
+            <span class="bd-shape bd-shape-cross"></span>
+            <span class="bd-shape bd-shape-tri"></span>
+            <span class="bd-edge">University of Makati &nbsp;/&nbsp; Rooms &nbsp;/&nbsp; Schedules</span>
+        </div>
+
+        <section class="login-card" aria-label="RooMak sign in">
             <div class="login-form-panel">
                 <a class="brand" href="login.html" aria-label="RooMak home">
                     <span class="brand-mark" aria-hidden="true"><img src="../assets/images/logo.jpg" alt="" width="40" height="40"></span>
@@ -40,7 +58,7 @@
 
                 <div class="login-intro">
                     <p class="eyebrow">UNIVERSITY OF MAKATI</p>
-                    <h1>Welcome Herons!</h1>
+                    <h1><span class="h1-line">Welcome</span> <span class="h1-hit">Herons!</span></h1>
                     <p class="intro-description">
                         Sign in to access faculty room information
                         and scheduling tools.
@@ -75,7 +93,7 @@
                     </div>
 
                     <button class="button button-primary" type="submit">
-                        Sign in
+                        <span class="button-label">Sign in</span>
                         <span class="button-arrow" aria-hidden="true">→</span>
                     </button>
 
@@ -104,31 +122,35 @@
                     Room information and scheduling
                 </footer>
             </div>
-
-            <aside class="login-visual">
-                <div class="visual-top">
-                    <span class="visual-label">
-                        <span class="visual-label-dot"></span>
-                        ROOMAK / UMAK
-                    </span>
-                </div>
-
-                <div class="visual-copy">
-                    <p class="visual-eyebrow">ROOMS. SCHEDULES. CLARITY.</p>
-                    <h2>Better room coordination starts here.</h2>
-                    <p>
-                        A shared starting point for faculty room assignments,
-                        schedules, and room information.
-                    </p>
-                </div>
-
-                <div class="visual-bottom">
-                    <span class="visual-line"></span>
-                    <p>Designed for the UMak community</p>
-                </div>
-            </aside>
-
         </section>
+
+        <aside class="login-visual">
+            <div class="visual-top">
+                <span class="visual-label">
+                    <span class="visual-label-dot"></span>
+                    ROOMAK / UMAK
+                </span>
+            </div>
+
+            <div class="visual-copy">
+                <p class="visual-eyebrow">ROOMS. SCHEDULES. CLARITY.</p>
+                <h2>
+                    <span class="vl vl-1">Better room</span>
+                    <span class="vl vl-2">coordination</span>
+                    <span class="vl vl-3">starts here.</span>
+                </h2>
+                <p>
+                    A shared starting point for faculty room assignments,
+                    schedules, and room information.
+                </p>
+            </div>
+
+            <div class="visual-bottom">
+                <span class="visual-line"></span>
+                <p>Designed for the UMak community</p>
+            </div>
+        </aside>
+
     </main>
 </body>
 </html>
