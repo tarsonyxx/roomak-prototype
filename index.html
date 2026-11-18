@@ -38,6 +38,12 @@
         } catch (e) { /* ignore */ }
     </script>
 
+    <!-- Warm the cache while the visitor reads the notice, so the sign-in page opens instantly. -->
+    <link rel="prefetch" href="pages/login.html">
+    <link rel="prefetch" href="css/pages/login.css" as="style">
+    <link rel="prefetch" href="js/login-fx.js" as="script">
+    <link rel="prefetch" href="js/auth.js" as="script">
+
     <script src="js/notice.js" defer></script>
     <script src="js/notice-fx.js" defer></script>
 </head>

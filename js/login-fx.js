@@ -36,25 +36,40 @@
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
-    var rectLeft = 0, rectTop = 0;
-    function updateRect() {
-        var r = shell.getBoundingClientRect();
-        rectLeft = r.left;
-        rectTop = r.top;
-    }
-    updateRect();
-    window.addEventListener("resize", updateRect, { passive: true });
+    // Variables go on the backdrop, not the shell, so a mouse move never restyles the form.
+    var backdrop = shell.querySelector(".login-backdrop");
+    if (!backdrop) return;
 
-    var targetX = 0, targetY = 0, currentX = 0, currentY = 0, frame = 0;
+    var targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+    var mouseX = 0, mouseY = 0, glowReady = false;
+    var frame = 0;
 
+    // Ignore the mouse until the intro animation has finished (about 1.3s). Parallax
+    // during startup competes with the entrance animation for the same frames.
+    var INTRO_MS = 1400;
+    var armed = false;
+    window.setTimeout(function () {
+        armed = true;
+        backdrop.classList.add("is-parallax");
+        if (glowReady && !frame) frame = window.requestAnimationFrame(tick);
+    }, INTRO_MS);
+
+    // All style writes happen once per frame here; pointermove only records targets.
     function tick() {
+        frame = 0;
         currentX += (targetX - currentX) * 0.075;
         currentY += (targetY - currentY) * 0.075;
-        shell.style.setProperty("--px", currentX.toFixed(3));
-        shell.style.setProperty("--py", currentY.toFixed(3));
+
+        var style = backdrop.style;
+        style.setProperty("--px", currentX.toFixed(3));
+        style.setProperty("--py", currentY.toFixed(3));
+        if (glowReady) {
+            style.setProperty("--mx", mouseX + "px");
+            style.setProperty("--my", mouseY + "px");
+        }
 
         var moving = Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002;
-        frame = moving ? window.requestAnimationFrame(tick) : 0;
+        if (moving) frame = window.requestAnimationFrame(tick);
     }
 
     window.addEventListener("pointermove", function (event) {
@@ -65,9 +80,12 @@
         targetX = (event.clientX / width - 0.5) * 2;
         targetY = (event.clientY / height - 0.5) * 2;
 
-        shell.style.setProperty("--mx", (event.clientX - rectLeft).toFixed(0) + "px");
-        shell.style.setProperty("--my", (event.clientY - rectTop).toFixed(0) + "px");
+        // Document-relative coordinates: the backdrop starts at the document origin,
+        // so no cached or live getBoundingClientRect() is needed.
+        mouseX = Math.round(event.pageX);
+        mouseY = Math.round(event.pageY);
+        glowReady = true;
 
-        if (!frame) frame = window.requestAnimationFrame(tick);
+        if (armed && !frame) frame = window.requestAnimationFrame(tick);
     }, { passive: true });
 })();

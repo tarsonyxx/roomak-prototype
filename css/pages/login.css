@@ -47,11 +47,6 @@ body.login-page {
 }
 
 .login-shell {
-    --px: 0;
-    --py: 0;
-    --mx: 28%;
-    --my: 38%;
-
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
@@ -72,6 +67,13 @@ body.login-page {
 /* ---------- Backdrop: layered, purely decorative ---------- */
 
 .login-backdrop {
+    /* Pointer variables live here, not on .login-shell, so a mouse move only
+       restyles the backdrop and never the form. */
+    --px: 0;
+    --py: 0;
+    --mx: 28vw;
+    --my: 38vh;
+
     position: absolute;
     z-index: 0;
     inset: 0;
@@ -82,8 +84,12 @@ body.login-page {
 
 .bd-glow {
     position: absolute;
-    inset: 0;
-    background: radial-gradient(560px circle at var(--mx) var(--my), rgba(250, 210, 68, 0.2), transparent 62%);
+    top: 0;
+    left: 0;
+    width: 1120px;
+    height: 1120px;
+    translate: calc(var(--mx) - 560px) calc(var(--my) - 560px);
+    background: radial-gradient(circle closest-side, rgba(250, 210, 68, 0.2), transparent 62%);
 }
 
 .bd-halftone {
@@ -103,30 +109,60 @@ body.login-page {
 
 .bd-slab-blue {
     translate: calc(var(--px) * 10px) calc(var(--py) * 6px);
+}
+
+.bd-slab-blue::before {
+    position: absolute;
+    inset: 0;
+    content: "";
     background: linear-gradient(135deg, #0f338a 0%, var(--stg-blue) 48%, var(--stg-blue-light) 100%);
     clip-path: polygon(0 0, 60% 0, 41% 100%, 0 100%);
 }
 
 .bd-slab-gold {
     translate: calc(var(--px) * 16px) calc(var(--py) * 8px);
+}
+
+.bd-slab-gold::before {
+    position: absolute;
+    inset: 0;
+    content: "";
     background: linear-gradient(180deg, var(--stg-gold-light), var(--stg-gold));
     clip-path: polygon(60% 0, 65.5% 0, 46.5% 100%, 41% 100%);
 }
 
 .bd-slab-white {
     translate: calc(var(--px) * 22px) calc(var(--py) * 10px);
+}
+
+.bd-slab-white::before {
+    position: absolute;
+    inset: 0;
+    content: "";
     background: #ffffff;
     clip-path: polygon(67% 0, 68.4% 0, 49.4% 100%, 48% 100%);
 }
 
 .bd-slab-sky {
     translate: calc(var(--px) * 14px) calc(var(--py) * 8px);
+}
+
+.bd-slab-sky::before {
+    position: absolute;
+    inset: 0;
+    content: "";
     background: linear-gradient(200deg, var(--stg-sky), var(--stg-blue-light));
     clip-path: polygon(78% 0, 100% 0, 100% 38%);
 }
 
 .bd-slab-burst {
     translate: calc(var(--px) * 18px) calc(var(--py) * 10px);
+}
+
+.bd-slab-burst::before {
+    position: absolute;
+    inset: 0;
+    content: "";
     background: linear-gradient(200deg, var(--stg-gold-light), var(--stg-gold));
     clip-path: polygon(100% 50%, 100% 100%, 66% 100%);
 }
@@ -163,7 +199,7 @@ body.login-page {
     height: 38px;
     border: 4px solid var(--stg-gold-light);
     translate: calc(var(--px) * 40px) calc(var(--py) * 30px);
-    transform: rotate(45deg);
+    rotate: 45deg;
 }
 
 .bd-shape-cross {
@@ -355,10 +391,29 @@ body.login-page {
     min-width: 0;
     margin-left: clamp(-56px, -3.5vw, 0px);
 
-    /* The shadow follows the angled corners of the panel inside. */
-    filter:
-        drop-shadow(10px 10px 0 var(--stg-gold))
-        drop-shadow(0 30px 44px rgba(2, 8, 24, 0.55));
+}
+
+/* The shadows follow the angled corners of the panel. They are drawn by two static
+   pseudo-elements instead of filter: drop-shadow(), which is re-blurred every frame
+   while the card and its contents animate in. */
+.login-card::before,
+.login-card::after {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+}
+
+.login-card::before {
+    translate: 10px 10px;
+    background: var(--stg-gold);
+    clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 34px 100%, 0 calc(100% - 34px));
+}
+
+.login-card::after {
+    inset: 0 -10px -10px 0;
+    box-shadow: 0 30px 44px rgba(2, 8, 24, 0.55);
 }
 
 .login-form-panel {
@@ -838,19 +893,19 @@ body.login-page .demo-note {
         height: var(--banner-h);
     }
 
-    .bd-slab-blue {
+    .bd-slab-blue::before {
         clip-path: polygon(0 0, 100% 0, 100% 58%, 0 86%);
     }
 
-    .bd-slab-gold {
+    .bd-slab-gold::before {
         clip-path: polygon(0 86%, 100% 58%, 100% 67%, 0 95%);
     }
 
-    .bd-slab-white {
+    .bd-slab-white::before {
         clip-path: polygon(0 97%, 100% 69%, 100% 72%, 0 100%);
     }
 
-    .bd-slab-sky {
+    .bd-slab-sky::before {
         clip-path: polygon(70% 0, 100% 0, 100% 40%);
     }
 
@@ -858,6 +913,9 @@ body.login-page .demo-note {
         inset: auto -20px -20px auto;
         width: 55%;
         height: 220px;
+    }
+
+    .bd-slab-burst::before {
         clip-path: polygon(100% 0, 100% 100%, 0 100%);
     }
 
@@ -911,10 +969,14 @@ body.login-page .demo-note {
         gap: 5px;
     }
 
-    .login-card {
-        filter:
-            drop-shadow(7px 7px 0 var(--stg-gold))
-            drop-shadow(0 22px 34px rgba(2, 8, 24, 0.5));
+    .login-card::before {
+        translate: 7px 7px;
+        clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 26px 100%, 0 calc(100% - 26px));
+    }
+
+    .login-card::after {
+        inset: 0 -7px -7px 0;
+        box-shadow: 0 22px 34px rgba(2, 8, 24, 0.5);
     }
 
     .login-form-panel {
@@ -958,6 +1020,16 @@ body.login-page .demo-note {
 
 /* ---------- Motion ---------- */
 
+/* Parallax layers are promoted to their own GPU layer only after the intro has
+   finished (js adds .is-parallax). Doing it up front makes the startup animation slower. */
+.login-backdrop.is-parallax .bd-glow,
+.login-backdrop.is-parallax .bd-halftone,
+.login-backdrop.is-parallax .bd-slab,
+.login-backdrop.is-parallax .bd-word,
+.login-backdrop.is-parallax .bd-shape {
+    will-change: translate;
+}
+
 @media (prefers-reduced-motion: no-preference) {
     .bd-slab {
         animation: login-slab-in 760ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
@@ -972,9 +1044,9 @@ body.login-page .demo-note {
         animation: login-fade-in 1100ms 250ms ease-out both;
     }
 
-    .bd-shape-diamond { animation: login-float 7s ease-in-out infinite alternate; }
-    .bd-shape-cross { animation: login-float 9s -3s ease-in-out infinite alternate; }
-    .bd-shape-tri { animation: login-float 8s -5s ease-in-out infinite alternate; }
+    .bd-shape-diamond { animation: login-float 7s 1.4s ease-in-out infinite alternate; }
+    .bd-shape-cross { animation: login-float 9s 1.9s ease-in-out infinite alternate; }
+    .bd-shape-tri { animation: login-float 8s 2.4s ease-in-out infinite alternate; }
 
     .visual-label {
         animation: login-label-in 520ms 160ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
@@ -1057,8 +1129,8 @@ body.login-page .demo-note {
 }
 
 @keyframes login-float {
-    from { margin-top: 0; }
-    to   { margin-top: 18px; }
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(0, 18px, 0); }
 }
 
 @keyframes login-label-in {
