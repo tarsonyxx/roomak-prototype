@@ -1,4 +1,4 @@
-![thumbnail](/assets/screenshots/banner.png)
+![thumbnail](/assets/screenshots/banner.jpg)
 
 >[!Important]
 >
