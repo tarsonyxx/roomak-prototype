@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Dashboard | RooMak</title>
 
+    <link rel="preload" as="image" href="../assets/images/logo.jpg">
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/pages/dashboard.css">
@@ -17,9 +18,9 @@
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
 
     <script>
-        // Apply the saved color theme before the page draws (no light flash in dark mode).
+        // Default to dark mode unless the user explicitly chose light or auto.
         try {
-            var theme = localStorage.getItem("roomak.theme") || "auto";
+            var theme = localStorage.getItem("roomak.theme") || "dark";
             if (theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches))
                 document.documentElement.setAttribute("data-theme", "dark");
         } catch (e) { /* ignore */ }
@@ -33,12 +34,25 @@
     </script>
 </head>
 <body class="dashboard-page">
+<!-- Subtle Slash corner accents framing the workspace (matches login.html) -->
+<div class="dash-backdrop" aria-hidden="true">
+    <span class="dash-slash dash-slash-blue"></span>
+    <span class="dash-slash dash-slash-gold"></span>
+    <span class="dash-slash dash-slash-burst"></span>
+</div>
+
 <div class="app">
     <header class="topbar">
-        <a class="brand" href="dashboard.html" aria-label="RooMak home">
-            <span class="brand-mark" aria-hidden="true"><img src="../assets/images/logo.jpg" alt="" width="40" height="40"></span>
-            <span class="brand-name">RooMak</span>
-        </a>
+        <div class="topbar-left">
+            <a class="brand" href="dashboard.html" aria-label="RooMak home">
+                <span class="brand-mark" aria-hidden="true"><img src="../assets/images/logo.jpg" alt="" width="40" height="40"></span>
+                <span class="brand-name">RooMak</span>
+            </a>
+            <span class="topbar-badge" aria-hidden="true">
+                <span class="badge-dot"></span>
+                UMAK // FLOOR PLAN
+            </span>
+        </div>
         <button class="ghost-btn" id="logoutBtn" type="button">Log out</button>
     </header>
 
@@ -51,25 +65,25 @@
                 </svg>
             </div>
 
-            <!-- Floating dropdown buttons -->
+            <!-- Floating skewed Slash filter chips -->
             <div class="controls">
                 <div class="dd">
                     <button class="chip" id="floorBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span id="floorLabel">2F</span><i class="caret"></i>
+                        <span class="chip-inner"><span id="floorLabel">2F</span><i class="caret"></i></span>
                     </button>
                     <div class="pop" id="floorPop" hidden></div>
                 </div>
 
                 <div class="dd">
                     <button class="chip" id="dayBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span id="dayLabel">Mon</span><i class="caret"></i>
+                        <span class="chip-inner"><span id="dayLabel">Mon</span><i class="caret"></i></span>
                     </button>
                     <div class="pop" id="dayPop" hidden></div>
                 </div>
 
                 <div class="dd">
                     <button class="chip" id="timeBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span id="timeLabel">9:00–10:00 AM</span><i class="caret"></i>
+                        <span class="chip-inner"><span id="timeLabel">9:00–10:00 AM</span><i class="caret"></i></span>
                     </button>
                     <div class="pop pop-time" id="timePop" hidden>
                         <div class="field-row">
@@ -129,12 +143,12 @@
         aria-label="Room requests and issue reports">
 </dialog>
 
-    <script src="../data/rooms.js"></script>
-    <script src="../data/schedules.js"></script>
-    <script src="../js/floorplan.js"></script>
-    <script src="../js/dashboard.js"></script>
-    <script src="../js/room-actions.js"></script>
-    <script src="../js/hints.js"></script>
-    <script src="../js/settings.js"></script>
+    <script src="../data/rooms.js" defer></script> 
+    <script src="../data/schedules.js" defer></script>
+    <script src="../js/floorplan.js" defer></script>
+    <script src="../js/dashboard.js" defer></script>
+    <script src="../js/room-actions.js" defer></script>
+    <script src="../js/hints.js" defer></script>
+    <script src="../js/settings.js" defer></script>
 </body>
 </html>

@@ -18,6 +18,35 @@ const state = {
 
 const timeValid = () => toMin(state.end) > toMin(state.start);
 
+/* ---------- Pre-index & pre-sort schedules once at startup ---------- */
+const SCHEDULE_MAP = Object.create(null);
+for (const item of SCHEDULES) {
+    const key = `${item.roomId}|${item.day}`;
+    (SCHEDULE_MAP[key] || (SCHEDULE_MAP[key] = [])).push(item);
+}
+for (const key in SCHEDULE_MAP) {
+    SCHEDULE_MAP[key].sort((a, b) => toMin(a.start) - toMin(b.start));
+}
+const getBookings = (roomId, day) => SCHEDULE_MAP[`${roomId}|${day}`] || [];
+
+/* ---------- Cache frequently accessed DOM nodes ---------- */
+const dom = {
+    drawer: $("drawer"),
+    drawerBody: $("drawerBody"),
+    hint: $("hint"),
+    floorLabel: $("floorLabel"),
+    dayLabel: $("dayLabel"),
+    timeLabel: $("timeLabel"),
+    timeBtn: $("timeBtn"),
+    timeError: $("timeError"),
+    floorPop: $("floorPop"),
+    dayPop: $("dayPop"),
+    timePop: $("timePop"),
+    actionDialog: $("roomActionDialog"),
+    pops: document.querySelectorAll(".pop"),
+    chips: document.querySelectorAll(".chip"),
+};
+
 /* ---------- small helpers ---------- */
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -33,8 +62,8 @@ function fmtRange(s, e) {            // minutes -> "9:00–10:00 AM"
 
 /* ---------- floating dropdowns ---------- */
 function closePopovers() {
-    document.querySelectorAll(".pop").forEach((p) => (p.hidden = true));
-    document.querySelectorAll(".chip").forEach((b) => b.setAttribute("aria-expanded", "false"));
+    dom.pops.forEach((p) => (p.hidden = true));
+    dom.chips.forEach((b) => b.setAttribute("aria-expanded", "false"));
 }
 function wirePopover(btnId, popId) {
     $(btnId).addEventListener("click", () => {
@@ -54,40 +83,43 @@ document.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         closePopovers();
-        if (!$("roomActionDialog").open) closeDrawer();
+        if (!dom.actionDialog.open) closeDrawer();
     }
 });
-function renderOptions(popId, values, current, labelFn) {
-    $(popId).innerHTML = values.map((v) =>
+function renderOptions(popEl, values, current, labelFn) {
+    popEl.innerHTML = values.map((v) =>
         `<button type="button" class="opt ${v === current ? "selected" : ""}" data-v="${v}">${labelFn(v)}</button>`
     ).join("");
 }
 
-$("floorPop").addEventListener("click", (e) => {
+dom.floorPop.addEventListener("click", (e) => {
     const b = e.target.closest(".opt"); if (!b) return;
     state.floor = b.dataset.v;
     closePopovers();
     showFloor();
 });
-$("dayPop").addEventListener("click", (e) => {
+dom.dayPop.addEventListener("click", (e) => {
     const b = e.target.closest(".opt"); if (!b) return;
     state.day = state.viewDay = b.dataset.v;
     closePopovers();
     refresh();
 });
 // Click anywhere on the time field (not just the clock icon) to open the picker.
-["start", "end"].forEach((id) => $(id).addEventListener("click", () => {
-    try { $(id).showPicker(); } catch (err) { /* older browsers: typing still works */ }
-}));
-["start", "end"].forEach((id) => $(id).addEventListener("change", () => {
-    state[id] = $(id).value;
-    state.viewDay = state.day;
-    refresh();
-}));
+["start", "end"].forEach((id) => {
+    const el = $(id);
+    el.addEventListener("click", () => {
+        try { el.showPicker(); } catch (err) { /* older browsers: typing still works */ }
+    });
+    el.addEventListener("change", () => {
+        state[id] = el.value;
+        state.viewDay = state.day;
+        refresh();
+    });
+});
 
 /* ---------- map ---------- */
 const panZoom = createPanZoom($("viewport"), world, (roomEl) => {
-    $("hint").classList.add("hidden");
+    dom.hint.classList.add("hidden");
     closePopovers();
     if (roomEl) openDrawer(roomEl.dataset.room);
     else closeDrawer();
@@ -104,13 +136,13 @@ function showFloor() {
 
 function refresh() {
     const ok = timeValid();
-    $("floorLabel").textContent = state.floor + "F";
-    $("dayLabel").textContent = state.day;
-    $("timeLabel").textContent = ok ? fmtRange(toMin(state.start), toMin(state.end)) : "Check time";
-    $("timeBtn").classList.toggle("error", !ok);
-    $("timeError").textContent = ok ? "" : "End time must be after start time.";
-    renderOptions("floorPop", Object.keys(FLOORS), state.floor, (n) => "Floor " + n);
-    renderOptions("dayPop", DAYS, state.day, (d) => d);
+    dom.floorLabel.textContent = state.floor + "F";
+    dom.dayLabel.textContent = state.day;
+    dom.timeLabel.textContent = ok ? fmtRange(toMin(state.start), toMin(state.end)) : "Check time";
+    dom.timeBtn.classList.toggle("error", !ok);
+    dom.timeError.textContent = ok ? "" : "End time must be after start time.";
+    renderOptions(dom.floorPop, Object.keys(FLOORS), state.floor, (n) => "Floor " + n);
+    renderOptions(dom.dayPop, DAYS, state.day, (d) => d);
 
     if (ok) {
         const counts = applyTimeRange(world, state.day, state.start, state.end);
@@ -123,16 +155,16 @@ function refresh() {
 function openDrawer(roomId) {
     state.room = roomId;
     state.viewDay = state.day;
-    $("drawer").classList.add("open");
-    $("drawer").setAttribute("aria-hidden", "false");
+    dom.drawer.classList.add("open");
+    dom.drawer.setAttribute("aria-hidden", "false");
     markSelected(world, roomId);
     renderDrawer();
-    $("drawerBody").scrollTop = 0;
+    dom.drawerBody.scrollTop = 0;
 }
 function closeDrawer() {
     state.room = null;
-    $("drawer").classList.remove("open");
-    $("drawer").setAttribute("aria-hidden", "true");
+    dom.drawer.classList.remove("open");
+    dom.drawer.setAttribute("aria-hidden", "true");
     markSelected(world, null);
 }
 
@@ -175,9 +207,54 @@ function availabilitySubtitle(day, bookings, res, selS, selE, valid) {
     return `${day}${res.reason ? " · " + esc(res.reason) : ""}`;
 }
 
+const pct = (m) => ((Math.min(DAY_TO, Math.max(DAY_FROM, m)) - DAY_FROM) / (DAY_TO - DAY_FROM)) * 100;
+const TICKS_HTML = [7, 10, 13, 16, 19].map((h) =>
+    `<span style="left:${pct(h * 60)}%">${h % 12 || 12} ${h >= 12 ? "PM" : "AM"}</span>`).join("");
+
+function buildScheduleInner(id, day, closedAllDay, ok, selS, selE) {
+    const bookings = getBookings(id, day);
+    const segs = daySegments(bookings);
+
+    const blocks = closedAllDay ? "" : bookings.map((b) =>
+        `<i class="blk busy" style="left:${pct(toMin(b.start))}%;width:${pct(toMin(b.end)) - pct(toMin(b.start))}%"></i>`).join("");
+    const sel = ok ? `<i class="blk sel" style="left:${pct(selS)}%;width:${pct(selE) - pct(selS)}%"></i>` : "";
+
+    const list = segs.map((g) => {
+        const hit = ok && g.s < selE && selS < g.e;
+        const when = fmtRange(g.s, g.e);
+        if (g.free) {
+            return closedAllDay ? "" :
+                `<li class="free ${hit ? "hit" : ""}"><span class="when">${when}</span><strong>Free</strong></li>`;
+        }
+        return `<li class="busy ${hit ? "hit" : ""}"><span class="when">${when}</span>` +
+            `<strong>${esc(g.b.activity)}</strong>` +
+            (g.b.faculty ? `<em>${esc(g.b.faculty)}</em>` : "") + `</li>`;
+    }).join("");
+
+    return `
+        <div class="daytabs" role="tablist">
+            ${DAYS.map((d) => `<button type="button" class="${d === day ? "active" : ""}" data-day="${d}">${d}</button>`).join("")}
+        </div>
+        ${closedAllDay
+            ? `<p class="notice">Not available for booking: ${esc(UNAVAILABLE[id])}.</p>`
+            : `<div class="timeline">${blocks}${sel}</div><div class="ticks">${TICKS_HTML}</div>`}
+        <ul class="slots">${list || '<li class="none">No classes scheduled.</li>'}</ul>`;
+}
+
+function renderScheduleOnly() {
+    const id = state.room;
+    if (!id) return;
+    const container = dom.drawerBody.querySelector("#drawerSchedule");
+    if (!container) { renderDrawer(); return; }
+    const ok = timeValid();
+    container.innerHTML = buildScheduleInner(
+        id, state.viewDay, Boolean(UNAVAILABLE[id]), ok, toMin(state.start), toMin(state.end)
+    );
+}
+
 function renderDrawer() {
     const id = state.room;
-    const body = $("drawerBody");
+    const body = dom.drawerBody;
     const scroll = body.scrollTop;
     const cell = ROOM_INDEX[id];
     const special = Boolean(cell.special);
@@ -193,28 +270,7 @@ function renderDrawer() {
 
     const res = ok ? getStatus(id, day, state.start, state.end) : null;
     const closedAllDay = Boolean(UNAVAILABLE[id]);
-    const bookings = SCHEDULES.filter((s) => s.roomId === id && s.day === day)
-        .sort((a, b) => toMin(a.start) - toMin(b.start));
-    const segs = daySegments(bookings);
-
-    const pct = (m) => ((Math.min(DAY_TO, Math.max(DAY_FROM, m)) - DAY_FROM) / (DAY_TO - DAY_FROM)) * 100;
-    const blocks = closedAllDay ? "" : bookings.map((b) =>
-        `<i class="blk busy" style="left:${pct(toMin(b.start))}%;width:${pct(toMin(b.end)) - pct(toMin(b.start))}%"></i>`).join("");
-    const sel = ok ? `<i class="blk sel" style="left:${pct(selS)}%;width:${pct(selE) - pct(selS)}%"></i>` : "";
-    const ticks = [7, 10, 13, 16, 19].map((h) =>
-        `<span style="left:${pct(h * 60)}%">${h % 12 || 12} ${h >= 12 ? "PM" : "AM"}</span>`).join("");
-
-    const list = segs.map((g) => {
-        const hit = ok && g.s < selE && selS < g.e;
-        const when = fmtRange(g.s, g.e);
-        if (g.free) {
-            return closedAllDay ? "" :
-                `<li class="free ${hit ? "hit" : ""}"><span class="when">${when}</span><strong>Free</strong></li>`;
-        }
-        return `<li class="busy ${hit ? "hit" : ""}"><span class="when">${when}</span>` +
-            `<strong>${esc(g.b.activity)}</strong>` +
-            (g.b.faculty ? `<em>${esc(g.b.faculty)}</em>` : "") + `</li>`;
-    }).join("");
+    const bookings = getBookings(id, day);
 
     const photo = info.photo
         ? `<img src="${esc(info.photo)}" alt="Photo of ${esc(info.name || code)}" decoding="async" onerror="this.parentNode.classList.add('empty');this.remove()">`
@@ -243,18 +299,12 @@ function renderDrawer() {
 
     const scheduleBlock = special ? "" : `
             <h3>Schedule</h3>
-            <div class="daytabs" role="tablist">
-                ${DAYS.map((d) => `<button type="button" class="${d === day ? "active" : ""}" data-day="${d}">${d}</button>`).join("")}
-            </div>
-            ${closedAllDay
-            ? `<p class="notice">Not available for booking: ${esc(UNAVAILABLE[id])}.</p>`
-            : `<div class="timeline">${blocks}${sel}</div><div class="ticks">${ticks}</div>`}
-            <ul class="slots">${list || '<li class="none">No classes scheduled.</li>'}</ul>`;
+            <div id="drawerSchedule">${buildScheduleInner(id, day, closedAllDay, ok, selS, selE)}</div>`;
 
     body.innerHTML = `
         <div class="photo ${info.photo ? "" : "empty"}">
             ${photo}
-            <div class="ph"><b>${esc(showCode ? code : (info.name || ""))}</b><span>No photo yet</span></div>
+            <div class="ph"><b>${esc(showCode ? code : (info.name || ""))}</b><span>No photo taken yet :(</span></div>
             <button class="back" type="button" data-close>&larr; Back to map</button>
             <button class="close" type="button" data-close aria-label="Close">&times;</button>
         </div>
@@ -263,13 +313,12 @@ function renderDrawer() {
             <p class="eyebrow">${esc(showCode ? code : (BUILDINGS[prefix] || prefix) + " · " + cell.floor + "F")}</p>
             <h2>${esc(info.name || "Room " + code)}</h2>
             ${renderRoomActionButtons({
-        roomId: id,
-        roomCode: code,
-        roomName: info.name || "Room " + code,
-        special,
-
-              unavailable: closedAllDay
-    })}
+                roomId: id,
+                roomCode: code,
+                roomName: info.name || "Room " + code,
+                special,
+                unavailable: closedAllDay
+            })}
             ${availBlock}
             <dl class="specs">${specs}</dl>
             ${facilitiesBlock}
@@ -278,9 +327,9 @@ function renderDrawer() {
     body.scrollTop = scroll;
 }
 
-$("drawerBody").addEventListener("click", (e) => {
+dom.drawerBody.addEventListener("click", (e) => {
     const d = e.target.closest("[data-day]");
-    if (d) { state.viewDay = d.dataset.day; renderDrawer(); return; }
+    if (d) { state.viewDay = d.dataset.day; renderScheduleOnly(); return; }
     if (e.target.closest("[data-close]")) closeDrawer();
 });
 

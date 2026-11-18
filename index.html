@@ -30,9 +30,9 @@
     <meta name="twitter:card" content="summary_large_image">
 
     <script>
-        // Apply the saved color theme before the page draws (no light flash in dark mode).
+        // Default to dark mode unless the user explicitly chose light or auto.
         try {
-            var theme = localStorage.getItem("roomak.theme") || "auto";
+            var theme = localStorage.getItem("roomak.theme") || "dark";
             if (theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches))
                 document.documentElement.setAttribute("data-theme", "dark");
         } catch (e) { /* ignore */ }

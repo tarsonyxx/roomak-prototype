@@ -73,142 +73,107 @@ img {
    RooMak COLOR PALETTE  -- blue and gold, taken from the logo.
    Change colors here and the whole app updates (light mode first, dark mode below).
    ===================================================================== */
+/* Brand palette (harmonized UMak Navy + Gold across all pages) */
+/* Brand palette (harmonized UMak Navy + Gold across all pages) */
 :root {
-    /* ---- Brand colors ---- */
-    --color-primary: #1c4b9a;          /* royal blue: buttons, links, selected things */
-    --color-primary-hover: #143a78;    /* darker blue on hover */
-    --color-accent: #eaa828;           /* gold: highlights, focus rings, small accents */
-    --color-navy: #0b2559;             /* deep navy: headings, logo backdrop, dark panels */
-    --color-sky: #6cadce;              /* soft sky blue: glows and backgrounds */
-    --color-gold-light: #fad244;       /* bright gold: the shiny part of gradients */
-    --color-gold-text: #8a5d00;        /* dark gold for small text on white (labels) */
-    --on-gold: #0b2559;                /* text that sits on top of gold buttons */
+    --color-navy:        #0b2559;
+    --color-primary:     #1c4b9a;
+    --color-sky:         #6cadce;
+    --color-accent:      #eaa828;
+    --color-gold-light:  #fad244;
+    --color-gold-text:   #8f5d00;
+    --on-gold:           #0b2559;
 
-    /* The same colors as numbers (red, green, blue), so transparent versions can be made */
     --primary-rgb: 28, 75, 154;
-    --accent-rgb: 234, 168, 40;
-    --sky-rgb: 108, 173, 206;
-    --gold-rgb: 250, 210, 68;
+    --accent-rgb:  234, 168, 40;
+    --gold-rgb:    250, 210, 68;
+    --sky-rgb:     108, 173, 206;
 
-    /* ---- Page and text ---- */
-    --color-ink: #0d1f3f;              /* main text */
-    --color-muted: #5b6b86;            /* secondary text */
-    --color-page: #f2f6fc;             /* page background */
-    --color-surface: #ffffff;          /* cards, panels, inputs */
-    --color-border: #dbe4f0;
-    --color-error: #c62828;
-    --color-success: #18794e;
-    --shadow-card: 0 24px 70px rgba(8, 31, 77, 0.12);
+    --color-page:          #e8effa;
+    --color-surface:       #ffffff;
+    --color-surface-glass: rgba(255, 255, 255, 0.92);
+    --color-ink:           #0b1938;
+    --color-muted:         #475a7d;
+    --color-border:        #c7d4ea;
+    --border-hover:        #94add6;
 
-    /* ---- Gradients ---- */
-    --gradient-brand: linear-gradient(135deg, #0c2f6e 0%, #1c4b9a 55%, #2f6fbd 100%);   /* buttons */
-    --gradient-gold: linear-gradient(135deg, var(--color-gold-light), var(--color-accent));
-    --bg-ethereal:                                                                       /* page background glow */
-        radial-gradient(820px 480px at 4% -10%, rgba(var(--sky-rgb), 0.26), transparent 62%),
-        radial-gradient(900px 560px at 104% -4%, rgba(var(--gold-rgb), 0.42), transparent 60%),
-        radial-gradient(760px 460px at 100% 104%, rgba(var(--gold-rgb), 0.20), transparent 62%),
+    --gradient-gold:  linear-gradient(135deg, var(--color-gold-light), var(--color-accent));
+    --gradient-brand: linear-gradient(135deg, var(--color-navy), var(--color-primary));
+    --bg-ethereal:
+        radial-gradient(860px 440px at 0% -5%, rgba(28, 75, 154, 0.14), transparent 60%),
+        radial-gradient(760px 420px at 100% 0%, rgba(250, 210, 68, 0.2), transparent 58%),
         var(--color-page);
+    --primary-glow: rgba(28, 75, 154, 0.34);
 
-    /* ---- Interface extras ---- */
-    --primary-soft: rgba(var(--gold-rgb), 0.20);      /* light gold tint behind selected / hovered things */
-    --primary-ring: rgba(var(--accent-rgb), 0.30);    /* gold glow around an open dropdown */
-    --primary-glow: rgba(var(--accent-rgb), 0.55);    /* pulsing glow in the first-time tips (gold) */
-    --border-hover: #b3c4dd;                          /* border color when hovering */
-    --card-border: rgba(219, 228, 240, 0.85);         /* thin border around cards */
-    --glass: rgba(255, 255, 255, 0.97);               /* floating buttons and legend background */
-    --hint-bg: rgba(8, 31, 77, 0.82);                 /* dark pills */
-    --shadow-soft: rgba(8, 31, 77, 0.08);
-    --shadow-medium: rgba(8, 31, 77, 0.16);
+    /* Crisp white-blue floor plan canvas */
+    --plan-bg:       #f8faff;
+    --plan-dot:      #cbd7ed;
+    --plan-corridor: #e6eefc;
+    --plan-fixed:    #dce6f7;
+    --plan-icon:     #3b5078;
+    --plan-icon-soft:#7388b0;
+    --plan-bracket:  #1c4b9a;
 
-    /* ---- Room status (meaning stays the same, so these are not blue or gold) ---- */
-    /* green = available */
-    --available-bg: #e7f7ee;        /* room fill */
-    --available-border: #6cc596;    /* room outline */
-    --available-line: #bfe6cf;      /* outline of the info box */
-    --available-text: #17663f;      /* text */
-    --available-track: #cdeedb;     /* free time on the day timeline */
+    /* Clean, bright room colors (Light Mode) */
+    --available-bg:       #dcfce7;
+    --available-border:   #16a34a;
+    --available-text:     #15803d;
+    --available-track:    #bbf7d0;
 
-    /* yellow = unavailable / maintenance */
-    --unavailable-bg: #fff4d6;
-    --unavailable-border: #eab93f;
-    --unavailable-line: #f3dc9a;
-    --unavailable-text: #8a6200;
+    --occupied-bg:        #fef3c7;
+    --occupied-border:    #d97706;
+    --occupied-text:      #b45309;
 
-    /* red = in use */
-    --occupied-bg: #fde8e8;
-    --occupied-border: #ec8b8b;
-    --occupied-line: #f4c0c0;
-    --occupied-text: #a12a2a;
+    --unavailable-bg:     #ffe4e6;
+    --unavailable-border: #e11d48;
+    --unavailable-text:   #be123c;
 
-    /* grey = special rooms (not reservable) */
-    --special-bg: #f3f6fb;
-    --special-border: #ccd5e3;
-
-    /* ---- Floor plan canvas ---- */
-    --plan-bg: #f8fbff;                         /* map background */
-    --plan-dot: #dbe4f0;                        /* dots on the map background */
-    --plan-corridor: rgba(var(--accent-rgb), 0.08);      /* corridor strip */
-    --plan-fixed: #eef3fa;                      /* stairs and restroom tiles */
-    --plan-icon: #4d6285;                       /* stairs / restroom symbols */
-    --plan-icon-soft: #bfcce0;                  /* lighter lines inside the symbols */
-    --plan-bracket: #a47f2e;;                    /* B2 | BW | B3 bracket lines (gold) */
-
-    /* ---- Room photo placeholder ---- */
-    --photo-bg: #e3ecfa;
-    --photo-from: #dbe8fb;
-    --photo-to: #fff3cf;
+    --special-bg:         #e2eaf8;
+    --special-border:     #647aa3;
 }
 
-
-/* =====================================================================
-   DARK MODE -- the same names as above with night colors.
-   Turned on by Settings > Appearance.
-   ===================================================================== */
 :root[data-theme="dark"] {
-    color-scheme: dark;                         /* dark date pickers, scrollbars, etc. */
+    --color-navy:       #0b2559;
+    --color-primary:    #4f8ef7;
+    --color-gold-text:  #fad244;
 
-    --color-primary: #4a86e8;          /* lighter blue so small blue text stays readable */
-    --color-primary-hover: #6a9cf0;
-    --color-accent: #f0b63a;
-    --color-gold-text: #f5cd6a;
-    --primary-rgb: 90, 148, 240;
-    --accent-rgb: 240, 182, 58;
-
-    --color-ink: #e8eefb;
-    --color-muted: #9db0d0;
-    --color-page: #060f26;
-    --color-surface: #0d1a38;
-    --color-border: #1d2e55;
-    --color-error: #ef6b6b;
-    --color-success: #3dc488;
-    --shadow-card: 0 24px 70px rgba(0, 0, 0, 0.5);
+    --color-page:   #060f24;
+    --color-surface:#0d1a38;
+    --color-surface-glass: rgba(13, 26, 56, 0.9);
+    --color-ink:    #f4f7ff;
+    --color-muted:  #9cb0d4;
+    --color-border: #1e315c;
+    --border-hover: #35528f;
 
     --bg-ethereal:
-        radial-gradient(820px 480px at 4% -10%, rgba(var(--sky-rgb), 0.14), transparent 62%),
-        radial-gradient(900px 560px at 104% -4%, rgba(var(--gold-rgb), 0.20), transparent 60%),
-        radial-gradient(760px 460px at 100% 104%, rgba(var(--gold-rgb), 0.08), transparent 62%),
+        radial-gradient(860px 440px at 0% -5%, rgba(28, 75, 154, 0.28), transparent 60%),
+        radial-gradient(760px 420px at 100% 0%, rgba(250, 210, 68, 0.12), transparent 58%),
         var(--color-page);
+    --primary-glow: rgba(79, 142, 247, 0.42);
 
-    --primary-soft: rgba(var(--accent-rgb), 0.16);
-    --primary-ring: rgba(var(--accent-rgb), 0.28);
-    --border-hover: #38507f;
-    --card-border: rgba(29, 46, 85, 0.85);
-    --glass: rgba(13, 26, 56, 0.97);
-    --hint-bg: rgba(0, 0, 0, 0.7);
-    --shadow-soft: rgba(0, 0, 0, 0.3);
-    --shadow-medium: rgba(0, 0, 0, 0.5);
+    /* Deep navy floor plan so jewel-toned rooms pop cleanly */
+    --plan-bg:       #071127;
+    --plan-dot:      #172952;
+    --plan-corridor: #0d1c3d;
+    --plan-fixed:    #11234a;
+    --plan-icon:     #9db3db;
+    --plan-icon-soft:#5e76a6;
+    --plan-bracket:  #6881b3;
 
-    --available-bg: #0f3324;   --available-border: #2f9e68;  --available-line: #1f5a3d;
-    --available-text: #7ddba8; --available-track: #1b4a33;
-    --unavailable-bg: #3a2f10; --unavailable-border: #c99a2e; --unavailable-line: #5a4616;
-    --unavailable-text: #f0c964;
-    --occupied-bg: #3b1b1f;    --occupied-border: #c2565a;   --occupied-line: #5c2a2e;
-    --occupied-text: #f19a9d;
-    --special-bg: #12213f;     --special-border: #2a3f6b;
+    /* Jewel-toned, clear room colors (Dark Mode — zero muddiness) */
+    --available-bg:       #0d3832;
+    --available-border:   #10b981;
+    --available-text:     #34d399;
+    --available-track:    #134e44;
 
-    --plan-bg: #091430;        --plan-dot: #16264a;          --plan-corridor: rgba(var(--primary-rgb), 0.07);
-    --plan-fixed: #12213f;     --plan-icon: #9fb4d8;         --plan-icon-soft: #3a507d;
-    --plan-bracket: #4a6fb8;
+    --occupied-bg:        #2b2814;
+    --occupied-border:    #fad244;
+    --occupied-text:      #fad244;
 
-    --photo-bg: #14234a;       --photo-from: #14264f;        --photo-to: #3a2f14;
+    --unavailable-bg:     #381629;
+    --unavailable-border: #f43f5e;
+    --unavailable-text:   #fb7185;
+
+    --special-bg:         #13264f;
+    --special-border:     #4c69a3;
 }

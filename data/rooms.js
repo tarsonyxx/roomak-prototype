@@ -88,7 +88,7 @@ const DEFAULT_INFO = {
 };
 
 // Per-room details. Any field you leave out falls back to DEFAULT_INFO.
-// photo: path to an image file (if missing, a "No photo yet" placeholder shows).
+// photo: path to an image file (if missing, a "No photo taken yet :(" placeholder shows).
 const ROOM_INFO = {
   "B2-306": {
     capacity: 40,

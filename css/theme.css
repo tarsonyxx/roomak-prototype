@@ -1,9 +1,8 @@
 /* =====================================================================
-   RooMak LOOK -- logo, gradient buttons, gold highlights. Loaded LAST on every page.
+   RooMak LOOK -- Slash identity overrides. Loaded LAST on every page.
    The colors themselves live in the palette at the bottom of base.css.
    ===================================================================== */
 
-/* Names used by the "Before you get started" page */
 :root {
     --blue: var(--color-primary);
     --blue-dark: var(--color-navy);
@@ -12,16 +11,15 @@
 
 /* ---------- Background: soft blue and gold glow ---------- */
 body { background: var(--bg-ethereal); }
-.dashboard-page { background: var(--bg-ethereal); }
 
 /* ---------- Logo image instead of the "R" ---------- */
 .brand .brand-mark {
     padding: 0;
     overflow: hidden;
     background: var(--color-navy);
-    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.25);
+    box-shadow: 3px 3px 0 var(--color-gold-light);
 }
-.brand .brand-mark::after { display: none; }              /* the little orange dot */
+.brand .brand-mark::after { display: none; }
 .brand-mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 /* ---------- Main buttons: gold, with navy text ---------- */
@@ -32,13 +30,13 @@ body { background: var(--bg-ethereal); }
 .tip-next {
     background-image: var(--gradient-gold);
     color: var(--on-gold);
-    border-color: rgba(var(--accent-rgb), 0.9);
-    box-shadow: 0 6px 16px rgba(var(--accent-rgb), 0.38);
+    border-color: var(--color-navy);
+    box-shadow: 0 6px 16px rgba(2, 8, 24, 0.25);
 }
 .room-action-request:not(:disabled) .room-action-icon { background: rgba(11, 37, 89, 0.12); color: var(--on-gold); }
 .room-action-request:not(:disabled) .room-action-copy small { color: rgba(11, 37, 89, 0.78); }
 .room-action-request:not(:disabled) .room-action-chevron { color: var(--on-gold); }
-.avatar { background-image: var(--gradient-brand); }       /* the profile circle stays navy */
+.avatar { background-image: var(--gradient-brand); }
 @media (hover: hover) {
     .button-primary:not(:disabled):hover,
     .room-action-request:not(:disabled):hover,
@@ -46,19 +44,71 @@ body { background: var(--bg-ethereal); }
     .continue-button:not(:disabled):hover,
     .tip-next:hover {
         background-image: var(--gradient-gold);
-        border-color: var(--color-accent);
-        filter: brightness(1.05);
-        box-shadow: 0 9px 24px rgba(var(--accent-rgb), 0.55);
+        border-color: var(--color-navy);
+        filter: brightness(1.04);
+        box-shadow: 0 8px 20px rgba(2, 8, 24, 0.32);
     }
 }
 
+/* ---------- Calm, crisp-rounded utility controls & dialogs on Dashboard ---------- */
+.dashboard-page .icon-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: none;
+}
+
+.dashboard-page .room-action-button,
+.dashboard-page .room-action-icon,
+.dashboard-page .action-dialog-close,
+.dashboard-page .action-button-primary,
+.dashboard-page .action-button-secondary,
+.dashboard-page .action-field-grid .form-input,
+.dashboard-page .weekday-option span,
+.dashboard-page .panel-x,
+.dashboard-page .panel-btn,
+.dashboard-page .seg-row,
+.dashboard-page .seg-row button,
+.dashboard-page .panel-list,
+.dashboard-page .issue-card,
+.dashboard-page .issue-empty,
+.dashboard-page .tip-next,
+.dashboard-page .room-action-dialog [class*="pill"],
+.dashboard-page .room-action-dialog [class*="chip"],
+.dashboard-page .room-action-dialog [class*="badge"],
+.dashboard-page .room-action-dialog [class*="slot"],
+.dashboard-page .room-action-dialog [class*="conflict"],
+.dashboard-page .room-action-dialog [class*="free"],
+.dashboard-page .room-action-dialog .issue-status,
+.dashboard-page .room-action-dialog button {
+    border-radius: 6px;
+}
+
+.dashboard-page .room-action-dialog,
+.dashboard-page .panel-dialog,
+.dashboard-page .tip-card {
+    border: 1px solid var(--color-border);
+    border-top: 4px solid var(--color-accent);
+    border-radius: 8px;
+    box-shadow: 0 24px 60px rgba(2, 8, 24, 0.55);
+}
+
 /* ---------- Gold highlights: hover, selected, labels, focus ---------- */
-.eyebrow, .tip-count { color: var(--color-gold-text); }
-.chip[aria-expanded="true"], .daytabs button.active, .blk.sel, .weekday-option input:checked + span { border-color: var(--color-accent); }
-.slots li.hit { box-shadow: 0 0 0 2px var(--color-accent) inset; }
+.eyebrow, .tip-count { color: var(--color-gold-light); }
+.chip[aria-expanded="true"], .daytabs button.active, .weekday-option input:checked + span { border-color: var(--color-navy); }
+
+.slots li.hit { box-shadow: 0 0 0 1.5px var(--color-accent) inset; }
 @media (hover: hover) {
-    .chip:hover, .ghost-btn:hover, .icon-btn:hover, .zoom button:hover, #tipsBtn:hover,
-    .daytabs button:hover, .panel-btn:hover, .room-action-button:not(:disabled):hover { border-color: var(--color-accent); }
+    .icon-btn:hover, #tipsBtn:hover,
+    .panel-btn:hover, .room-action-button:not(:disabled):hover {
+        border-color: var(--color-accent);
+        background: var(--color-gold-light);
+        color: var(--color-navy);
+    }
 }
 .form-input:focus { box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.22); }
 :where(button, input[type="button"], input[type="submit"], input[type="reset"], .btn, [role="button"], a.button, a.btn):focus-visible {
@@ -68,36 +118,24 @@ body { background: var(--bg-ethereal); }
 .weekday-option input:focus-visible + span { outline-color: rgba(var(--accent-rgb), 0.85); }
 .room-action-report .room-action-icon { color: var(--color-gold-text); background: rgba(var(--accent-rgb), 0.16); }
 
-/* Map: navy building labels, gold hover, deep-gold selected room */
+/* Map: navy building labels, gold hover, sky-blue selected room */
 .plan .region-label { fill: var(--color-navy); }
 :root[data-theme="dark"] .plan .region-label { fill: var(--color-gold-light); }
-.room.selected rect { stroke: var(--color-gold-text); }
+.room.selected rect { stroke: #1c64d1; }
+:root[data-theme="dark"] .room.selected rect { stroke: var(--color-sky); }
 @media (hover: hover) {
-    .room:hover rect { stroke: var(--color-primary); }                         /* light mode: blue */
-    :root[data-theme="dark"] .room:hover rect { stroke: var(--color-accent); } /* dark mode: gold */
+    .room:hover rect { stroke: var(--color-navy); }
+    :root[data-theme="dark"] .room:hover rect { stroke: var(--color-gold-light); }
 }
 
-/* Day buttons in the room panel: no lift on hover (the scrolling row was cutting off their top edge) */
+/* Day buttons in the room panel: no lift on hover */
 .daytabs button:hover { transform: none !important; box-shadow: none !important; filter: none !important; }
 
-/* Thin gold edge along the top of the map and the room panel */
-.map-card, .drawer { border-top: 3px solid var(--color-accent); }
+.tip-target { outline-color: var(--color-accent); border-radius: 6px; }
+.tip-target::after { border-radius: 6px; box-shadow: 0 0 0 9px rgba(var(--accent-rgb), 0.22), 0 0 26px 8px var(--primary-glow); }
 
-.tip-target { outline-color: var(--color-accent); }
-.tip-target::after { box-shadow: 0 0 0 9px rgba(var(--accent-rgb), 0.22), 0 0 26px 8px var(--primary-glow); }
-
-/* ---------- Login page ---------- */
-/* The login page's look now lives entirely in css/pages/login.css.
-   (Rules that used to be here would override it, because theme.css loads last.) */
-
-/* ---------- "Before you get started" page (index.html in the main folder) ---------- */
-.notice .accent { background-image: linear-gradient(90deg, #0c2f6e 0%, #1c4b9a 38%, var(--color-sky) 58%, var(--color-gold-light) 80%, var(--color-accent) 100%); }
-.notice .eyebrow { border-color: rgba(var(--accent-rgb), 0.55); background: rgba(var(--gold-rgb), 0.24); color: var(--color-gold-text); }
-.notice .brand .brand-mark { width: 38px; height: 38px; border-radius: 11px; }
-
-/* ---------- Dark mode: a few component colors that are not in variables ---------- */
+/* ---------- Dark mode adjustments ---------- */
 :root[data-theme="dark"] .issue-status.status-open { background: var(--unavailable-bg); color: var(--unavailable-text); }
 :root[data-theme="dark"] .room-action-report .room-action-icon { color: #f0c46a; }
 :root[data-theme="dark"] .form-input:hover { border-color: var(--border-hover); }
 :root[data-theme="dark"] .form-input::placeholder { color: #66748b; }
-:root[data-theme="dark"] .brand .brand-mark { box-shadow: 0 4px 14px rgba(var(--primary-rgb), 0.35); }
