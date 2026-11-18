@@ -2,308 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f5f7fb">
-    <meta name="description" content="RooMak prototype notice and access information.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b2559">
+    <meta name="description" content="Find free rooms, check schedules and request a room at the University of Makati. A student research prototype.">
+
     <title>Notice | RooMak</title>
+
     <link rel="stylesheet" href="css/base.css">
-
-    <style>
-        :root {
-            color-scheme: light;
-            --blue: #2459a9;
-            --blue-dark: #173b75;
-            --orange: #ff8e3c;
-            --text: #202938;
-            --muted: #667085;
-            --border: #e4e8ef;
-            --surface: #ffffff;
-            --background: #f5f7fb;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            min-height: 100dvh;
-            padding: 24px 16px;
-            display: grid;
-            place-items: center;
-            background: var(--background);
-            color: var(--text);
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", sans-serif;
-            line-height: 1.6;
-        }
-
-        .notice {
-            width: 100%;
-            max-width: 560px;
-            overflow: hidden;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            box-shadow: 0 16px 48px rgba(24, 39, 75, 0.07);
-            animation: notice-enter 620ms cubic-bezier(.2, .75, .25, 1) both;
-            transform-origin: center;
-        }
-
-        .accent {
-            height: 5px;
-            background: linear-gradient(
-                90deg,
-                var(--blue) 0%,
-                var(--blue) 72%,
-                var(--orange) 72%,
-                var(--orange) 100%
-            );
-            background-size: 200% 100%;
-            animation: accent-reveal 900ms cubic-bezier(.22, 1, .36, 1) both;
-        }
-
-        .content { padding: clamp(24px, 6vw, 40px); }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 32px;
-            color: var(--blue-dark);
-            font-size: 1.3rem;
-            font-weight: 800;
-            letter-spacing: -0.6px;
-            animation: rise-in 520ms 100ms ease-out both;
-        }
-
-        .brand-mark {
-            display: grid;
-            width: 38px;
-            height: 38px;
-            place-items: center;
-            border-radius: 11px;
-            background: var(--blue);
-            color: white;
-            font-size: 1.1rem;
-            letter-spacing: -1px;
-            box-shadow: 0 5px 12px rgba(36, 89, 169, 0.16);
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            margin-bottom: 12px;
-            padding: 5px 10px;
-            border: 1px solid #f8d6bd;
-            border-radius: 999px;
-            background: #fff6ef;
-            color: #96501d;
-            font-size: 0.76rem;
-            font-weight: 700;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            animation: rise-in 480ms 160ms ease-out both;
-        }
-
-        .eyebrow::before {
-            content: "";
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--orange);
-        }
-
-        h1 {
-            margin: 0 0 14px;
-            color: var(--blue-dark);
-            font-size: clamp(1.8rem, 6vw, 2.25rem);
-            line-height: 1.2;
-            letter-spacing: -1px;
-            animation: rise-in 520ms 200ms ease-out both;
-        }
-
-        .intro {
-            margin: 0;
-            color: var(--muted);
-            font-size: 0.98rem;
-            animation: rise-in 520ms 250ms ease-out both;
-        }
-
-        .details {
-            display: grid;
-            gap: 18px;
-            margin: 28px 0;
-        }
-
-        .detail {
-            display: grid;
-            grid-template-columns: 40px minmax(0, 1fr);
-            gap: 13px;
-            align-items: start;
-            animation: rise-in 480ms ease-out both;
-        }
-
-        .detail:nth-child(1) { animation-delay: 300ms; }
-        .detail:nth-child(2) { animation-delay: 360ms; }
-        .detail:nth-child(3) { animation-delay: 420ms; }
-        .detail:nth-child(4) { animation-delay: 480ms; }
-
-        .detail-icon {
-            display: grid;
-            width: 40px;
-            height: 40px;
-            place-items: center;
-            border-radius: 12px;
-            background: #edf3ff;
-            color: var(--blue);
-            font-size: 1.1rem;
-            transition: background 180ms ease, transform 180ms ease;
-        }
-
-        .detail:hover .detail-icon {
-            transform: translateY(-2px);
-            background: #e3edff;
-        }
-
-        .detail h2 {
-            margin: 0 0 4px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
-
-        .detail p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 0.88rem;
-        }
-
-        .acknowledgement {
-            display: flex;
-            gap: 11px;
-            align-items: flex-start;
-            margin-top: 24px;
-            padding: 15px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: #fafbfc;
-            cursor: pointer;
-            animation: rise-in 480ms 530ms ease-out both;
-            transition: border-color 180ms ease, background 180ms ease;
-        }
-
-        .acknowledgement:has(input:checked) {
-            border-color: rgba(36, 89, 169, 0.35);
-            background: #f5f8ff;
-        }
-
-        .acknowledgement input {
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
-            margin: 3px 0 0;
-            accent-color: var(--blue);
-            cursor: pointer;
-        }
-
-        .acknowledgement span {
-            color: #465164;
-            font-size: 0.86rem;
-            line-height: 1.5;
-        }
-
-        .continue-button {
-            display: flex;
-            width: 100%;
-            min-height: 50px;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 16px;
-            padding: 13px 18px;
-            border: 0;
-            border-radius: 12px;
-            background: var(--blue);
-            color: white;
-            font: inherit;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            animation: rise-in 480ms 580ms ease-out both;
-            transition: background 160ms ease, transform 160ms ease,
-                box-shadow 160ms ease, opacity 160ms ease;
-        }
-
-        .continue-button:disabled {
-            background: #b9c6da;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .continue-button:not(:disabled):hover {
-            background: var(--blue-dark);
-            box-shadow: 0 5px 14px rgba(36, 89, 169, 0.2);
-            transform: translateY(-1px);
-        }
-
-        .continue-button:not(:disabled):active { transform: translateY(0) scale(.99); }
-
-        .continue-button:focus-visible,
-        .acknowledgement input:focus-visible {
-            outline: 3px solid var(--orange);
-            outline-offset: 3px;
-        }
-
-        .continue-button span { transition: transform 160ms ease; }
-        .continue-button:not(:disabled):hover span { transform: translateX(3px); }
-
-        .footer {
-            margin: 22px 0 0;
-            color: #8892a3;
-            font-size: 0.76rem;
-            text-align: center;
-            animation: rise-in 480ms 630ms ease-out both;
-        }
-
-        @keyframes notice-enter {
-            from { opacity: 0; transform: translateY(18px) scale(.985); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes rise-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes accent-reveal {
-            from { background-position: 100% 0; }
-            to { background-position: 0 0; }
-        }
-
-        @media (max-width: 380px) {
-            body { padding: 12px; }
-            .content { padding: 22px 18px; }
-            .brand { margin-bottom: 24px; }
-            .details { gap: 16px; margin: 22px 0; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-        }
-    </style>
-
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/pages/index.css">
+
     <link rel="icon" href="assets/images/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
     <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
-
-    <meta name="description" content="Find free rooms, check schedules and request a room at the University of Makati. A student research prototype.">
-    <meta name="theme-color" content="#0b2559">
 
     <!-- Facebook / Messenger preview -->
     <meta property="og:type" content="website">
@@ -316,108 +28,240 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="RooMak, room scheduling and information for the University of Makati">
     <meta name="twitter:card" content="summary_large_image">
+
+    <script src="js/notice.js" defer></script>
+    <script src="js/notice-fx.js" defer></script>
 </head>
-
-<body>
-    <main class="notice">
-        <div class="accent"></div>
-
-        <div class="content">
-            <div class="brand" aria-label="RooMak">
-                <span class="brand-mark" aria-hidden="true"><img src="assets/images/logo.jpg" alt="" width="40" height="40"></span>
-                <span>RooMak</span>
-            </div>
-
-            <div class="eyebrow">Prototype Preview</div>
-
-            <h1>Before you get started</h1>
-
-            <p class="intro">
-                Welcome to RooMak, a prototype for exploring room
-                information and scheduling at the University of Makati.
-                Please take a moment to review the following before continuing.
-            </p>
-
-            <section class="details" aria-label="Important information">
-                <div class="detail">
-                    <div class="detail-icon" aria-hidden="true">ⓘ</div>
-                    <div>
-                        <h2>This is a prototype</h2>
-                        <p>
-                            Features and information are provided for demonstration
-                            and evaluation. Some functions may be incomplete,
-                            simulated, or subject to change.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="detail">
-                    <div class="detail-icon" aria-hidden="true">↻</div>
-                    <div>
-                        <h2>Your actions are not saved</h2>
-                        <p>
-                            Room requests, issue reports, and other interactions
-                            are not be stored or forwarded to university staff.
-                            Do not rely on RooMak for actual room bookings or
-                            urgent reports.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="detail">
-                    <div class="detail-icon" aria-hidden="true">▣</div>
-                    <div>
-                        <h2>A laptop is recommended</h2>
-                        <p>
-                            RooMak can be opened on mobile devices, but a laptop
-                            or desktop is recommended for the best experience,
-                            particularly when exploring the interactive floor
-                            plan and its controls.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="detail">
-                    <div class="detail-icon" aria-hidden="true">◆</div>
-                    <div>
-                        <h2>Protect your information</h2>
-                        <p>
-                            Avoid entering real passwords, sensitive personal
-                            information, or confidential university data into
-                            this prototype.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <label class="acknowledgement">
-                <input type="checkbox" id="acknowledge">
-                <span>
-                    I understand that RooMak is a prototype and that its features
-                    and data may not represent a live university system.
-                </span>
-            </label>
-
-            <button class="continue-button" id="continueButton" type="button" disabled>
-                Continue to RooMak <span aria-hidden="true">→</span>
-            </button>
-
-            <p class="footer">RooMak · Prototype for evaluation purposes</p>
+<body class="notice-page">
+    <div class="notice-stage" id="noticeStage">
+        <!-- Layered ambient & architectural backdrop (purely decorative) -->
+        <div class="stage-backdrop" aria-hidden="true">
+            <div class="bg-nebula"></div>
+            <div class="bg-perspective-grid"></div>
+            <div class="bg-dots"></div>
+            <div class="bg-spotlight"></div>
+            <div class="bg-arc bg-arc-outer"></div>
+            <div class="bg-arc bg-arc-inner"></div>
+            <span class="bg-watermark">UMAK // 00</span>
+            <span class="bg-crosshair ch-tl">+</span>
+            <span class="bg-crosshair ch-tr">+</span>
+            <span class="bg-crosshair ch-bl">+</span>
+            <span class="bg-crosshair ch-br">+</span>
         </div>
-    </main>
 
-    <script>
-        const acknowledgement = document.getElementById("acknowledge");
-        const continueButton = document.getElementById("continueButton");
+        <div class="notice-frame">
+            <!-- Top architectural HUD -->
+            <header class="notice-masthead">
+                <div class="brand" aria-label="RooMak">
+                    <span class="brand-mark" aria-hidden="true">
+                        <img src="assets/images/logo.jpg" alt="" width="40" height="40">
+                    </span>
+                    <div class="brand-copy">
+                        <span class="brand-name">RooMak</span>
+                        <span class="brand-sub">University of Makati · Spatial Scheduling</span>
+                    </div>
+                </div>
 
-        acknowledgement.addEventListener("change", () => {
-            continueButton.disabled = !acknowledgement.checked;
-        });
+                <div class="masthead-meta">
+                    <span class="meta-coords" aria-hidden="true">B2 · BW · B3 // FLOORS 2–4</span>
+                    <div class="eyebrow" role="status" aria-live="polite">
+                        <span class="eyebrow-dot" aria-hidden="true"></span>
+                        <span>Prototype Preview</span>
+                    </div>
+                </div>
+            </header>
 
-        continueButton.addEventListener("click", () => {
-            if (!acknowledgement.checked) return;
-            window.location.href = "pages/login.html";
-        });
-    </script>
+            <!-- Asymmetrical two-column main canvas -->
+            <main class="notice-grid">
+                <!-- Left column: Editorial headline + architectural spatial schematic -->
+                <section class="hero-column" aria-labelledby="noticeTitle">
+                    <div class="hero-kicker">
+                        <span class="kicker-index">00</span>
+                        <span class="kicker-rule" aria-hidden="true"></span>
+                        <span class="kicker-text">Pre-entry Notice</span>
+                    </div>
+
+                    <h1 id="noticeTitle" class="hero-title">
+                        <span class="title-line">Before you</span>
+                        <span class="title-line title-line-accent">get started<span class="title-period" aria-hidden="true">.</span></span>
+                    </h1>
+
+                    <p class="intro">
+                        Welcome to RooMak, a prototype for exploring room
+                        information and scheduling at the University of Makati.
+                        Please take a moment to review the following before continuing.
+                    </p>
+
+                    <!-- Architectural floor-plan preview schematic (decorative) -->
+                    <div class="schematic-card" aria-hidden="true">
+                        <div class="schematic-header">
+                            <span class="schematic-label">CAMPUS SECTOR PREVIEW</span>
+                            <span class="schematic-tag">LIVE SIM</span>
+                        </div>
+                        <svg class="schematic-svg" viewBox="0 0 420 156" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Grid lines -->
+                            <path d="M0 39H420M0 78H420M0 117H420" stroke="rgba(108,173,206,0.12)" stroke-width="1"/>
+                            <path d="M70 0V156M140 0V156M210 0V156M280 0V156M350 0V156" stroke="rgba(108,173,206,0.12)" stroke-width="1"/>
+
+                            <!-- Building 2 block -->
+                            <rect x="20" y="24" width="118" height="108" rx="4" fill="rgba(28,75,154,0.22)" stroke="rgba(108,173,206,0.45)" stroke-width="1.2"/>
+                            <rect x="30" y="34" width="44" height="36" rx="2" fill="rgba(61,196,136,0.18)" stroke="rgba(61,196,136,0.75)" stroke-width="1"/>
+                            <rect x="84" y="34" width="44" height="36" rx="2" fill="rgba(250,210,68,0.12)" stroke="rgba(250,210,68,0.5)" stroke-width="1"/>
+                            <rect x="30" y="86" width="98" height="36" rx="2" fill="rgba(108,173,206,0.12)" stroke="rgba(108,173,206,0.4)" stroke-width="1"/>
+                            <text x="36" y="55" fill="rgba(232,238,251,0.75)" font-size="9" font-family="monospace">B2-201</text>
+                            <text x="90" y="55" fill="rgba(250,210,68,0.85)" font-size="9" font-family="monospace">B2-202</text>
+
+                            <!-- Bridgeway connector -->
+                            <path d="M138 66H268M138 90H268" stroke="rgba(250,210,68,0.6)" stroke-width="1.4" stroke-dasharray="4 3"/>
+                            <rect x="164" y="54" width="78" height="48" rx="4" fill="rgba(250,210,68,0.1)" stroke="rgba(250,210,68,0.65)" stroke-width="1.2"/>
+                            <text x="180" y="81" fill="#fad244" font-size="9" font-weight="700" font-family="monospace">BRIDGE</text>
+
+                            <!-- Building 3 block -->
+                            <rect x="268" y="24" width="132" height="108" rx="4" fill="rgba(28,75,154,0.22)" stroke="rgba(108,173,206,0.45)" stroke-width="1.2"/>
+                            <rect x="278" y="34" width="52" height="40" rx="2" fill="rgba(61,196,136,0.2)" stroke="rgba(61,196,136,0.8)" stroke-width="1"/>
+                            <rect x="338" y="34" width="52" height="40" rx="2" fill="rgba(239,107,107,0.16)" stroke="rgba(239,107,107,0.6)" stroke-width="1"/>
+                            <rect x="278" y="84" width="112" height="38" rx="2" fill="rgba(108,173,206,0.12)" stroke="rgba(108,173,206,0.4)" stroke-width="1"/>
+                            <text x="285" y="57" fill="#7ddba8" font-size="9" font-family="monospace">B3-204</text>
+                            <text x="345" y="57" fill="#f19a9d" font-size="9" font-family="monospace">IN USE</text>
+
+                            <!-- Scan line -->
+                            <line class="schematic-scan" x1="20" y1="0" x2="20" y2="156" stroke="url(#scanGrad)" stroke-width="2"/>
+                            <defs>
+                                <linearGradient id="scanGrad" x1="0" y1="0" x2="0" y2="156" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#fad244" stop-opacity="0"/>
+                                    <stop offset="50%" stop-color="#fad244" stop-opacity="0.9"/>
+                                    <stop offset="100%" stop-color="#fad244" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="schematic-footer">
+                            <span><i class="node-dot node-free"></i>Available</span>
+                            <span><i class="node-dot node-warn"></i>Preview</span>
+                            <span><i class="node-dot node-busy"></i>Occupied</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right column: Important notice ledger + acknowledgement gate -->
+                <section class="ledger-column" aria-label="Important information and confirmation">
+                    <div class="ledger-panel">
+                        <div class="ledger-bar">
+                            <span class="ledger-bar-title">IMPORTANT INFORMATION</span>
+                            <span class="ledger-bar-count">04 / 04</span>
+                        </div>
+
+                        <div class="details" aria-label="Important information">
+                            <article class="detail">
+                                <div class="detail-top">
+                                    <span class="detail-index">01</span>
+                                    <div class="detail-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="9"/>
+                                            <path d="M12 11v5"/>
+                                            <circle cx="12" cy="7.5" r="0.75" fill="currentColor" stroke="none"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <h2>This is a prototype</h2>
+                                <p>
+                                    Features and information are provided for demonstration
+                                    and evaluation. Some functions may be incomplete,
+                                    simulated, or subject to change.
+                                </p>
+                            </article>
+
+                            <article class="detail">
+                                <div class="detail-top">
+                                    <span class="detail-index">02</span>
+                                    <div class="detail-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 12a9 9 0 1 0 3-6.7L3 8"/>
+                                            <path d="M3 3v5h5"/>
+                                            <path d="M12 7v5l3 2"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <h2>Your actions are not saved</h2>
+                                <p>
+                                    Room requests, issue reports, and other interactions
+                                    are not stored or forwarded to university staff.
+                                    Do not rely on RooMak for actual room bookings or
+                                    urgent reports.
+                                </p>
+                            </article>
+
+                            <article class="detail">
+                                <div class="detail-top">
+                                    <span class="detail-index">03</span>
+                                    <div class="detail-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="12" rx="2"/>
+                                            <path d="M2 20h20"/>
+                                            <path d="M8 20l1-4h6l1 4"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <h2>A laptop is recommended</h2>
+                                <p>
+                                    RooMak can be opened on mobile devices, but a laptop
+                                    or desktop is recommended for the best experience,
+                                    particularly when exploring the interactive floor
+                                    plan and its controls.
+                                </p>
+                            </article>
+
+                            <article class="detail">
+                                <div class="detail-top">
+                                    <span class="detail-index">04</span>
+                                    <div class="detail-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3z"/>
+                                            <path d="M9.5 12l1.8 1.8 3.5-3.6"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <h2>Protect your information</h2>
+                                <p>
+                                    Avoid entering real passwords, sensitive personal
+                                    information, or confidential university data into
+                                    this prototype.
+                                </p>
+                            </article>
+                        </div>
+
+                        <div class="gate-area" id="gateArea">
+                            <label class="acknowledgement" for="acknowledge">
+                                <input class="ack-input" type="checkbox" id="acknowledge">
+                                <span class="ack-box" aria-hidden="true">
+                                    <svg viewBox="0 0 16 16" fill="none">
+                                        <path d="M3.2 8.4L6.4 11.6L12.8 4.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                                <span class="ack-copy">
+                                    I understand that RooMak is a prototype and that its features
+                                    and data may not represent a live university system.
+                                </span>
+                            </label>
+
+                            <div class="gate-actions">
+                                <button class="continue-button" id="continueButton" type="button" disabled>
+                                    <span class="btn-text">Continue to RooMak</span>
+                                    <span class="btn-arrow" aria-hidden="true">→</span>
+                                </button>
+                                <p class="gate-hint" id="gateHint" aria-live="polite">
+                                    Acknowledge the notice above to unlock entry
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="notice-footer">
+                <p class="footer">RooMak · Prototype for evaluation purposes</p>
+                <span class="footer-tag" aria-hidden="true">PORTAL GATEWAY // 01</span>
+            </footer>
+        </div>
+    </div>
 </body>
 </html>
