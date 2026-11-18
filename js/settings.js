@@ -59,7 +59,6 @@
                 </div>
                 <dl class="panel-list">
                     <div><dt>Role</dt><dd>Demo account</dd></div>
-                    <div><dt>University</dt><dd>University of Makati</dd></div>
                 </dl>
                 <p class="panel-note">This is a prototype account. Real accounts and role-based views are not available yet.</p>
                 <button type="button" class="panel-btn danger" data-panel="logout">Log out</button>
