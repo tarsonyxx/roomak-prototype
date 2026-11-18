@@ -54,8 +54,7 @@ body.notice-page {
     padding-bottom: max(clamp(18px, 3vh, 36px), env(safe-area-inset-bottom, 0px));
     padding-left: max(clamp(18px, 4vw, 56px), env(safe-area-inset-left, 0px));
 
-    overflow: hidden;
-    overflow: clip;
+    overflow-x: clip;
 }
 
 /* ---------- Backdrop: horizontal diagonal sweep (distinct from login's left-split) ---------- */
@@ -84,6 +83,13 @@ body.notice-page {
     height: 1240px;
     translate: calc(var(--mx) - 620px) calc(var(--my) - 620px);
     background: radial-gradient(circle closest-side, rgba(250, 210, 68, 0.18), transparent 64%);
+}
+
+/* Touch screens have no cursor spotlight; skipping this 1240px layer saves mobile GPU memory */
+@media (hover: none) {
+    .bd-glow {
+        display: none;
+    }
 }
 
 .bd-halftone {
@@ -688,7 +694,6 @@ body.notice-page .continue-button {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     transition:
-        transform 0.18s ease,
         box-shadow 0.18s ease,
         color 0.2s ease,
         opacity 0.18s ease;
@@ -736,7 +741,7 @@ body.notice-page .continue-button:not(:disabled)::before {
         box-shadow: 8px 8px 0 var(--hard);
         color: var(--stg-gold-light);
         filter: none;
-        transform: skewX(-10deg) translate(-2px, -2px);
+        transform: skewX(-10deg);
     }
 
     body.notice-page .continue-button:not(:disabled):hover::before {
@@ -750,7 +755,7 @@ body.notice-page .continue-button:not(:disabled)::before {
 
 body.notice-page .continue-button:not(:disabled):active {
     box-shadow: 2px 2px 0 var(--hard);
-    transform: skewX(-10deg) translate(3px, 3px);
+    transform: skewX(-10deg);
 }
 
 body.notice-page .continue-button:focus-visible {
@@ -859,41 +864,50 @@ body.notice-page .notice-footer {
 
 @media (prefers-reduced-motion: no-preference) {
     .bd-slab {
-        animation: notice-slab-in 760ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+        animation: notice-slab-in 620ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
-    .bd-slab-gold { animation-delay: 90ms; }
-    .bd-slab-white { animation-delay: 170ms; }
-    .bd-slab-sky { animation-delay: 220ms; }
-    .bd-slab-burst { animation-delay: 280ms; }
+    .bd-slab-gold { animation-delay: 70ms; }
+    .bd-slab-white { animation-delay: 130ms; }
+    .bd-slab-sky { animation-delay: 170ms; }
+    .bd-slab-burst { animation-delay: 220ms; }
 
     .bd-word {
-        animation: notice-fade-in 1100ms 250ms ease-out both;
+        animation: notice-fade-in 850ms 200ms ease-out backwards;
     }
 
-    .bd-shape-diamond { animation: notice-float 7s 1.4s ease-in-out infinite alternate; }
-    .bd-shape-cross { animation: notice-float 9s 1.9s ease-in-out infinite alternate; }
-    .bd-shape-tri { animation: notice-float 8s 2.4s ease-in-out infinite alternate; }
+    .bd-shape-diamond { animation: notice-float 7s 1.2s ease-in-out infinite alternate; }
+    .bd-shape-cross { animation: notice-float 9s 1.6s ease-in-out infinite alternate; }
+    .bd-shape-tri { animation: notice-float 8s 2s ease-in-out infinite alternate; }
 
     .notice-topbar {
-        animation: notice-rise-in 480ms 140ms ease-out both;
+        animation: notice-rise-in 420ms 100ms ease-out backwards;
     }
 
+    /* Transform-only entrance prevents flattening the chamfered card + children into an offscreen bitmap */
     .notice-dossier {
-        animation: notice-card-in 680ms 180ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+        animation: notice-card-slide 560ms 120ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
     body.notice-page .detail {
-        animation: notice-rise-in 420ms ease-out both;
+        animation: notice-rise-in 380ms ease-out backwards;
     }
 
-    body.notice-page .detail:nth-child(1) { animation-delay: 360ms; }
-    body.notice-page .detail:nth-child(2) { animation-delay: 420ms; }
-    body.notice-page .detail:nth-child(3) { animation-delay: 480ms; }
-    body.notice-page .detail:nth-child(4) { animation-delay: 540ms; }
+    body.notice-page .detail:nth-child(1) { animation-delay: 240ms; }
+    body.notice-page .detail:nth-child(2) { animation-delay: 290ms; }
+    body.notice-page .detail:nth-child(3) { animation-delay: 340ms; }
+    body.notice-page .detail:nth-child(4) { animation-delay: 390ms; }
 
     .gate-area {
-        animation: notice-rise-in 440ms 600ms ease-out both;
+        animation: notice-rise-in 400ms 430ms ease-out backwards;
+    }
+}
+
+/* On mobile/touch devices, unify slab entrance so 5 clip-path layers don't re-rasterize separately */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+    .bd-slab {
+        animation: notice-fade-in 450ms ease-out backwards;
+        animation-delay: 0ms !important;
     }
 }
 
@@ -917,7 +931,7 @@ body.notice-page .notice-footer {
 }
 
 @keyframes notice-slab-in {
-    from { opacity: 0; transform: translate3d(0, -6%, 0); }
+    from { opacity: 0; transform: translate3d(0, -5%, 0); }
     to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
@@ -928,16 +942,15 @@ body.notice-page .notice-footer {
 
 @keyframes notice-float {
     from { transform: translate3d(0, 0, 0); }
-    to   { transform: translate3d(0, 18px, 0); }
+    to   { transform: translate3d(0, 16px, 0); }
 }
 
-
-@keyframes notice-card-in {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
+@keyframes notice-card-slide {
+    from { transform: translate3d(0, 22px, 0); }
+    to   { transform: translate3d(0, 0, 0); }
 }
 
 @keyframes notice-rise-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translate3d(0, 10px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }

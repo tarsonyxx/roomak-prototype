@@ -91,6 +91,13 @@ body.login-page {
     background: radial-gradient(circle closest-side, rgba(250, 210, 68, 0.2), transparent 62%);
 }
 
+/* Touch screens have no cursor spotlight; skipping this 1120px layer saves mobile GPU memory */
+@media (hover: none) {
+    .bd-glow {
+        display: none;
+    }
+}
+
 .bd-halftone {
     position: absolute;
     inset: -20px;
@@ -1026,77 +1033,78 @@ body.login-page .demo-note {
 
 @media (prefers-reduced-motion: no-preference) {
     .bd-slab {
-        animation: login-slab-in 760ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+        animation: login-slab-in 620ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
-    .bd-slab-gold { animation-delay: 90ms; }
-    .bd-slab-white { animation-delay: 170ms; }
-    .bd-slab-sky { animation-delay: 220ms; }
-    .bd-slab-burst { animation-delay: 280ms; }
+    .bd-slab-gold { animation-delay: 70ms; }
+    .bd-slab-white { animation-delay: 130ms; }
+    .bd-slab-sky { animation-delay: 170ms; }
+    .bd-slab-burst { animation-delay: 220ms; }
 
     .bd-word {
-        animation: login-fade-in 1100ms 250ms ease-out both;
+        animation: login-fade-in 850ms 200ms ease-out backwards;
     }
 
-    .bd-shape-diamond { animation: login-float 7s 1.4s ease-in-out infinite alternate; }
-    .bd-shape-cross { animation: login-float 9s 1.9s ease-in-out infinite alternate; }
-    .bd-shape-tri { animation: login-float 8s 2.4s ease-in-out infinite alternate; }
+    .bd-shape-diamond { animation: login-float 7s 1.2s ease-in-out infinite alternate; }
+    .bd-shape-cross { animation: login-float 9s 1.6s ease-in-out infinite alternate; }
+    .bd-shape-tri { animation: login-float 8s 2s ease-in-out infinite alternate; }
 
     .visual-label {
-        animation: login-label-in 520ms 160ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+        animation: login-label-in 440ms 120ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
     .visual-eyebrow {
-        animation: login-rise-in 500ms 300ms ease-out both;
+        animation: login-rise-in 420ms 200ms ease-out backwards;
     }
 
     .vl {
-        animation: login-line-in 640ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+        animation: login-line-in 520ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
-    .vl-1 { animation-delay: 340ms; }
-    .vl-2 { animation-delay: 430ms; }
-    .vl-3 { animation-delay: 520ms; }
+    .vl-1 { animation-delay: 220ms; }
+    .vl-2 { animation-delay: 290ms; }
+    .vl-3 { animation-delay: 360ms; }
 
     .visual-copy > p:last-child {
-        animation: login-rise-in 520ms 640ms ease-out both;
+        animation: login-rise-in 420ms 420ms ease-out backwards;
     }
 
     .visual-bottom {
-        animation: login-rise-in 500ms 720ms ease-out both;
+        animation: login-rise-in 420ms 480ms ease-out backwards;
     }
 
+    /* Transform-only entrance prevents flattening the chamfered card + children into an offscreen bitmap */
     .login-card {
-        animation: login-card-in 700ms 120ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+        animation: login-card-slide 580ms 100ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
     .brand {
-        animation: login-rise-in 480ms 360ms ease-out both;
+        animation: login-rise-in 400ms 240ms ease-out backwards;
     }
 
     .login-intro {
-        animation: login-rise-in 520ms 420ms ease-out both;
+        animation: login-rise-in 420ms 290ms ease-out backwards;
     }
 
     .login-form > .form-group:nth-child(1) {
-        animation: login-rise-in 440ms 500ms ease-out both;
+        animation: login-rise-in 380ms 340ms ease-out backwards;
     }
 
     .login-form > .form-group:nth-child(2) {
-        animation: login-rise-in 440ms 570ms ease-out both;
+        animation: login-rise-in 380ms 390ms ease-out backwards;
     }
 
     /* "backwards" only: once it finishes, the button's own slant and hover transforms apply again. */
     .login-form > .button {
-        animation: login-button-in 440ms 640ms ease-out backwards;
+        animation: login-button-in 380ms 440ms ease-out backwards;
     }
 
     .demo-note {
-        animation: login-rise-in 460ms 720ms ease-out both;
+        animation: login-rise-in 380ms 490ms ease-out backwards;
     }
 
     .login-footer {
-        animation: login-rise-in 460ms 790ms ease-out both;
+        animation: login-rise-in 380ms 540ms ease-out backwards;
     }
 
     .demo-indicator {
@@ -1104,7 +1112,7 @@ body.login-page .demo-note {
     }
 
     .login-form .status-message.is-error {
-        animation: login-msg-in 280ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+        animation: login-msg-in 280ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
     .login-card.is-shaking .login-form-panel {
@@ -1112,8 +1120,16 @@ body.login-page .demo-note {
     }
 }
 
+/* On mobile/touch devices, unify slab entrance so 5 clip-path layers don't re-rasterize separately */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+    .bd-slab {
+        animation: login-fade-in 450ms ease-out backwards;
+        animation-delay: 0ms !important;
+    }
+}
+
 @keyframes login-slab-in {
-    from { opacity: 0; transform: translate3d(-7%, 0, 0); }
+    from { opacity: 0; transform: translate3d(-6%, 0, 0); }
     to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
@@ -1124,37 +1140,37 @@ body.login-page .demo-note {
 
 @keyframes login-float {
     from { transform: translate3d(0, 0, 0); }
-    to   { transform: translate3d(0, 18px, 0); }
+    to   { transform: translate3d(0, 16px, 0); }
 }
 
 @keyframes login-label-in {
-    from { opacity: 0; transform: skewX(-12deg) translateX(-30px); }
-    to   { opacity: 1; transform: skewX(-12deg) translateX(0); }
+    from { opacity: 0; transform: skewX(-12deg) translate3d(-24px, 0, 0); }
+    to   { opacity: 1; transform: skewX(-12deg) translate3d(0, 0, 0); }
 }
 
 @keyframes login-line-in {
-    from { opacity: 0; transform: skewX(-9deg) translateX(-56px); }
-    to   { opacity: 1; transform: skewX(-9deg) translateX(0); }
+    from { opacity: 0; transform: skewX(-9deg) translate3d(-44px, 0, 0); }
+    to   { opacity: 1; transform: skewX(-9deg) translate3d(0, 0, 0); }
 }
 
-@keyframes login-card-in {
-    from { opacity: 0; transform: translateY(26px); }
-    to   { opacity: 1; transform: translateY(0); }
+@keyframes login-card-slide {
+    from { transform: translate3d(0, 22px, 0); }
+    to   { transform: translate3d(0, 0, 0); }
 }
 
 @keyframes login-rise-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translate3d(0, 10px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes login-button-in {
-    from { opacity: 0; transform: skewX(-10deg) translateY(10px); }
-    to   { opacity: 1; transform: skewX(-10deg) translateY(0); }
+    from { opacity: 0; transform: skewX(-10deg) translate3d(0, 10px, 0); }
+    to   { opacity: 1; transform: skewX(-10deg) translate3d(0, 0, 0); }
 }
 
 @keyframes login-msg-in {
-    from { opacity: 0; transform: translateX(-10px); }
-    to   { opacity: 1; transform: translateX(0); }
+    from { opacity: 0; transform: translate3d(-10px, 0, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes login-pulse {
