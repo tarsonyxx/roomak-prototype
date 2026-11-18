@@ -45,8 +45,6 @@
     opacity: 0.24;
 }
 
-
-
 :root[data-theme="dark"] .dash-slash-blue {
     opacity: 0.42;
 }
@@ -191,6 +189,7 @@
     overflow: hidden;
     contain: layout style paint;
 }
+
 /* ---------- Map ---------- */
 .viewport {
     position: absolute; inset: 0;
@@ -207,6 +206,10 @@
     width: 100%;
     height: 100%;
     shape-rendering: optimizeSpeed;
+}
+
+#world {
+    will-change: transform;
 }
 
 /* Match SVG room & corridor corners to the crisp-rounded HUD radius */
@@ -433,9 +436,7 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
     touch-action: pan-y;
-    transform: translateZ(0);
 }
-
 
 .photo { position: relative; height: 196px; background: var(--photo-bg); overflow: hidden; border-bottom: 1px solid var(--color-border); }
 .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -446,7 +447,7 @@
 .photo .ph b { color: var(--stg-gold-light); font-family: var(--display); font-size: 1.65rem; font-weight: 900; letter-spacing: -0.04em; }
 .photo.empty .ph { display: flex; }
 
-/* Remove expensive real-time backdrop-filter blur inside the scrolling drawer */
+/* Solid surface buttons inside the scrolling drawer so mobile GPUs never blur while scrolling */
 .close, .back {
     transition: background-color 160ms ease, color 160ms ease;
     position: absolute; top: 12px; border: 1px solid var(--color-border); border-radius: var(--r-ctrl);
@@ -498,13 +499,13 @@
     border: 2.5px solid var(--stg-navy);
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.28);
-    box-shadow: 0 0 0 1.5px #ffffff, 0 2px 6px rgba(2, 8, 24, 0.35);
+    box-shadow: 0 0 0 1.5px #ffffff;
 }
 
 :root[data-theme="dark"] .blk.sel {
     border-color: #ffffff;
     background: rgba(108, 173, 206, 0.25);
-    box-shadow: 0 0 0 2px var(--stg-sky), 0 0 10px rgba(108, 173, 206, 0.55);
+    box-shadow: 0 0 0 2px var(--stg-sky);
 }
 
 .ticks { position: relative; height: 22px; margin: 8px 6px 0; font-size: 0.7rem; font-weight: 650; color: var(--color-muted); }
@@ -513,7 +514,11 @@
 .notice { margin: 0; padding: 12px 14px; border-radius: var(--r-ctrl); border: 1px solid var(--unavailable-border); background: var(--unavailable-bg); color: var(--unavailable-text); font-size: 0.88rem; }
 
 .slots { display: grid; gap: 8px; margin: 8px 0 0; padding: 0; list-style: none; }
-.slots li { display: grid; gap: 2px; padding: 10px 14px; border-radius: var(--r-ctrl); border: 1px solid var(--color-border); border-left-width: 4px; background: var(--color-page); font-size: 0.9rem; }
+.slots li {
+    display: grid; gap: 2px; padding: 10px 14px;
+    border-radius: var(--r-ctrl); border: 1px solid var(--color-border); border-left-width: 4px;
+    background: var(--color-page); font-size: 0.9rem;
+}
 .slots li.free { border-left-color: var(--available-border); }
 .slots li.busy { border-left-color: var(--occupied-border); }
 .slots li.hit  { border-color: var(--stg-gold); box-shadow: 0 0 0 1px var(--stg-gold) inset; }
@@ -533,15 +538,24 @@
     .drawer {
         position: absolute; z-index: 30; left: var(--gutter); right: var(--gutter); bottom: var(--gutter); top: 0;
         flex: none; width: auto; margin: 0; border-width: 1px; border-top-width: 4px;
-        box-shadow: 0 8px 20px rgba(2, 8, 24, 0.22);
+        box-shadow: none;
         will-change: transform;
         transform: translate3d(0, 104%, 0); opacity: 1;
-        transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 260ms;
+        transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 240ms;
     }
     .drawer.open {
         transform: translate3d(0, 0, 0);
         margin: 0;
-        transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+        transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+    }
+    /* Pause the SVG drop-shadow filter animation and hide the covered map on mobile while reading room details */
+    .stage:has(.drawer.open) .room.selected rect {
+        animation: none !important;
+        filter: none !important;
+    }
+    .stage:has(.drawer.open) .map-card {
+        visibility: hidden;
+        transition: visibility 0s linear 240ms;
     }
     .drawer-inner {
         width: 100%;
@@ -614,15 +628,6 @@ input[type="time"].form-input { cursor: pointer; }
     .chip { padding: 0 9px; font-size: 0.76rem; }
 }
 
-
 .room[data-status="available"]   .sub { fill: var(--available-text); font-weight: 600; }
 .room[data-status="unavailable"] .sub { fill: var(--unavailable-text); font-weight: 600; }
 .room[data-status="occupied"]    .sub { fill: var(--occupied-text); font-weight: 600; }
-
-#world {
-    will-change: transform;
-}
-
-.drawer {
-    contain: layout style;
-}

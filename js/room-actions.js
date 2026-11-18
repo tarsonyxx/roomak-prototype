@@ -14,6 +14,7 @@
     ];
 
     let activeRoom = null;
+    const memoryStore = Object.create(null);
 
     const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
@@ -27,13 +28,15 @@
     }
 
     function readRecords(key) {
+        if (memoryStore[key]) return memoryStore[key];
         try {
             const value = JSON.parse(localStorage.getItem(key) || "[]");
-            return Array.isArray(value) ? value : [];
+            memoryStore[key] = Array.isArray(value) ? value : [];
         } catch (error) {
             console.warn(`RooMak could not read ${key} from local storage.`, error);
-            return [];
+            memoryStore[key] = [];
         }
+        return memoryStore[key];
     }
 
     function saveRecord(key, record) {
@@ -43,10 +46,17 @@
             localStorage.setItem(key, JSON.stringify(records));
             return true;
         } catch (error) {
+            records.shift();
             console.error(`RooMak could not save ${key} to local storage.`, error);
             return false;
         }
     }
+
+    // Allows settings.js "Clear saved data" to invalidate the cache if needed.
+    window.clearRoomakActionCache = function () {
+        delete memoryStore[REQUESTS_KEY];
+        delete memoryStore[REPORTS_KEY];
+    };
 
     function roomContextLabel() {
         return `${activeRoom.roomCode} · ${activeRoom.roomName}`;
@@ -74,18 +84,18 @@
         const name = escapeHtml(roomName);
         if (special || unavailable) return "";
 
-  const requestDisabled = special || unavailable;
-  const requestDisabledTitle = special
-    ? "This space is not reservable"
-    : "This room is unavailable for booking";
-  const requestDisabledAttribute = requestDisabled
-    ? `disabled title="${requestDisabledTitle}"`
-    : "";
-  const actionNote = special
-    ? "This space is marked as non-reservable. Room issue reports are still available."
-    : unavailable
-      ? "This room is marked unavailable for booking. Room issue reports are still available."
-      : "";
+        const requestDisabled = special || unavailable;
+        const requestDisabledTitle = special
+            ? "This space is not reservable"
+            : "This room is unavailable for booking";
+        const requestDisabledAttribute = requestDisabled
+            ? `disabled title="${requestDisabledTitle}"`
+            : "";
+        const actionNote = special
+            ? "This space is marked as non-reservable. Room issue reports are still available."
+            : unavailable
+                ? "This room is marked unavailable for booking. Room issue reports are still available."
+                : "";
         return `
             <section class="room-actions" aria-label="Room actions">
                 <p class="room-actions-heading">Room actions</p>
@@ -187,6 +197,11 @@
     const timeValue = (min) => `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
     const rangeText = (s, e) => `${timeText(s)} – ${timeText(e)}`;
 
+    const getRoomSched = (roomId) =>
+        (typeof ROOM_SCHEDULES !== "undefined" && ROOM_SCHEDULES[roomId])
+            ? ROOM_SCHEDULES[roomId]
+            : SCHEDULES.filter((item) => item.roomId === roomId);
+
     // The range the person picked on the dashboard (day tab in the drawer + start/end chips).
     function viewedRange() {
         try {
@@ -223,13 +238,14 @@
             problems.push({ kind: "hours", text: `Rooms can be requested between ${timeText(OPEN_FROM)} and ${timeText(OPEN_TO)}.` });
             return problems;
         }
+        const roomList = getRoomSched(roomId);
         days.forEach((day) => {
             if (DAY_INDEX[day] === 0) {
                 problems.push({ kind: "day", day, text: "Rooms are scheduled Monday to Saturday only." });
                 return;
             }
-            SCHEDULES.forEach((item) => {
-                if (item.roomId !== roomId || item.day !== day) return;
+            roomList.forEach((item) => {
+                if (item.day !== day) return;
                 if (minutesOf(item.start) < e && s < minutesOf(item.end)) {
                     problems.push({
                         kind: "busy", day,
@@ -245,8 +261,8 @@
     function freeWindows(roomId, day, startTime, endTime) {
         const length = minutesOf(endTime) - minutesOf(startTime);
         if (length <= 0 || length > OPEN_TO - OPEN_FROM) return [];
-        const busy = SCHEDULES
-            .filter((item) => item.roomId === roomId && item.day === day)
+        const busy = getRoomSched(roomId)
+            .filter((item) => item.day === day)
             .map((item) => [minutesOf(item.start), minutesOf(item.end)])
             .sort((a, b) => a[0] - b[0]);
         const windows = [];
@@ -606,8 +622,7 @@
             roomCode: button.dataset.roomCode,
             roomName: button.dataset.roomName,
             special: false,
-
-  unavailable: button.dataset.roomUnavailable === "true",
+            unavailable: button.dataset.roomUnavailable === "true",
         };
         if (button.dataset.roomAction === "request") startRequest();
         if (button.dataset.roomAction === "report") openReportsDialog();
@@ -643,8 +658,6 @@
             openRequestDialog({ ...requestDraft, startTime: chip.dataset.start, endTime: chip.dataset.end });
         } else if (action === "change-range") {
             dialog.close();
-            // Open the dashboard's time picker so the range can be changed right away.
-            // (Delayed one tick so the dashboard's "click outside closes menus" handler does not close it again.)
             setTimeout(() => {
                 const timeBtn = document.getElementById("timeBtn");
                 if (!timeBtn) return;
@@ -682,7 +695,6 @@
     });
 
     dialog.addEventListener("cancel", (event) => {
-        // Keep the browser's native Escape-to-close behavior.
         event.stopPropagation();
     });
 })();

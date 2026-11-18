@@ -190,7 +190,13 @@
 .action-section-label { display: flex; align-items: center; justify-content: space-between; margin: 0 0 12px; color: var(--color-muted); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
 .action-section-label span { display: inline-grid; min-width: 24px; height: 24px; place-items: center; padding: 0 6px; border-radius: 7px; background: var(--color-page); color: var(--color-ink); font-size: 0.75rem; letter-spacing: 0; }
 .issue-list { display: grid; gap: 10px; }
-.issue-card { position: relative; padding: 15px 16px; border: 1px solid var(--color-border); border-radius: 13px; background: var(--color-surface); }
+.issue-card {
+    position: relative; padding: 15px 16px;
+    border: 1px solid var(--color-border); border-radius: 13px;
+    background: var(--color-surface);
+    content-visibility: auto;
+    contain-intrinsic-size: auto 110px;
+}
 .issue-card-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .issue-category { color: var(--color-ink); font-size: 0.9rem; font-weight: 750; }
 .issue-status { flex: none; padding: 4px 8px; border-radius: 999px; background: var(--unavailable-bg); color: var(--unavailable-text); font-size: 0.7rem; font-weight: 750; }
@@ -232,11 +238,9 @@
 .chip, .legend, .zoom button, .hint, .ghost-btn, .close, .back { -webkit-backdrop-filter: none; backdrop-filter: none; }
 .room-action-dialog::backdrop { backdrop-filter: none; }
 .room-action-dialog { box-shadow: 0 12px 32px rgba(24, 34, 53, 0.22); }
-.drawer-inner { contain: layout paint; }
 @media (max-width: 899px) {
     .drawer { will-change: transform; }
 }
-
 
 /* Room unavailable popup */
 .action-warning-mark { background: var(--unavailable-bg); color: var(--unavailable-text); }

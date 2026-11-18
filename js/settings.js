@@ -112,6 +112,7 @@
             }
             confirming = false;
             try { DATA_KEYS.forEach((k) => localStorage.removeItem(k)); } catch (err) { /* ignore */ }
+            if (typeof window.clearRoomakActionCache === "function") window.clearRoomakActionCache();
             try { if (state.room) renderDrawer(); } catch (err) { /* drawer closed */ }
             showSettings("Saved requests and reports were cleared.");
         }

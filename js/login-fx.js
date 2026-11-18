@@ -1,7 +1,7 @@
 /* =========================================================
    RooMak login: decorative motion only.
-   - Error feedback: shakes the form card when auth.js shows an error.
-   - Pointer parallax: the background slabs drift with the mouse.
+- Error feedback: shakes the form card when auth.js shows an error.
+- Pointer parallax: the background slabs drift with the mouse.
    This file never reads, validates or submits the form. Sign-in
    is handled entirely by js/auth.js.
    ========================================================= */
@@ -18,7 +18,6 @@
     /* ---------- Error shake ---------- */
     if (card && form && message) {
         form.addEventListener("submit", function () {
-            // Wait a frame so auth.js has already written its message.
             window.requestAnimationFrame(function () {
                 if (!message.classList.contains("is-error")) return;
                 card.classList.remove("is-shaking");
@@ -36,6 +35,15 @@
     if (!window.matchMedia) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    var rectLeft = 0, rectTop = 0;
+    function updateRect() {
+        var r = shell.getBoundingClientRect();
+        rectLeft = r.left;
+        rectTop = r.top;
+    }
+    updateRect();
+    window.addEventListener("resize", updateRect, { passive: true });
 
     var targetX = 0, targetY = 0, currentX = 0, currentY = 0, frame = 0;
 
@@ -57,9 +65,8 @@
         targetX = (event.clientX / width - 0.5) * 2;
         targetY = (event.clientY / height - 0.5) * 2;
 
-        var rect = shell.getBoundingClientRect();
-        shell.style.setProperty("--mx", (event.clientX - rect.left).toFixed(0) + "px");
-        shell.style.setProperty("--my", (event.clientY - rect.top).toFixed(0) + "px");
+        shell.style.setProperty("--mx", (event.clientX - rectLeft).toFixed(0) + "px");
+        shell.style.setProperty("--my", (event.clientY - rectTop).toFixed(0) + "px");
 
         if (!frame) frame = window.requestAnimationFrame(tick);
     }, { passive: true });
