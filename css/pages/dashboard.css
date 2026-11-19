@@ -406,11 +406,20 @@
     overflow: hidden;
 }
 .zoom button {
+    display: grid;
+    place-items: center;
     transition: background-color 140ms ease, color 140ms ease;
-    width: 38px; height: 38px;
-    border: 0; border-bottom: 1px solid var(--color-border); border-radius: 0;
-    background: transparent; color: var(--color-ink);
-    font-size: 1.1rem; font-weight: 700; line-height: 1;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-ink);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 0;
 }
 .zoom button:last-child { border-bottom: 0; }
 
@@ -437,17 +446,20 @@
 }
 
 .pan-bar button {
+    display: grid;
+    place-items: center;
     transition: background-color 140ms ease, color 140ms ease;
     width: 40px;
     height: 38px;
+    padding: 0;
     border: 0;
     border-right: 1px solid var(--color-border);
     border-radius: 0;
     background: transparent;
     color: var(--color-ink);
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    line-height: 1;
+    line-height: 0;
 }
 
 .pan-bar button:last-child {

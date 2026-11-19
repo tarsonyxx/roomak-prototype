@@ -80,12 +80,7 @@ wirePopover("timeBtn", "timePop");
 document.addEventListener("click", (e) => {
     if (!e.target.closest(".dd")) closePopovers();
 });
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-        closePopovers();
-        if (!dom.actionDialog.open) closeDrawer();
-    }
-});
+
 function renderOptions(popEl, values, current, labelFn) {
     popEl.innerHTML = values.map((v) =>
         `<button type="button" class="opt ${v === current ? "selected" : ""}" data-v="${v}">${labelFn(v)}</button>`
@@ -150,16 +145,41 @@ if (edgeLeft) edgeLeft.addEventListener("click", panZoom.panLeft);
 if (edgeRight) edgeRight.addEventListener("click", panZoom.panRight);
 
 document.addEventListener("keydown", (e) => {
-    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-    // Do not intercept arrow keys if a modal dialog is open or user is typing in an input
+    if (e.key === "Escape") {
+        closePopovers();
+        if (!dom.actionDialog.open) closeDrawer();
+        return;
+    }
+
+    // Let browser shortcuts (like Ctrl + / Ctrl -) work normally
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    // Do not intercept keys if a modal dialog is open or user is typing in an input
     if (dom.actionDialog.open || document.querySelector("dialog[open]")) return;
     const tag = document.activeElement?.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
 
-    e.preventDefault();
-    dom.hint.classList.add("hidden");
-    if (e.key === "ArrowLeft") panZoom.panLeft();
-    else panZoom.panRight();
+    if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        dom.hint.classList.add("hidden");
+        panZoom.panLeft();
+    } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        dom.hint.classList.add("hidden");
+        panZoom.panRight();
+    } else if (e.key === "+" || e.key === "=") {
+        e.preventDefault();
+        dom.hint.classList.add("hidden");
+        panZoom.zoomIn();
+    } else if (e.key === "-" || e.key === "_") {
+        e.preventDefault();
+        dom.hint.classList.add("hidden");
+        panZoom.zoomOut();
+    } else if (e.key === "0") {
+        e.preventDefault();
+        dom.hint.classList.add("hidden");
+        panZoom.fit();
+    }
 });
 
 function showFloor() {
