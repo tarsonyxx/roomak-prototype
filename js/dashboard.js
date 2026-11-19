@@ -118,15 +118,49 @@ dom.dayPop.addEventListener("click", (e) => {
 });
 
 /* ---------- map ---------- */
-const panZoom = createPanZoom($("viewport"), world, (roomEl) => {
-    dom.hint.classList.add("hidden");
-    closePopovers();
-    if (roomEl) openDrawer(roomEl.dataset.room);
-    else closeDrawer();
-});
+/* ---------- map ---------- */
+const edgeLeft = $("edgeLeft");
+const edgeRight = $("edgeRight");
+const panLeftBtn = $("panLeft");
+const panRightBtn = $("panRight");
+
+const panZoom = createPanZoom(
+    $("viewport"),
+    world,
+    (roomEl) => {
+        dom.hint.classList.add("hidden");
+        closePopovers();
+        if (roomEl) openDrawer(roomEl.dataset.room);
+        else closeDrawer();
+    },
+    ({ canLeft, canRight }) => {
+        if (edgeLeft) edgeLeft.hidden = !canLeft;
+        if (edgeRight) edgeRight.hidden = !canRight;
+        if (panLeftBtn) panLeftBtn.disabled = !canLeft;
+        if (panRightBtn) panRightBtn.disabled = !canRight;
+    }
+);
+
 $("zoomIn").addEventListener("click", panZoom.zoomIn);
 $("zoomOut").addEventListener("click", panZoom.zoomOut);
 $("zoomFit").addEventListener("click", panZoom.fit);
+if (panLeftBtn) panLeftBtn.addEventListener("click", panZoom.panLeft);
+if (panRightBtn) panRightBtn.addEventListener("click", panZoom.panRight);
+if (edgeLeft) edgeLeft.addEventListener("click", panZoom.panLeft);
+if (edgeRight) edgeRight.addEventListener("click", panZoom.panRight);
+
+document.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    // Do not intercept arrow keys if a modal dialog is open or user is typing in an input
+    if (dom.actionDialog.open || document.querySelector("dialog[open]")) return;
+    const tag = document.activeElement?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+    e.preventDefault();
+    dom.hint.classList.add("hidden");
+    if (e.key === "ArrowLeft") panZoom.panLeft();
+    else panZoom.panRight();
+});
 
 function showFloor() {
     closeDrawer();

@@ -414,6 +414,125 @@
 }
 .zoom button:last-child { border-bottom: 0; }
 
+.zoom button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* Top-right horizontal pan pill (separate from bottom-right zoom stack) */
+.pan-bar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 5;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid var(--color-border);
+    border-radius: var(--r-ctrl);
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(2, 8, 24, 0.18);
+    overflow: hidden;
+}
+
+.pan-bar button {
+    transition: background-color 140ms ease, color 140ms ease;
+    width: 40px;
+    height: 38px;
+    border: 0;
+    border-right: 1px solid var(--color-border);
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-ink);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.pan-bar button:last-child {
+    border-right: 0;
+}
+
+.pan-bar button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+@media (hover: hover) {
+    .pan-bar button:not(:disabled):hover {
+        background: var(--stg-gold-light);
+        color: var(--stg-navy);
+    }
+}
+
+
+/* Hide horizontal pan buttons on mobile / touch screens (touch drag is native) */
+@media (max-width: 899px), (hover: none) {
+    .pan-bar {
+        display: none;
+    }
+}
+
+/* ---------- Edge Scroll Indicators ---------- */
+.edge-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 4;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 54px;
+    border: 1.5px solid var(--stg-navy);
+    border-radius: var(--r-ctrl);
+    background: var(--stg-gold-light);
+    color: var(--stg-navy);
+    box-shadow: 0 6px 18px rgba(2, 8, 24, 0.32);
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 900;
+    line-height: 1;
+    animation: edge-nudge 1.8s ease-in-out infinite;
+}
+
+.edge-arrow[hidden] {
+    display: none;
+}
+
+.edge-arrow-left {
+    left: 12px;
+}
+
+.edge-arrow-right {
+    right: 12px;
+    animation-name: edge-nudge-right;
+}
+
+@media (hover: hover) {
+    .edge-arrow:hover {
+        background: var(--stg-navy);
+        border-color: var(--stg-gold-light);
+        color: var(--stg-gold-light);
+    }
+}
+
+@keyframes edge-nudge {
+    0%, 100% { transform: translate(0, -50%); }
+    50%      { transform: translate(-4px, -50%); }
+}
+
+@keyframes edge-nudge-right {
+    0%, 100% { transform: translate(0, -50%); }
+    50%      { transform: translate(4px, -50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .edge-arrow {
+        animation: none;
+    }
+}
+
 .hint {
     position: absolute; left: 50%; top: 62px; transform: translateX(-50%); z-index: 3;
     margin: 0; padding: 6px 14px; border-radius: var(--r-ctrl); white-space: nowrap;

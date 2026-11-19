@@ -235,7 +235,10 @@
 
 /* PERFORMANCE (for phones): no blur effects, lighter shadows */
 :root { --glass: rgba(255, 255, 255, 0.97); }
-.chip, .legend, .zoom button, .hint, .ghost-btn, .close, .back { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.chip, .legend, .zoom button, .pan-bar button, .hint, .ghost-btn, .close, .back {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
 .room-action-dialog::backdrop { backdrop-filter: none; }
 .room-action-dialog { box-shadow: 0 12px 32px rgba(24, 34, 53, 0.22); }
 @media (max-width: 899px) {

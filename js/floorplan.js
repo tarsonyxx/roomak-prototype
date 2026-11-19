@@ -214,12 +214,13 @@ function markSelected(world, roomId) {
 }
 
 /* ---------- 3. Drag, pinch and wheel zoom ---------- */
-function createPanZoom(viewport, world, onTap) {
+function createPanZoom(viewport, world, onTap, onPanState) {
   const pointers = new Map();
   const PAD = 48, MAX_K = 4;
   let plan = { w: 1, h: 1 };
   let k = 1, x = 0, y = 0;
   let travelled = 0;
+  let glideId = 0;
 
   // Cache viewport bounding rect to prevent layout thrashing on pointermove / wheel.
   let vpRect = viewport.getBoundingClientRect();
@@ -228,6 +229,26 @@ function createPanZoom(viewport, world, onTap) {
   const fitK = () => (vpRect.width - 24) / plan.w;
   const limitK = (v) => Math.min(MAX_K, Math.max(fitK(), v));
 
+  function stopGlide() {
+    if (glideId) {
+      cancelAnimationFrame(glideId);
+      glideId = 0;
+    }
+  }
+
+  function clampCoords(nx, ny) {
+    const pw = plan.w * k, ph = plan.h * k;
+    const minX = vpRect.width - pw - PAD;
+    const maxX = PAD;
+    const cx = pw + 24 <= vpRect.width
+      ? (vpRect.width - pw) / 2
+      : Math.min(maxX, Math.max(minX, nx));
+    const cy = ph + 24 <= vpRect.height
+      ? (vpRect.height - ph) / 2
+      : Math.min(PAD, Math.max(vpRect.height - ph - PAD, ny));
+    return { x: cx, y: cy, pw, minX, maxX };
+  }
+
   // Draw at most once per screen frame (phones send many touch events per frame).
   let queued = false;
   function apply() {
@@ -235,15 +256,24 @@ function createPanZoom(viewport, world, onTap) {
     queued = true;
     requestAnimationFrame(() => {
       queued = false;
-      const pw = plan.w * k, ph = plan.h * k;
-      // Keep the plan on screen: centered if small, otherwise stop at the edges.
-      x = pw + 24 <= vpRect.width ? (vpRect.width - pw) / 2 : Math.min(PAD, Math.max(vpRect.width - pw - PAD, x));
-      y = ph + 24 <= vpRect.height ? (vpRect.height - ph) / 2 : Math.min(PAD, Math.max(vpRect.height - ph - PAD, y));
+      const clamped = clampCoords(x, y);
+      x = clamped.x;
+      y = clamped.y;
+
       world.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${k.toFixed(4)})`);
+
+      if (typeof onPanState === "function") {
+        const overflows = clamped.pw + 24 > vpRect.width;
+        onPanState({
+          canLeft: overflows && x < clamped.maxX - 4,
+          canRight: overflows && x > clamped.minX + 4,
+        });
+      }
     });
   }
 
   function zoomAt(newK, cx, cy) {
+    stopGlide();
     newK = limitK(newK);
     x = cx - (cx - x) * (newK / k);
     y = cy - (cy - y) * (newK / k);
@@ -251,7 +281,46 @@ function createPanZoom(viewport, world, onTap) {
     apply();
   }
 
+  function smoothPanBy(dx, dy = 0, duration = 260) {
+    syncRect();
+    stopGlide();
+
+    const startX = x;
+    const startY = y;
+    const target = clampCoords(x + dx, y + dy);
+    const deltaX = target.x - startX;
+    const deltaY = target.y - startY;
+
+    if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) return;
+
+    // Respect OS reduced-motion preference
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      x = target.x;
+      y = target.y;
+      apply();
+      return;
+    }
+
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min(1, (now - startTime) / duration);
+      // Cubic ease-out for a natural glide and soft stop
+      const ease = 1 - Math.pow(1 - t, 3);
+      x = startX + deltaX * ease;
+      y = startY + deltaY * ease;
+      apply();
+
+      if (t < 1) {
+        glideId = requestAnimationFrame(step);
+      } else {
+        glideId = 0;
+      }
+    }
+    glideId = requestAnimationFrame(step);
+  }
+
   viewport.addEventListener("pointerdown", (e) => {
+    stopGlide();
     viewport.setPointerCapture(e.pointerId);
     if (pointers.size === 0) {
       travelled = 0;
@@ -317,6 +386,7 @@ function createPanZoom(viewport, world, onTap) {
   return {
     // Start zoomed in a little, showing roughly 5-9 rooms.
     setPlan(dims) {
+      stopGlide();
       plan = dims;
       syncRect();
       const rooms = vpRect.width >= 700 ? 9 : 4.5;
@@ -324,8 +394,11 @@ function createPanZoom(viewport, world, onTap) {
       x = PAD; y = 0;
       apply();
     },
-    zoomIn()  { syncRect(); zoomAt(k * 1.35, vpRect.width / 2, vpRect.height / 2); },
-    zoomOut() { syncRect(); zoomAt(k / 1.35, vpRect.width / 2, vpRect.height / 2); },
-    fit()     { syncRect(); k = fitK(); apply(); },
+    panLeft()  { syncRect(); smoothPanBy(vpRect.width * 0.45); },
+    panRight() { syncRect(); smoothPanBy(-vpRect.width * 0.45); },
+    panBy: smoothPanBy,
+    zoomIn()   { syncRect(); zoomAt(k * 1.35, vpRect.width / 2, vpRect.height / 2); },
+    zoomOut()  { syncRect(); zoomAt(k / 1.35, vpRect.width / 2, vpRect.height / 2); },
+    fit()      { syncRect(); stopGlide(); k = fitK(); apply(); },
   };
 }

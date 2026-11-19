@@ -57,13 +57,21 @@
     </header>
 
     <main class="stage">
-        <!-- ===== Map ===== -->
+<!-- ===== Map ===== -->
         <section class="map-card" aria-label="Floor plan">
             <div class="viewport" id="viewport">
                 <svg class="plan" id="plan" role="img" aria-label="Floor plan">
                     <g id="world"></g>
                 </svg>
             </div>
+
+            <!-- Edge indicators showing there are more rooms off-screen -->
+            <button type="button" class="edge-arrow edge-arrow-left" id="edgeLeft" aria-label="More rooms to the left" hidden>
+                <span aria-hidden="true">&#8249;</span>
+            </button>
+            <button type="button" class="edge-arrow edge-arrow-right" id="edgeRight" aria-label="More rooms to the right" hidden>
+                <span aria-hidden="true">&#8250;</span>
+            </button>
 
             <!-- Floating skewed Slash filter chips -->
             <div class="controls">
@@ -124,10 +132,52 @@
                 </li>
             </ul>
 
-            <div class="zoom">
-                <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
-                <button type="button" id="zoomOut" aria-label="Zoom out">&minus;</button>
-                <button type="button" id="zoomFit" aria-label="Show whole floor">&#x26F6;</button>
+            <div class="zoom" aria-label="Map navigation controls">
+                <button type="button" id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button>
+                <button type="button" id="zoomOut" aria-label="Zoom out" title="Zoom out">&minus;</button>
+                <button type="button" id="zoomFit" aria-label="Show whole floor" title="Show whole floor">&#x26F6;</button>
+            </div>
+
+            <!-- Floating skewed Slash filter chips -->
+            <div class="controls">
+                <div class="dd">
+                    <button class="chip" id="floorBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                        <span class="chip-inner"><span id="floorLabel">2F</span><i class="caret"></i></span>
+                    </button>
+                    <div class="pop" id="floorPop" hidden></div>
+                </div>
+
+                <div class="dd">
+                    <button class="chip" id="dayBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                        <span class="chip-inner"><span id="dayLabel">Mon</span><i class="caret"></i></span>
+                    </button>
+                    <div class="pop" id="dayPop" hidden></div>
+                </div>
+
+                <div class="dd">
+                    <button class="chip" id="timeBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                        <span class="chip-inner"><span id="timeLabel">9:00–10:00 AM</span><i class="caret"></i></span>
+                    </button>
+                    <div class="pop pop-time" id="timePop" hidden>
+                        <div class="field-row">
+                            <div class="field">
+                                <label class="label" for="start">From</label>
+                                <input id="start" class="form-input" type="time" value="09:00">
+                            </div>
+                            <div class="field">
+                                <label class="label" for="end">To</label>
+                                <input id="end" class="form-input" type="time" value="10:00">
+                            </div>
+                        </div>
+                        <p id="timeError" class="status-message is-error"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Separate top-right horizontal pan controls -->
+            <div class="pan-bar" aria-label="Horizontal map navigation">
+                <button type="button" id="panLeft" aria-label="Move map left" title="Move left (←)">&larr;</button>
+                <button type="button" id="panRight" aria-label="Move map right" title="Move right (→)">&rarr;</button>
             </div>
         </section>
 
