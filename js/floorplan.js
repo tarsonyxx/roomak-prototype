@@ -183,6 +183,7 @@ function applyTimeRange(world, day, start, end) {
   return counts;
 }
 
+// Resets room statuses cleanly when an invalid time range is selected (prevents black SVG fallback).
 function clearTimeRange(world) {
   for (let i = 0; i < cachedRooms.length; i++) {
     const item = cachedRooms[i];
@@ -215,12 +216,15 @@ function markSelected(world, roomId) {
 
 /* ---------- 3. Drag, pinch and wheel zoom ---------- */
 function createPanZoom(viewport, world, onTap, onPanState) {
+  const planStage = document.getElementById("planStage");
+  const planSvg = document.getElementById("plan");
   const pointers = new Map();
   const PAD = 48, MAX_K = 4;
   let plan = { w: 1, h: 1 };
   let k = 1, x = 0, y = 0;
   let travelled = 0;
   let glideId = 0;
+  let lastCanLeft = null, lastCanRight = null;
 
   // Cache viewport bounding rect to prevent layout thrashing on pointermove / wheel.
   let vpRect = viewport.getBoundingClientRect();
@@ -249,27 +253,27 @@ function createPanZoom(viewport, world, onTap, onPanState) {
     return { x: cx, y: cy, pw, minX, maxX };
   }
 
-  // Draw at most once per screen frame (phones send many touch events per frame).
-  let queued = false;
   function apply() {
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(() => {
-      queued = false;
-      const clamped = clampCoords(x, y);
-      x = clamped.x;
-      y = clamped.y;
+    const clamped = clampCoords(x, y);
+    x = clamped.x;
+    y = clamped.y;
 
+    if (planStage) {
+      planStage.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${k.toFixed(4)})`;
+    } else {
       world.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${k.toFixed(4)})`);
+    }
 
-      if (typeof onPanState === "function") {
-        const overflows = clamped.pw + 24 > vpRect.width;
-        onPanState({
-          canLeft: overflows && x < clamped.maxX - 4,
-          canRight: overflows && x > clamped.minX + 4,
-        });
+    if (typeof onPanState === "function") {
+      const overflows = clamped.pw + 24 > vpRect.width;
+      const canLeft = overflows && x < clamped.maxX - 4;
+      const canRight = overflows && x > clamped.minX + 4;
+      if (canLeft !== lastCanLeft || canRight !== lastCanRight) {
+        lastCanLeft = canLeft;
+        lastCanRight = canRight;
+        onPanState({ canLeft, canRight });
       }
-    });
+    }
   }
 
   function zoomAt(newK, cx, cy) {
@@ -293,7 +297,6 @@ function createPanZoom(viewport, world, onTap, onPanState) {
 
     if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) return;
 
-    // Respect OS reduced-motion preference
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       x = target.x;
       y = target.y;
@@ -304,7 +307,6 @@ function createPanZoom(viewport, world, onTap, onPanState) {
     const startTime = performance.now();
     function step(now) {
       const t = Math.min(1, (now - startTime) / duration);
-      // Cubic ease-out for a natural glide and soft stop
       const ease = 1 - Math.pow(1 - t, 3);
       x = startX + deltaX * ease;
       y = startY + deltaY * ease;
@@ -321,7 +323,6 @@ function createPanZoom(viewport, world, onTap, onPanState) {
 
   viewport.addEventListener("pointerdown", (e) => {
     stopGlide();
-    viewport.setPointerCapture(e.pointerId);
     if (pointers.size === 0) {
       travelled = 0;
       syncRect();
@@ -364,32 +365,34 @@ function createPanZoom(viewport, world, onTap, onPanState) {
     if (!pointers.has(e.pointerId)) return;
     pointers.delete(e.pointerId);
     if (pointers.size === 0) viewport.classList.remove("grabbing");
+
     // Finger/mouse barely moved = a tap, not a drag.
     if (e.type === "pointerup" && pointers.size === 0 && travelled < 8) {
+      if (planSvg) planSvg.style.pointerEvents = "auto";
       const hit = document.elementFromPoint(e.clientX, e.clientY);
+      if (planSvg) planSvg.style.pointerEvents = "";
       onTap(hit ? hit.closest(".room") : null);
     }
   }
-  viewport.addEventListener("pointerup", release);
-  viewport.addEventListener("pointercancel", release);
+  window.addEventListener("pointerup", release);
+  window.addEventListener("pointercancel", release);
 
-viewport.addEventListener("wheel", (e) => {
+  viewport.addEventListener("wheel", (e) => {
     e.preventDefault();
     stopGlide();
     syncRect();
 
-    // Trackpad pinch-to-zoom (browsers synthesize wheel events with ctrlKey = true)
+    // Trackpad pinch-to-zoom
     if (e.ctrlKey || e.metaKey) {
       zoomAt(k * Math.exp(-e.deltaY * 0.008), e.clientX - vpRect.left, e.clientY - vpRect.top);
       return;
     }
 
-    // Normalize line/page wheel modes (e.g. Shift + mouse wheel horizontal scroll)
+    // Two-finger trackpad scroll or Shift + wheel horizontal scroll
     const scale = e.deltaMode === 1 ? 24 : e.deltaMode === 2 ? vpRect.width * 0.5 : 1;
     let dx = e.deltaX * scale;
     let dy = e.deltaY * scale;
 
-    // Allow Shift + vertical mouse wheel to pan horizontally
     if (e.shiftKey && dx === 0) {
       dx = dy;
       dy = 0;
@@ -410,6 +413,14 @@ viewport.addEventListener("wheel", (e) => {
     setPlan(dims) {
       stopGlide();
       plan = dims;
+      lastCanLeft = null;
+      lastCanRight = null;
+      if (planStage && planSvg) {
+        planSvg.setAttribute("viewBox", `0 0 ${dims.w} ${dims.h}`);
+        planStage.style.width = `${dims.w}px`;
+        planStage.style.height = `${dims.h}px`;
+      }
+
       syncRect();
       const rooms = vpRect.width >= 700 ? 9 : 4.5;
       k = limitK(vpRect.width / (UNIT * rooms));

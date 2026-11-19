@@ -208,6 +208,20 @@
     shape-rendering: optimizeSpeed;
 }
 
+.plan-stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+
+.plan {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 #world {
     will-change: transform;
 }
@@ -521,6 +535,27 @@
     animation-name: edge-nudge-right;
 }
 
+/* Compact, subtler edge indicators on mobile screens */
+@media (max-width: 899px) {
+    .edge-arrow {
+        width: 24px;
+        height: 42px;
+        font-size: 1.25rem;
+        border-width: 1px;
+        border-radius: 6px;
+        background: rgba(250, 210, 68, 0.9);
+        box-shadow: 0 3px 10px rgba(2, 8, 24, 0.28);
+    }
+
+    .edge-arrow-left {
+        left: 6px;
+    }
+
+    .edge-arrow-right {
+        right: 6px;
+    }
+}
+
 @media (hover: hover) {
     .edge-arrow:hover {
         background: var(--stg-navy);
@@ -767,3 +802,39 @@ input[type="time"].form-input { cursor: pointer; }
 .room[data-status="available"]   .sub { fill: var(--available-text); font-weight: 600; }
 .room[data-status="unavailable"] .sub { fill: var(--unavailable-text); font-weight: 600; }
 .room[data-status="occupied"]    .sub { fill: var(--occupied-text); font-weight: 600; }
+
+
+/* ---------- Mobile & Low-End GPU Map Optimizations ---------- */
+@media (max-width: 899px), (hover: none) {
+    /* Solid canvas fill avoids per-frame radial-gradient alpha blending */
+    .viewport {
+        background-image: none;
+    }
+
+    /* Replace animated SVG drop-shadow filter with a static crisp border */
+    .room.selected rect {
+        animation: none !important;
+        filter: none !important;
+        stroke-width: 4;
+    }
+
+    /* Remove continuous nudge animation on edge arrows while dragging */
+    .viewport.grabbing ~ .edge-arrow {
+        animation-play-state: paused;
+    }
+}
+
+.controls {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 6;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.controls > * {
+    pointer-events: auto;
+}

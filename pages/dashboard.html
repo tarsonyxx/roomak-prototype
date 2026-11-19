@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -33,167 +34,144 @@
         }
     </script>
 </head>
+
 <body class="dashboard-page">
-<!-- Subtle Slash corner accents framing the workspace (matches login.html) -->
-<div class="dash-backdrop" aria-hidden="true">
-    <span class="dash-slash dash-slash-blue"></span>
-    <span class="dash-slash dash-slash-gold"></span>
-    <span class="dash-slash dash-slash-burst"></span>
-</div>
+    <!-- Subtle Slash corner accents framing the workspace (matches login.html) -->
+    <div class="dash-backdrop" aria-hidden="true">
+        <span class="dash-slash dash-slash-blue"></span>
+        <span class="dash-slash dash-slash-gold"></span>
+        <span class="dash-slash dash-slash-burst"></span>
+    </div>
 
-<div class="app">
-    <header class="topbar">
-        <div class="topbar-left">
-            <a class="brand" href="dashboard.html" aria-label="RooMak home">
-                <span class="brand-mark" aria-hidden="true"><img src="../assets/images/logo.jpg" alt="" width="40" height="40"></span>
-                <span class="brand-name">RooMak</span>
-            </a>
-            <span class="topbar-badge" aria-hidden="true">
-                <span class="badge-dot"></span>
-                UMAK // FLOOR PLAN
-            </span>
-        </div>
-        <button class="ghost-btn" id="logoutBtn" type="button">Log out</button>
-    </header>
-
-    <main class="stage">
-<!-- ===== Map ===== -->
-        <section class="map-card" aria-label="Floor plan">
-            <div class="viewport" id="viewport">
-                <svg class="plan" id="plan" role="img" aria-label="Floor plan">
-                    <g id="world"></g>
-                </svg>
+    <div class="app">
+        <header class="topbar">
+            <div class="topbar-left">
+                <a class="brand" href="dashboard.html" aria-label="RooMak home">
+                    <span class="brand-mark" aria-hidden="true"><img src="../assets/images/logo.jpg" alt="" width="40"
+                            height="40"></span>
+                    <span class="brand-name">RooMak</span>
+                </a>
+                <span class="topbar-badge" aria-hidden="true">
+                    <span class="badge-dot"></span>
+                    UMAK // FLOOR PLAN
+                </span>
             </div>
+            <button class="ghost-btn" id="logoutBtn" type="button">Log out</button>
+        </header>
 
-            <!-- Edge indicators showing there are more rooms off-screen -->
-            <button type="button" class="edge-arrow edge-arrow-left" id="edgeLeft" aria-label="More rooms to the left" hidden>
-                <span aria-hidden="true">&#8249;</span>
-            </button>
-            <button type="button" class="edge-arrow edge-arrow-right" id="edgeRight" aria-label="More rooms to the right" hidden>
-                <span aria-hidden="true">&#8250;</span>
-            </button>
-
-            <!-- Floating skewed Slash filter chips -->
-            <div class="controls">
-                <div class="dd">
-                    <button class="chip" id="floorBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="chip-inner"><span id="floorLabel">2F</span><i class="caret"></i></span>
-                    </button>
-                    <div class="pop" id="floorPop" hidden></div>
-                </div>
-
-                <div class="dd">
-                    <button class="chip" id="dayBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="chip-inner"><span id="dayLabel">Mon</span><i class="caret"></i></span>
-                    </button>
-                    <div class="pop" id="dayPop" hidden></div>
-                </div>
-
-                <div class="dd">
-                    <button class="chip" id="timeBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="chip-inner"><span id="timeLabel">9:00–10:00 AM</span><i class="caret"></i></span>
-                    </button>
-                    <div class="pop pop-time" id="timePop" hidden>
-                        <div class="field-row">
-                            <div class="field">
-                                <label class="label" for="start">From</label>
-                                <input id="start" class="form-input" type="time" value="09:00">
-                            </div>
-                            <div class="field">
-                                <label class="label" for="end">To</label>
-                                <input id="end" class="form-input" type="time" value="10:00">
-                            </div>
-                        </div>
-                        <p id="timeError" class="status-message is-error"></p>
+        <main class="stage">
+            <!-- ===== Map ===== -->
+            <section class="map-card" aria-label="Floor plan">
+                <div class="viewport" id="viewport">
+                    <div class="plan-stage" id="planStage">
+                        <svg class="plan" id="plan" role="img" aria-label="Floor plan">
+                            <g id="world"></g>
+                        </svg>
                     </div>
                 </div>
-            </div>
 
-            <p class="hint" id="hint">Drag to move &middot; Pinch to zoom &middot; Tap a room</p>
 
-            <ul class="legend">
-                <li><i class="dot available"></i>Available <b id="n-available">0</b></li>
-                <li><i class="dot unavailable"></i>Unavailable <b id="n-unavailable">0</b></li>
-                <li><i class="dot occupied"></i>In use <b id="n-occupied">0</b></li>
-                <li><i class="dot special"></i>Not reservable</li>
-                <li>
-                    <svg class="lg-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path class="soft" d="M3 6H21M3 10H21M3 14H21M3 18H21"/>
-                        <path d="M8 21V8.5Q8 6 10.5 6H13.5Q16 6 16 8.5V15"/>
-                        <path d="M13.3 14.5H18.7L16 19.5Z" fill="currentColor" stroke="none"/>
-                    </svg>Stairs
-                </li>
-                <li>
-                    <svg class="lg-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path class="soft" d="M12 3V21"/>
-                        <circle cx="7" cy="5" r="2"/><path d="M4.5 9H9.5V15H4.5Z M6 15V21 M8 15V21"/>
-                        <circle cx="17" cy="5" r="2"/><path d="M17 8L13.5 15H20.5Z M16 15V21 M18 15V21"/>
-                    </svg>Restrooms
-                </li>
-            </ul>
 
-            <div class="zoom" aria-label="Map navigation controls">
-                <button type="button" id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button>
-                <button type="button" id="zoomOut" aria-label="Zoom out" title="Zoom out">&minus;</button>
-                <button type="button" id="zoomFit" aria-label="Show whole floor" title="Show whole floor">&#x26F6;</button>
-            </div>
+                <!-- Edge indicators showing there are more rooms off-screen -->
+                <button type="button" class="edge-arrow edge-arrow-left" id="edgeLeft"
+                    aria-label="More rooms to the left" hidden>
+                    <span aria-hidden="true">&#8249;</span>
+                </button>
+                <button type="button" class="edge-arrow edge-arrow-right" id="edgeRight"
+                    aria-label="More rooms to the right" hidden>
+                    <span aria-hidden="true">&#8250;</span>
+                </button>
 
-            <!-- Floating skewed Slash filter chips -->
-            <div class="controls">
-                <div class="dd">
-                    <button class="chip" id="floorBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="chip-inner"><span id="floorLabel">2F</span><i class="caret"></i></span>
-                    </button>
-                    <div class="pop" id="floorPop" hidden></div>
-                </div>
+                <!-- Floating skewed Slash filter chips -->
+                <div class="controls">
+                    <div class="dd">
+                        <button class="chip" id="floorBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="chip-inner"><span id="floorLabel">2F</span><i class="caret"></i></span>
+                        </button>
+                        <div class="pop" id="floorPop" hidden></div>
+                    </div>
 
-                <div class="dd">
-                    <button class="chip" id="dayBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="chip-inner"><span id="dayLabel">Mon</span><i class="caret"></i></span>
-                    </button>
-                    <div class="pop" id="dayPop" hidden></div>
-                </div>
+                    <div class="dd">
+                        <button class="chip" id="dayBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="chip-inner"><span id="dayLabel">Mon</span><i class="caret"></i></span>
+                        </button>
+                        <div class="pop" id="dayPop" hidden></div>
+                    </div>
 
-                <div class="dd">
-                    <button class="chip" id="timeBtn" type="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="chip-inner"><span id="timeLabel">9:00–10:00 AM</span><i class="caret"></i></span>
-                    </button>
-                    <div class="pop pop-time" id="timePop" hidden>
-                        <div class="field-row">
-                            <div class="field">
-                                <label class="label" for="start">From</label>
-                                <input id="start" class="form-input" type="time" value="09:00">
+                    <div class="dd">
+                        <button class="chip" id="timeBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="chip-inner"><span id="timeLabel">9:00–10:00 AM</span><i
+                                    class="caret"></i></span>
+                        </button>
+                        <div class="pop pop-time" id="timePop" hidden>
+                            <div class="field-row">
+                                <div class="field">
+                                    <label class="label" for="start">From</label>
+                                    <input id="start" class="form-input" type="time" value="09:00">
+                                </div>
+                                <div class="field">
+                                    <label class="label" for="end">To</label>
+                                    <input id="end" class="form-input" type="time" value="10:00">
+                                </div>
                             </div>
-                            <div class="field">
-                                <label class="label" for="end">To</label>
-                                <input id="end" class="form-input" type="time" value="10:00">
-                            </div>
+                            <p id="timeError" class="status-message is-error"></p>
                         </div>
-                        <p id="timeError" class="status-message is-error"></p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Separate top-right horizontal pan controls -->
-            <div class="pan-bar" aria-label="Horizontal map navigation">
-                <button type="button" id="panLeft" aria-label="Move map left" title="Move left (←)">&larr;</button>
-                <button type="button" id="panRight" aria-label="Move map right" title="Move right (→)">&rarr;</button>
-            </div>
-        </section>
+                <p class="hint" id="hint">Drag to move &middot; Pinch to zoom &middot; Tap a room</p>
 
-        <!-- ===== Room information drawer ===== -->
-        <aside class="drawer" id="drawer" aria-label="Room information" aria-hidden="true">
-            <div class="drawer-inner" id="drawerBody"></div>
-        </aside>
-    </main>
-</div>
+                <ul class="legend">
+                    <li><i class="dot available"></i>Available <b id="n-available">0</b></li>
+                    <li><i class="dot unavailable"></i>Unavailable <b id="n-unavailable">0</b></li>
+                    <li><i class="dot occupied"></i>In use <b id="n-occupied">0</b></li>
+                    <li><i class="dot special"></i>Not reservable</li>
+                    <li>
+                        <svg class="lg-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path class="soft" d="M3 6H21M3 10H21M3 14H21M3 18H21" />
+                            <path d="M8 21V8.5Q8 6 10.5 6H13.5Q16 6 16 8.5V15" />
+                            <path d="M13.3 14.5H18.7L16 19.5Z" fill="currentColor" stroke="none" />
+                        </svg>Stairs
+                    </li>
+                    <li>
+                        <svg class="lg-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path class="soft" d="M12 3V21" />
+                            <circle cx="7" cy="5" r="2" />
+                            <path d="M4.5 9H9.5V15H4.5Z M6 15V21 M8 15V21" />
+                            <circle cx="17" cy="5" r="2" />
+                            <path d="M17 8L13.5 15H20.5Z M16 15V21 M18 15V21" />
+                        </svg>Restrooms
+                    </li>
+                </ul>
 
-<dialog id="roomActionDialog"
-        class="room-action-dialog"
-        aria-label="Room requests and issue reports">
-</dialog>
+                <div class="zoom" aria-label="Map navigation controls">
+                    <button type="button" id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button>
+                    <button type="button" id="zoomOut" aria-label="Zoom out" title="Zoom out">&minus;</button>
+                    <button type="button" id="zoomFit" aria-label="Show whole floor"
+                        title="Show whole floor">&#x26F6;</button>
+                </div>
 
-    <script src="../data/rooms.js" defer></script> 
+
+
+                <!-- Separate top-right horizontal pan controls -->
+                <div class="pan-bar" aria-label="Horizontal map navigation">
+                    <button type="button" id="panLeft" aria-label="Move map left" title="Move left (←)">&larr;</button>
+                    <button type="button" id="panRight" aria-label="Move map right"
+                        title="Move right (→)">&rarr;</button>
+                </div>
+            </section>
+
+            <!-- ===== Room information drawer ===== -->
+            <aside class="drawer" id="drawer" aria-label="Room information" aria-hidden="true">
+                <div class="drawer-inner" id="drawerBody"></div>
+            </aside>
+        </main>
+    </div>
+
+    <dialog id="roomActionDialog" class="room-action-dialog" aria-label="Room requests and issue reports">
+    </dialog>
+
+    <script src="../data/rooms.js" defer></script>
     <script src="../data/schedules.js" defer></script>
     <script src="../js/floorplan.js" defer></script>
     <script src="../js/dashboard.js" defer></script>
@@ -201,4 +179,5 @@
     <script src="../js/hints.js" defer></script>
     <script src="../js/settings.js" defer></script>
 </body>
+
 </html>
