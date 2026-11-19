@@ -183,6 +183,21 @@ function applyTimeRange(world, day, start, end) {
   return counts;
 }
 
+function clearTimeRange(world) {
+  for (let i = 0; i < cachedRooms.length; i++) {
+    const item = cachedRooms[i];
+    const room = ROOM_INDEX[item.id];
+    const status = room && room.special ? "special" : "invalid";
+    if (item.g.getAttribute("data-status") !== status) {
+      item.g.setAttribute("data-status", status);
+    }
+    item.g.dataset.reason = "";
+    if (item.sub && item.sub.textContent !== "") {
+      item.sub.textContent = "";
+    }
+  }
+}
+
 function markSelected(world, roomId) {
   if (selectedRoomEl) {
     selectedRoomEl.classList.remove("selected");

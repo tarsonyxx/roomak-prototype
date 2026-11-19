@@ -223,7 +223,12 @@
 .fixed .name { font-weight: 500; font-size: 13px; fill: var(--color-muted); }
 
 .room { cursor: pointer; }
-.room rect { stroke-width: 1.75; transition: fill 200ms ease, stroke 200ms ease; }
+.room rect {
+    fill: var(--special-bg);
+    stroke: var(--special-border);
+    stroke-width: 1.75;
+    transition: fill 200ms ease, stroke 200ms ease;
+}
 .room[data-status="available"]   rect { fill: var(--available-bg); stroke: var(--available-border); }
 .room[data-status="unavailable"] rect { fill: var(--unavailable-bg); stroke: var(--unavailable-border); }
 .room[data-status="occupied"]    rect { fill: var(--occupied-bg); stroke: var(--occupied-border); }

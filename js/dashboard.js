@@ -145,10 +145,14 @@ function refresh() {
     renderOptions(dom.dayPop, DAYS, state.day, (d) => d);
 
     if (ok) {
-        const counts = applyTimeRange(world, state.day, state.start, state.end);
-        for (const key in counts) $("n-" + key).textContent = counts[key];
-    }
-    if (state.room) renderDrawer();
+            const counts = applyTimeRange(world, state.day, state.start, state.end);
+            for (const key in counts) $("n-" + key).textContent = counts[key];
+        } else {
+            clearTimeRange(world);
+            ["available", "unavailable", "occupied"].forEach((key) => {
+                $("n-" + key).textContent = "—";
+            });
+        }
 }
 
 /* ---------- room information drawer ---------- */
