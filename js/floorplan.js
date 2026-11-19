@@ -373,9 +373,31 @@ function createPanZoom(viewport, world, onTap, onPanState) {
   viewport.addEventListener("pointerup", release);
   viewport.addEventListener("pointercancel", release);
 
-  viewport.addEventListener("wheel", (e) => {
+viewport.addEventListener("wheel", (e) => {
     e.preventDefault();
-    zoomAt(k * Math.exp(-e.deltaY * 0.0015), e.clientX - vpRect.left, e.clientY - vpRect.top);
+    stopGlide();
+    syncRect();
+
+    // Trackpad pinch-to-zoom (browsers synthesize wheel events with ctrlKey = true)
+    if (e.ctrlKey || e.metaKey) {
+      zoomAt(k * Math.exp(-e.deltaY * 0.008), e.clientX - vpRect.left, e.clientY - vpRect.top);
+      return;
+    }
+
+    // Normalize line/page wheel modes (e.g. Shift + mouse wheel horizontal scroll)
+    const scale = e.deltaMode === 1 ? 24 : e.deltaMode === 2 ? vpRect.width * 0.5 : 1;
+    let dx = e.deltaX * scale;
+    let dy = e.deltaY * scale;
+
+    // Allow Shift + vertical mouse wheel to pan horizontally
+    if (e.shiftKey && dx === 0) {
+      dx = dy;
+      dy = 0;
+    }
+
+    x -= dx;
+    y -= dy;
+    apply();
   }, { passive: false });
 
   new ResizeObserver(() => {
