@@ -139,3 +139,18 @@ body { background: var(--bg-ethereal); }
 :root[data-theme="dark"] .room-action-report .room-action-icon { color: #f0c46a; }
 :root[data-theme="dark"] .form-input:hover { border-color: var(--border-hover); }
 :root[data-theme="dark"] .form-input::placeholder { color: #66748b; }
+
+
+
+/* ---------- Tablet flicker fix (layout and animation unchanged) ---------- */
+
+/* Blur layers over a moving, scaled SVG are the most likely flicker source on tablet GPUs */
+@media (hover: none), (pointer: coarse) {
+    *, *::before, *::after {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+}
+
+/* will-change does nothing useful on an SVG <g> */
+#world { will-change: auto; }
