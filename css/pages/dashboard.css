@@ -592,12 +592,38 @@
 .hint.hidden { opacity: 0; }
 
 /* ---------- Room information drawer ---------- */
+/* ---------- Room information drawer ---------- */
 .drawer {
-    flex: 0 0 0; width: 0; margin-left: 0; overflow: hidden; opacity: 0; visibility: hidden; border-width: 0;
-    contain: layout style paint;
-    transition: flex-basis 280ms ease, margin 280ms ease, opacity 200ms ease, visibility 0s linear 280ms;
+    flex: 0 0 0;
+    width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    border-width: 0;
+    /* Promote to a clean GPU layer and remove contain: paint during flex-basis resize */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transition:
+        flex-basis 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        margin-left 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 200ms ease,
+        visibility 0s linear 280ms;
 }
-.drawer.open { flex-basis: 392px; margin-left: 16px; opacity: 1; visibility: visible; border-width: 1px; border-top-width: 4px;
+
+.drawer.open {
+    flex-basis: 392px;
+    margin-left: 16px;
+    opacity: 1;
+    visibility: visible;
+    border-width: 1px;
+    border-top-width: 4px;
+    transition:
+        flex-basis 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        margin-left 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 200ms ease,
+        visibility 0s;
+}
                transition: flex-basis 280ms ease, margin 280ms ease, opacity 200ms ease, visibility 0s; }
 .drawer-inner {
     width: 392px;
@@ -719,6 +745,49 @@
         margin: 0;
         transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
     }
+
+    /* Pause SVG filter re-rasterization ONLY during the 280ms drawer slide */
+.stage.is-animating .room.selected rect {
+    animation: none !important;
+    filter: none !important;
+}
+
+/* On touch/tablet GPUs (Xiaomi Pad 7), keep the exact pulsing gold & sky-blue
+   selection animation using stroke & stroke-opacity instead of SVG drop-shadow */
+@media (pointer: coarse) {
+    .room.selected rect {
+        animation: room-pulse-tablet 2s ease-in-out infinite !important;
+        filter: none !important;
+    }
+
+    :root[data-theme="dark"] .room.selected rect {
+        animation: room-pulse-tablet-dark 2s ease-in-out infinite !important;
+        filter: none !important;
+    }
+}
+
+@keyframes room-pulse-tablet {
+    0%, 100% {
+        stroke: #1c64d1;
+        stroke-width: 3;
+    }
+    50% {
+        stroke: #eaa828;
+        stroke-width: 4.5;
+    }
+}
+
+@keyframes room-pulse-tablet-dark {
+    0%, 100% {
+        stroke: var(--stg-sky);
+        stroke-width: 3;
+    }
+    50% {
+        stroke: var(--stg-gold-light);
+        stroke-width: 4.5;
+    }
+}
+
     /* Pause the SVG drop-shadow filter animation and hide the covered map on mobile while reading room details */
     .stage:has(.drawer.open) .room.selected rect {
         animation: none !important;

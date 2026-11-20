@@ -210,7 +210,20 @@ function refresh() {
 }
 
 /* ---------- room information drawer ---------- */
+const stageEl = document.querySelector(".stage");
+let drawerAnimTimer = 0;
+
+function lockStageDuringSlide() {
+    if (!stageEl) return;
+    stageEl.classList.add("is-animating");
+    clearTimeout(drawerAnimTimer);
+    drawerAnimTimer = setTimeout(() => {
+        stageEl.classList.remove("is-animating");
+    }, 300);
+}
+
 function openDrawer(roomId) {
+    lockStageDuringSlide();
     state.room = roomId;
     state.viewDay = state.day;
     dom.drawer.classList.add("open");
@@ -219,7 +232,9 @@ function openDrawer(roomId) {
     renderDrawer();
     dom.drawerBody.scrollTop = 0;
 }
+
 function closeDrawer() {
+    if (state.room) lockStageDuringSlide();
     state.room = null;
     dom.drawer.classList.remove("open");
     dom.drawer.setAttribute("aria-hidden", "true");

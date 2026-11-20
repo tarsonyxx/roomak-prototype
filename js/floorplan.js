@@ -403,9 +403,14 @@ function createPanZoom(viewport, world, onTap, onPanState) {
     apply();
   }, { passive: false });
 
+let resizeRaf = 0;
   new ResizeObserver(() => {
-    syncRect();
-    apply();
+    if (resizeRaf) return;
+    resizeRaf = requestAnimationFrame(() => {
+      resizeRaf = 0;
+      syncRect();
+      apply();
+    });
   }).observe(viewport);
 
   return {
